@@ -8,9 +8,47 @@ from __future__ import annotations
 
 from datetime import date
 
+import pytest
+
 
 def test_parse_birth_date(util):
     assert util.parse_birth_date("1990-05-17") == date(1990, 5, 17)
+
+
+def test_parse_flexible_date_iso(util):
+    assert util.parse_flexible_date("1949-11-12") == date(1949, 11, 12)
+
+
+def test_parse_flexible_date_slash_dmy(util):
+    # The exact case that motivated this parser: typing an old date
+    # (e.g. 1949) instead of clicking "previous month" dozens of times.
+    assert util.parse_flexible_date("12/11/1949") == date(1949, 11, 12)
+
+
+def test_parse_flexible_date_dash_dmy(util):
+    assert util.parse_flexible_date("12-11-1949") == date(1949, 11, 12)
+
+
+def test_parse_flexible_date_dot_dmy(util):
+    assert util.parse_flexible_date("12.11.1949") == date(1949, 11, 12)
+
+
+def test_parse_flexible_date_slash_ymd(util):
+    assert util.parse_flexible_date("1949/11/12") == date(1949, 11, 12)
+
+
+def test_parse_flexible_date_strips_whitespace(util):
+    assert util.parse_flexible_date("  1949-11-12  ") == date(1949, 11, 12)
+
+
+def test_parse_flexible_date_rejects_garbage(util):
+    with pytest.raises(ValueError):
+        util.parse_flexible_date("not a date")
+
+
+def test_parse_flexible_date_rejects_empty(util):
+    with pytest.raises(ValueError):
+        util.parse_flexible_date("")
 
 
 def test_next_anniversary_later_this_year(util):
