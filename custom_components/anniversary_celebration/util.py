@@ -1,12 +1,34 @@
 """Date helpers for Anniversary Celebration."""
 from __future__ import annotations
 
-from datetime import date
+from datetime import date, datetime
 
 
 def parse_birth_date(value: str) -> date:
     """Parse an ISO (YYYY-MM-DD) birth date string."""
     return date.fromisoformat(value)
+
+
+_FLEXIBLE_DATE_FORMATS = ("%Y-%m-%d", "%d/%m/%Y", "%d-%m-%Y", "%d.%m.%Y", "%Y/%m/%d")
+
+
+def parse_flexible_date(value: str) -> date:
+    """Parse a birth date typed by hand in the config flow's text field.
+
+    The native HA date-picker calendar requires clicking back one month at
+    a time to reach an old date (e.g. a 1949 birth date), which is
+    impractical. The config flow therefore accepts the date as typed
+    text, in ISO (YYYY-MM-DD) or common day/month/year notations, parsed
+    here. Raises ValueError if nothing matches, so the caller can show a
+    form error without crashing.
+    """
+    value = (value or "").strip()
+    for fmt in _FLEXIBLE_DATE_FORMATS:
+        try:
+            return datetime.strptime(value, fmt).date()
+        except ValueError:
+            continue
+    raise ValueError(f"Unrecognized date format: {value!r}")
 
 
 def next_anniversary(birth: date, today: date) -> date:

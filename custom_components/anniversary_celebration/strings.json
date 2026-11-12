@@ -27,8 +27,11 @@
           "last_name": "Last name",
           "birth_date": "Date of birth",
           "status": "Status",
-          "notify_time": "Notification time",
+          "notify_time": "Notification time on the anniversary day",
           "notify_target": "Device / service to notify"
+        },
+        "data_description": {
+          "birth_date": "Type the date: YYYY-MM-DD or DD/MM/YYYY"
         }
       },
       "edit_person": {
@@ -38,9 +41,12 @@
           "last_name": "Last name",
           "birth_date": "Date of birth",
           "status": "Status",
-          "notify_time": "Notification time",
+          "notify_time": "Notification time on the anniversary day",
           "notify_target": "Device / service to notify",
           "person": "Person"
+        },
+        "data_description": {
+          "birth_date": "Type the date: YYYY-MM-DD or DD/MM/YYYY"
         }
       },
       "remove_person": {
@@ -49,6 +55,9 @@
           "person": "Person"
         }
       }
+    },
+    "error": {
+      "invalid_date": "Unrecognized date. Use YYYY-MM-DD or DD/MM/YYYY."
     }
   }
 }

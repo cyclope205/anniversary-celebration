@@ -24,8 +24,19 @@ from .const import (
     STATUS_ALIVE,
     STATUS_DECEASED,
 )
+from .util import parse_flexible_date
 
 NO_TARGET = "__none__"
+
+
+def _validate_and_normalize_birth_date(user_input: dict[str, Any]) -> dict[str, str]:
+    """Parse the typed birth date in place; return a form errors dict."""
+    try:
+        parsed = parse_flexible_date(user_input[CONF_BIRTH_DATE])
+    except (ValueError, KeyError):
+        return {CONF_BIRTH_DATE: "invalid_date"}
+    user_input[CONF_BIRTH_DATE] = parsed.isoformat()
+    return {}
 
 
 def _notify_targets(hass) -> list[dict[str, str]]:
@@ -50,9 +61,14 @@ def _person_schema(hass, defaults: dict[str, Any] | None = None) -> vol.Schema:
             vol.Optional(
                 CONF_LAST_NAME, default=defaults.get(CONF_LAST_NAME, "")
             ): str,
+            # Typed text, not selector.DateSelector(): its calendar widget has
+            # no quick year jump, so reaching an old birth date (e.g. 1949)
+            # means clicking "previous month" dozens of times. Typing the
+            # date (ISO or day/month/year) is validated and normalized in
+            # async_step_add_person / async_step_edit_person below.
             vol.Required(
-                CONF_BIRTH_DATE, default=defaults.get(CONF_BIRTH_DATE)
-            ): selector.DateSelector(),
+                CONF_BIRTH_DATE, default=defaults.get(CONF_BIRTH_DATE, "")
+            ): str,
             vol.Required(
                 CONF_STATUS, default=defaults.get(CONF_STATUS, STATUS_ALIVE)
             ): selector.SelectSelector(
@@ -132,16 +148,18 @@ class AnniversaryCelebrationOptionsFlow(config_entries.OptionsFlow):
     async def async_step_add_person(self, user_input: dict[str, Any] | None = None):
         errors: dict[str, str] = {}
         if user_input is not None:
-            target = user_input.get(CONF_NOTIFY_TARGET)
-            if target == NO_TARGET:
-                user_input[CONF_NOTIFY_TARGET] = None
-            person = {CONF_PERSON_ID: uuid.uuid4().hex, **user_input}
-            people = self._people
-            people.append(person)
-            return self._save(people)
+            errors = _validate_and_normalize_birth_date(user_input)
+            if not errors:
+                target = user_input.get(CONF_NOTIFY_TARGET)
+                if target == NO_TARGET:
+                    user_input[CONF_NOTIFY_TARGET] = None
+                person = {CONF_PERSON_ID: uuid.uuid4().hex, **user_input}
+                people = self._people
+                people.append(person)
+                return self._save(people)
         return self.async_show_form(
             step_id="add_person",
-            data_schema=_person_schema(self.hass),
+            data_schema=_person_schema(self.hass, user_input),
             errors=errors,
         )
 
@@ -179,19 +197,24 @@ class AnniversaryCelebrationOptionsFlow(config_entries.OptionsFlow):
             self._selected_id = None
             return await self.async_step_init()
 
+        errors: dict[str, str] = {}
         if user_input is not None and "person" not in user_input:
-            updated = {CONF_PERSON_ID: self._selected_id, **user_input}
-            if updated.get(CONF_NOTIFY_TARGET) == NO_TARGET:
-                updated[CONF_NOTIFY_TARGET] = None
-            new_people = [
-                updated if p[CONF_PERSON_ID] == self._selected_id else p
-                for p in people
-            ]
-            return self._save(new_people)
+            errors = _validate_and_normalize_birth_date(user_input)
+            if not errors:
+                updated = {CONF_PERSON_ID: self._selected_id, **user_input}
+                if updated.get(CONF_NOTIFY_TARGET) == NO_TARGET:
+                    updated[CONF_NOTIFY_TARGET] = None
+                new_people = [
+                    updated if p[CONF_PERSON_ID] == self._selected_id else p
+                    for p in people
+                ]
+                return self._save(new_people)
+            current = user_input
 
         return self.async_show_form(
             step_id="edit_person",
             data_schema=_person_schema(self.hass, current),
+            errors=errors,
         )
 
     async def async_step_remove_person(self, user_input: dict[str, Any] | None = None):
