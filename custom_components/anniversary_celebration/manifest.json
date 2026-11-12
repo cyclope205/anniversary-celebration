@@ -1,0 +1,12 @@
+{
+  "domain": "anniversary_celebration",
+  "name": "Anniversary Celebration",
+  "version": "1.0.0",
+  "config_flow": true,
+  "documentation": "https://github.com/cyclope205/anniversary-celebration",
+  "issue_tracker": "https://github.com/cyclope205/anniversary-celebration/issues",
+  "codeowners": ["@cyclope205"],
+  "iot_class": "calculated",
+  "integration_type": "service",
+  "requirements": []
+}

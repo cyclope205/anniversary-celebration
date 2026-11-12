@@ -1,0 +1,54 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Anniversary Celebration",
+        "description": "Track birthdays for the living and in memory of the deceased, with reliable notifications."
+      }
+    },
+    "abort": {
+      "already_configured": "Already configured"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Anniversary Celebration",
+        "menu_options": {
+          "add_person": "Add a person",
+          "edit_person": "Edit a person",
+          "remove_person": "Remove a person"
+        }
+      },
+      "add_person": {
+        "title": "Add a person",
+        "data": {
+          "first_name": "First name",
+          "last_name": "Last name",
+          "birth_date": "Date of birth",
+          "status": "Status",
+          "notify_time": "Notification time",
+          "notify_target": "Device / service to notify"
+        }
+      },
+      "edit_person": {
+        "title": "Edit a person",
+        "data": {
+          "first_name": "First name",
+          "last_name": "Last name",
+          "birth_date": "Date of birth",
+          "status": "Status",
+          "notify_time": "Notification time",
+          "notify_target": "Device / service to notify",
+          "person": "Person"
+        }
+      },
+      "remove_person": {
+        "title": "Remove a person",
+        "data": {
+          "person": "Person"
+        }
+      }
+    }
+  }
+}
