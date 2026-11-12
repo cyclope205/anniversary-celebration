@@ -80,7 +80,7 @@ Intégration Home Assistant qui suit les anniversaires des personnes vivantes et
 
 Carte Anniversaires / Souvenirs :
 
-<img width="600" alt="Carte Anniversary Celebration" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794518068122-80f0d1ae.png" />
+<img width="600" alt="Carte Anniversary Celebration" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794519324797-8b7998a2.png" />
 
 Formulaire d'ajout d'une personne (options de l'intégration) :
 
