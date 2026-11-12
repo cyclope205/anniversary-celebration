@@ -54,6 +54,10 @@ class AnniversaryCelebrationCard extends HTMLElement {
     return { title_alive: "🎂 Anniversaires", title_deceased: "🕯️ Souvenirs", show_deceased: true, max_items: 0 };
   }
 
+  static getConfigElement() {
+    return document.createElement("anniversary-celebration-card-editor");
+  }
+
   _buildSkeleton() {
     this.innerHTML = `
       <ha-card>
@@ -167,6 +171,80 @@ class AnniversaryCelebrationCard extends HTMLElement {
     }
   }
 }
+
+class AnniversaryCelebrationCardEditor extends HTMLElement {
+  setConfig(config) {
+    this._config = {
+      title_alive: "🎂 Anniversaires",
+      title_deceased: "🕯️ Souvenirs",
+      show_deceased: true,
+      max_items: 0,
+      ...config,
+    };
+    this._render();
+  }
+
+  set hass(hass) {
+    this._hass = hass;
+  }
+
+  _fire(key, value) {
+    this._config = { ...this._config, [key]: value };
+    this.dispatchEvent(
+      new CustomEvent("config-changed", {
+        detail: { config: this._config },
+        bubbles: true,
+        composed: true,
+      })
+    );
+  }
+
+  _render() {
+    this.innerHTML = `
+      <style>
+        .ac-editor-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; }
+        .ac-editor-row label { font-size: 14px; }
+        .ac-editor-row input[type="text"], .ac-editor-row input[type="number"] {
+          width: 180px; padding: 6px 8px; border-radius: 6px; border: 1px solid var(--divider-color, #444);
+          background: var(--card-background-color, transparent); color: inherit;
+        }
+      </style>
+      <div class="ac-editor-row">
+        <label>Titre — Anniversaires</label>
+        <input type="text" id="ac-title-alive" value="${this._config.title_alive}">
+      </div>
+      <div class="ac-editor-row">
+        <label>Afficher Souvenirs (personnes décédées)</label>
+        <ha-switch id="ac-show-deceased" ${this._config.show_deceased ? "checked" : ""}></ha-switch>
+      </div>
+      <div class="ac-editor-row">
+        <label>Titre — Souvenirs</label>
+        <input type="text" id="ac-title-deceased" value="${this._config.title_deceased}" ${this._config.show_deceased ? "" : "disabled"}>
+      </div>
+      <div class="ac-editor-row">
+        <label>Nombre de personnes affichées (0 = toutes)</label>
+        <input type="number" min="0" id="ac-max-items" value="${this._config.max_items}">
+      </div>
+    `;
+
+    this.querySelector("#ac-title-alive").addEventListener("change", (e) =>
+      this._fire("title_alive", e.target.value)
+    );
+    this.querySelector("#ac-title-deceased").addEventListener("change", (e) =>
+      this._fire("title_deceased", e.target.value)
+    );
+    this.querySelector("#ac-max-items").addEventListener("change", (e) =>
+      this._fire("max_items", Number(e.target.value) || 0)
+    );
+    const toggle = this.querySelector("#ac-show-deceased");
+    toggle.addEventListener("change", (e) => {
+      this._fire("show_deceased", e.target.checked);
+      this._render();
+    });
+  }
+}
+
+customElements.define("anniversary-celebration-card-editor", AnniversaryCelebrationCardEditor);
 
 customElements.define("anniversary-celebration-card", AnniversaryCelebrationCard);
 
