@@ -108,9 +108,11 @@ class AnniversaryCelebrationOptionsFlow(config_entries.OptionsFlow):
     """Manage the people list (add / edit / remove)."""
 
     def __init__(self, config_entry) -> None:
-        # Stored explicitly: recent Home Assistant versions no longer set
-        # self.config_entry automatically on OptionsFlow subclasses.
-        self.config_entry = config_entry
+        # Do NOT assign self.config_entry here: on current Home Assistant
+        # versions, OptionsFlow.config_entry is a read-only property
+        # already populated by the base class from the flow context, and
+        # assigning to it raises AttributeError ("has no setter"). Only
+        # the selection state specific to this flow is stored here.
         self._selected_id: str | None = None
 
     @property
