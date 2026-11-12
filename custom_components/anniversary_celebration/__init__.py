@@ -204,14 +204,27 @@ async def _async_register_card(hass: HomeAssistant) -> None:
 
 
 async def _async_sync_lovelace_resource(hass: HomeAssistant) -> None:
-    """Make sure the card resource is registered (and on the right version)."""
+    """Make sure the card resource is registered (and on the right version).
+
+    hass.data["lovelace"] is a plain dict on some Home Assistant versions
+    and a LovelaceData-like object (attribute access, no .get) on others;
+    support both instead of assuming one shape, since silently assuming
+    the dict shape previously made this a no-op on newer Core versions
+    (AttributeError swallowed by the except below, never surfaced).
+    """
     try:
-        resources = hass.data.get("lovelace", {}).get("resources")
+        lovelace_data = hass.data.get("lovelace")
+        if lovelace_data is None:
+            return
+        if isinstance(lovelace_data, dict):
+            resources = lovelace_data.get("resources")
+        else:
+            resources = getattr(lovelace_data, "resources", None)
         if resources is None:
             return
         if hasattr(resources, "async_items") and not getattr(resources, "loaded", True):
             await resources.async_load()
-        version_tag = "1.0.0"
+        version_tag = "1.0.1"
         url = f"{CARD_URL_PATH}?v={version_tag}"
         existing = [r for r in resources.async_items() if CARD_FILENAME in r.get("url", "")]
         if not existing:
@@ -219,4 +232,10 @@ async def _async_sync_lovelace_resource(hass: HomeAssistant) -> None:
         elif existing[0].get("url") != url:
             await resources.async_update_item(existing[0]["id"], {"res_type": "module", "url": url})
     except Exception as err:  # noqa: BLE001 - resource sync is best-effort
-        _LOGGER.debug("Anniversary Celebration: resource sync skipped (%s)", err)
+        _LOGGER.warning(
+            "Anniversary Celebration: automatic Lovelace resource registration "
+            "failed (%s) - add the resource manually: Paramètres > Tableaux de "
+            "bord > Ressources > %s",
+            err,
+            CARD_URL_PATH,
+        )
