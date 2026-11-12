@@ -1,0 +1,54 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Anniversary Celebration",
+        "description": "Отслеживает дни рождения живых и хранит память об ушедших, с надёжными уведомлениями."
+      }
+    },
+    "abort": {
+      "already_configured": "Уже настроено"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Anniversary Celebration",
+        "menu_options": {
+          "add_person": "Добавить человека",
+          "edit_person": "Изменить человека",
+          "remove_person": "Удалить человека"
+        }
+      },
+      "add_person": {
+        "title": "Добавить человека",
+        "data": {
+          "first_name": "Имя",
+          "last_name": "Фамилия",
+          "birth_date": "Дата рождения",
+          "status": "Статус",
+          "notify_time": "Время уведомления",
+          "notify_target": "Устройство / служба для уведомления"
+        }
+      },
+      "edit_person": {
+        "title": "Изменить человека",
+        "data": {
+          "first_name": "Имя",
+          "last_name": "Фамилия",
+          "birth_date": "Дата рождения",
+          "status": "Статус",
+          "notify_time": "Время уведомления",
+          "notify_target": "Устройство / служба для уведомления",
+          "person": "Человек"
+        }
+      },
+      "remove_person": {
+        "title": "Удалить человека",
+        "data": {
+          "person": "Человек"
+        }
+      }
+    }
+  }
+}

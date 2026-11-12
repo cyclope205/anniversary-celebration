@@ -1,0 +1,54 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Anniversary Celebration",
+        "description": "Håller koll på levande personers födelsedagar och minns avlidna, med pålitliga aviseringar."
+      }
+    },
+    "abort": {
+      "already_configured": "Redan konfigurerad"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Anniversary Celebration",
+        "menu_options": {
+          "add_person": "Lägg till en person",
+          "edit_person": "Redigera en person",
+          "remove_person": "Ta bort en person"
+        }
+      },
+      "add_person": {
+        "title": "Lägg till en person",
+        "data": {
+          "first_name": "Förnamn",
+          "last_name": "Efternamn",
+          "birth_date": "Födelsedatum",
+          "status": "Status",
+          "notify_time": "Aviseringstid",
+          "notify_target": "Enhet / tjänst att avisera"
+        }
+      },
+      "edit_person": {
+        "title": "Redigera en person",
+        "data": {
+          "first_name": "Förnamn",
+          "last_name": "Efternamn",
+          "birth_date": "Födelsedatum",
+          "status": "Status",
+          "notify_time": "Aviseringstid",
+          "notify_target": "Enhet / tjänst att avisera",
+          "person": "Person"
+        }
+      },
+      "remove_person": {
+        "title": "Ta bort en person",
+        "data": {
+          "person": "Person"
+        }
+      }
+    }
+  }
+}

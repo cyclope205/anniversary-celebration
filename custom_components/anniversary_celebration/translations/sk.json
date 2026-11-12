@@ -1,0 +1,54 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Anniversary Celebration",
+        "description": "Sleduje narodeniny žijúcich osôb a pripomína zosnulých, so spoľahlivými oznámeniami."
+      }
+    },
+    "abort": {
+      "already_configured": "Už nakonfigurované"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Anniversary Celebration",
+        "menu_options": {
+          "add_person": "Pridať osobu",
+          "edit_person": "Upraviť osobu",
+          "remove_person": "Odstrániť osobu"
+        }
+      },
+      "add_person": {
+        "title": "Pridať osobu",
+        "data": {
+          "first_name": "Meno",
+          "last_name": "Priezvisko",
+          "birth_date": "Dátum narodenia",
+          "status": "Stav",
+          "notify_time": "Čas oznámenia",
+          "notify_target": "Zariadenie / služba na oznámenie"
+        }
+      },
+      "edit_person": {
+        "title": "Upraviť osobu",
+        "data": {
+          "first_name": "Meno",
+          "last_name": "Priezvisko",
+          "birth_date": "Dátum narodenia",
+          "status": "Stav",
+          "notify_time": "Čas oznámenia",
+          "notify_target": "Zariadenie / služba na oznámenie",
+          "person": "Osoba"
+        }
+      },
+      "remove_person": {
+        "title": "Odstrániť osobu",
+        "data": {
+          "person": "Osoba"
+        }
+      }
+    }
+  }
+}

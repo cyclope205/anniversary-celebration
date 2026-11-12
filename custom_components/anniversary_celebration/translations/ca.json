@@ -1,0 +1,54 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Anniversary Celebration",
+        "description": "Fa seguiment dels aniversaris de les persones vives i recorda les persones difuntes, amb notificacions fiables."
+      }
+    },
+    "abort": {
+      "already_configured": "Ja configurat"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Anniversary Celebration",
+        "menu_options": {
+          "add_person": "Afegeix una persona",
+          "edit_person": "Edita una persona",
+          "remove_person": "Elimina una persona"
+        }
+      },
+      "add_person": {
+        "title": "Afegeix una persona",
+        "data": {
+          "first_name": "Nom",
+          "last_name": "Cognom",
+          "birth_date": "Data de naixement",
+          "status": "Estat",
+          "notify_time": "Hora de notificació",
+          "notify_target": "Dispositiu / servei a notificar"
+        }
+      },
+      "edit_person": {
+        "title": "Edita una persona",
+        "data": {
+          "first_name": "Nom",
+          "last_name": "Cognom",
+          "birth_date": "Data de naixement",
+          "status": "Estat",
+          "notify_time": "Hora de notificació",
+          "notify_target": "Dispositiu / servei a notificar",
+          "person": "Persona"
+        }
+      },
+      "remove_person": {
+        "title": "Elimina una persona",
+        "data": {
+          "person": "Persona"
+        }
+      }
+    }
+  }
+}

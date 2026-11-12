@@ -1,0 +1,54 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Anniversary Celebration",
+        "description": "Yaşayanların doğum günlerini takip eder ve kaybedilenleri anar, güvenilir bildirimlerle."
+      }
+    },
+    "abort": {
+      "already_configured": "Zaten yapılandırılmış"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Anniversary Celebration",
+        "menu_options": {
+          "add_person": "Kişi ekle",
+          "edit_person": "Kişiyi düzenle",
+          "remove_person": "Kişiyi kaldır"
+        }
+      },
+      "add_person": {
+        "title": "Kişi ekle",
+        "data": {
+          "first_name": "Ad",
+          "last_name": "Soyad",
+          "birth_date": "Doğum tarihi",
+          "status": "Durum",
+          "notify_time": "Bildirim saati",
+          "notify_target": "Bildirim gönderilecek cihaz / servis"
+        }
+      },
+      "edit_person": {
+        "title": "Kişiyi düzenle",
+        "data": {
+          "first_name": "Ad",
+          "last_name": "Soyad",
+          "birth_date": "Doğum tarihi",
+          "status": "Durum",
+          "notify_time": "Bildirim saati",
+          "notify_target": "Bildirim gönderilecek cihaz / servis",
+          "person": "Kişi"
+        }
+      },
+      "remove_person": {
+        "title": "Kişiyi kaldır",
+        "data": {
+          "person": "Kişi"
+        }
+      }
+    }
+  }
+}

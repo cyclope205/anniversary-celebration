@@ -1,0 +1,54 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Anniversary Celebration",
+        "description": "Παρακολουθεί τα γενέθλια των ζωντανών και τιμά τη μνήμη των θανόντων, με αξιόπιστες ειδοποιήσεις."
+      }
+    },
+    "abort": {
+      "already_configured": "Έχει ήδη ρυθμιστεί"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Anniversary Celebration",
+        "menu_options": {
+          "add_person": "Προσθήκη ατόμου",
+          "edit_person": "Επεξεργασία ατόμου",
+          "remove_person": "Αφαίρεση ατόμου"
+        }
+      },
+      "add_person": {
+        "title": "Προσθήκη ατόμου",
+        "data": {
+          "first_name": "Όνομα",
+          "last_name": "Επώνυμο",
+          "birth_date": "Ημερομηνία γέννησης",
+          "status": "Κατάσταση",
+          "notify_time": "Ώρα ειδοποίησης",
+          "notify_target": "Συσκευή / υπηρεσία προς ειδοποίηση"
+        }
+      },
+      "edit_person": {
+        "title": "Επεξεργασία ατόμου",
+        "data": {
+          "first_name": "Όνομα",
+          "last_name": "Επώνυμο",
+          "birth_date": "Ημερομηνία γέννησης",
+          "status": "Κατάσταση",
+          "notify_time": "Ώρα ειδοποίησης",
+          "notify_target": "Συσκευή / υπηρεσία προς ειδοποίηση",
+          "person": "Άτομο"
+        }
+      },
+      "remove_person": {
+        "title": "Αφαίρεση ατόμου",
+        "data": {
+          "person": "Άτομο"
+        }
+      }
+    }
+  }
+}

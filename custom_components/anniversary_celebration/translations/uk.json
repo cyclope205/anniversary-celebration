@@ -1,0 +1,54 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Anniversary Celebration",
+        "description": "Відстежує дні народження живих і вшановує пам'ять померлих, із надійними сповіщеннями."
+      }
+    },
+    "abort": {
+      "already_configured": "Вже налаштовано"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Anniversary Celebration",
+        "menu_options": {
+          "add_person": "Додати особу",
+          "edit_person": "Редагувати особу",
+          "remove_person": "Видалити особу"
+        }
+      },
+      "add_person": {
+        "title": "Додати особу",
+        "data": {
+          "first_name": "Ім'я",
+          "last_name": "Прізвище",
+          "birth_date": "Дата народження",
+          "status": "Статус",
+          "notify_time": "Час сповіщення",
+          "notify_target": "Пристрій / служба для сповіщення"
+        }
+      },
+      "edit_person": {
+        "title": "Редагувати особу",
+        "data": {
+          "first_name": "Ім'я",
+          "last_name": "Прізвище",
+          "birth_date": "Дата народження",
+          "status": "Статус",
+          "notify_time": "Час сповіщення",
+          "notify_target": "Пристрій / служба для сповіщення",
+          "person": "Особа"
+        }
+      },
+      "remove_person": {
+        "title": "Видалити особу",
+        "data": {
+          "person": "Особа"
+        }
+      }
+    }
+  }
+}

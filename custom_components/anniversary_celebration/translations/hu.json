@@ -1,0 +1,54 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Anniversary Celebration",
+        "description": "Nyomon követi az élők születésnapjait, és megemlékezik az elhunytakról, megbízható értesítésekkel."
+      }
+    },
+    "abort": {
+      "already_configured": "Már konfigurálva"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Anniversary Celebration",
+        "menu_options": {
+          "add_person": "Személy hozzáadása",
+          "edit_person": "Személy szerkesztése",
+          "remove_person": "Személy eltávolítása"
+        }
+      },
+      "add_person": {
+        "title": "Személy hozzáadása",
+        "data": {
+          "first_name": "Keresztnév",
+          "last_name": "Vezetéknév",
+          "birth_date": "Születési dátum",
+          "status": "Állapot",
+          "notify_time": "Értesítés időpontja",
+          "notify_target": "Értesítendő eszköz / szolgáltatás"
+        }
+      },
+      "edit_person": {
+        "title": "Személy szerkesztése",
+        "data": {
+          "first_name": "Keresztnév",
+          "last_name": "Vezetéknév",
+          "birth_date": "Születési dátum",
+          "status": "Állapot",
+          "notify_time": "Értesítés időpontja",
+          "notify_target": "Értesítendő eszköz / szolgáltatás",
+          "person": "Személy"
+        }
+      },
+      "remove_person": {
+        "title": "Személy eltávolítása",
+        "data": {
+          "person": "Személy"
+        }
+      }
+    }
+  }
+}

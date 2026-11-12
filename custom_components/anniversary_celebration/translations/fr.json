@@ -27,8 +27,11 @@
           "last_name": "Nom",
           "birth_date": "Date de naissance",
           "status": "Statut",
-          "notify_time": "Heure de notification",
+          "notify_time": "Heure de notification le jour anniversaire",
           "notify_target": "Appareil / service à notifier"
+        },
+        "data_description": {
+          "birth_date": "Saisissez la date : AAAA-MM-JJ ou JJ/MM/AAAA"
         }
       },
       "edit_person": {
@@ -38,9 +41,12 @@
           "last_name": "Nom",
           "birth_date": "Date de naissance",
           "status": "Statut",
-          "notify_time": "Heure de notification",
+          "notify_time": "Heure de notification le jour anniversaire",
           "notify_target": "Appareil / service à notifier",
           "person": "Personne"
+        },
+        "data_description": {
+          "birth_date": "Saisissez la date : AAAA-MM-JJ ou JJ/MM/AAAA"
         }
       },
       "remove_person": {
@@ -49,6 +55,9 @@
           "person": "Personne"
         }
       }
+    },
+    "error": {
+      "invalid_date": "Date non reconnue. Utilisez AAAA-MM-JJ ou JJ/MM/AAAA."
     }
   }
 }

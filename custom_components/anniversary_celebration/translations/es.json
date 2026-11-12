@@ -1,0 +1,54 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Anniversary Celebration",
+        "description": "Seguimiento de cumpleaños de personas vivas y en memoria de fallecidos, con notificaciones fiables."
+      }
+    },
+    "abort": {
+      "already_configured": "Ya configurado"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Anniversary Celebration",
+        "menu_options": {
+          "add_person": "Añadir una persona",
+          "edit_person": "Editar una persona",
+          "remove_person": "Eliminar una persona"
+        }
+      },
+      "add_person": {
+        "title": "Añadir una persona",
+        "data": {
+          "first_name": "Nombre",
+          "last_name": "Apellido",
+          "birth_date": "Fecha de nacimiento",
+          "status": "Estado",
+          "notify_time": "Hora de notificación",
+          "notify_target": "Dispositivo / servicio a notificar"
+        }
+      },
+      "edit_person": {
+        "title": "Editar una persona",
+        "data": {
+          "first_name": "Nombre",
+          "last_name": "Apellido",
+          "birth_date": "Fecha de nacimiento",
+          "status": "Estado",
+          "notify_time": "Hora de notificación",
+          "notify_target": "Dispositivo / servicio a notificar",
+          "person": "Persona"
+        }
+      },
+      "remove_person": {
+        "title": "Eliminar una persona",
+        "data": {
+          "person": "Persona"
+        }
+      }
+    }
+  }
+}

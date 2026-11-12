@@ -1,0 +1,54 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Anniversary Celebration",
+        "description": "Houdt verjaardagen van levende personen bij en herdenkt overledenen, met betrouwbare meldingen."
+      }
+    },
+    "abort": {
+      "already_configured": "Al geconfigureerd"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Anniversary Celebration",
+        "menu_options": {
+          "add_person": "Persoon toevoegen",
+          "edit_person": "Persoon bewerken",
+          "remove_person": "Persoon verwijderen"
+        }
+      },
+      "add_person": {
+        "title": "Persoon toevoegen",
+        "data": {
+          "first_name": "Voornaam",
+          "last_name": "Achternaam",
+          "birth_date": "Geboortedatum",
+          "status": "Status",
+          "notify_time": "Meldingstijd",
+          "notify_target": "Apparaat / service om te melden"
+        }
+      },
+      "edit_person": {
+        "title": "Persoon bewerken",
+        "data": {
+          "first_name": "Voornaam",
+          "last_name": "Achternaam",
+          "birth_date": "Geboortedatum",
+          "status": "Status",
+          "notify_time": "Meldingstijd",
+          "notify_target": "Apparaat / service om te melden",
+          "person": "Persoon"
+        }
+      },
+      "remove_person": {
+        "title": "Persoon verwijderen",
+        "data": {
+          "person": "Persoon"
+        }
+      }
+    }
+  }
+}

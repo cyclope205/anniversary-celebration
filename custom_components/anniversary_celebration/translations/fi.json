@@ -1,0 +1,54 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Anniversary Celebration",
+        "description": "Seuraa elävien syntymäpäiviä ja muistaa poisnukkuneita, luotettavilla ilmoituksilla."
+      }
+    },
+    "abort": {
+      "already_configured": "Jo määritetty"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Anniversary Celebration",
+        "menu_options": {
+          "add_person": "Lisää henkilö",
+          "edit_person": "Muokkaa henkilöä",
+          "remove_person": "Poista henkilö"
+        }
+      },
+      "add_person": {
+        "title": "Lisää henkilö",
+        "data": {
+          "first_name": "Etunimi",
+          "last_name": "Sukunimi",
+          "birth_date": "Syntymäaika",
+          "status": "Tila",
+          "notify_time": "Ilmoitusaika",
+          "notify_target": "Ilmoitettava laite / palvelu"
+        }
+      },
+      "edit_person": {
+        "title": "Muokkaa henkilöä",
+        "data": {
+          "first_name": "Etunimi",
+          "last_name": "Sukunimi",
+          "birth_date": "Syntymäaika",
+          "status": "Tila",
+          "notify_time": "Ilmoitusaika",
+          "notify_target": "Ilmoitettava laite / palvelu",
+          "person": "Henkilö"
+        }
+      },
+      "remove_person": {
+        "title": "Poista henkilö",
+        "data": {
+          "person": "Henkilö"
+        }
+      }
+    }
+  }
+}

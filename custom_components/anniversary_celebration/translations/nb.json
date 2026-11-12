@@ -1,0 +1,54 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Anniversary Celebration",
+        "description": "Holder styr på bursdager til levende personer og minnes avdøde, med pålitelige varsler."
+      }
+    },
+    "abort": {
+      "already_configured": "Allerede konfigurert"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Anniversary Celebration",
+        "menu_options": {
+          "add_person": "Legg til en person",
+          "edit_person": "Rediger en person",
+          "remove_person": "Fjern en person"
+        }
+      },
+      "add_person": {
+        "title": "Legg til en person",
+        "data": {
+          "first_name": "Fornavn",
+          "last_name": "Etternavn",
+          "birth_date": "Fødselsdato",
+          "status": "Status",
+          "notify_time": "Varslingstidspunkt",
+          "notify_target": "Enhet / tjeneste som skal varsles"
+        }
+      },
+      "edit_person": {
+        "title": "Rediger en person",
+        "data": {
+          "first_name": "Fornavn",
+          "last_name": "Etternavn",
+          "birth_date": "Fødselsdato",
+          "status": "Status",
+          "notify_time": "Varslingstidspunkt",
+          "notify_target": "Enhet / tjeneste som skal varsles",
+          "person": "Person"
+        }
+      },
+      "remove_person": {
+        "title": "Fjern en person",
+        "data": {
+          "person": "Person"
+        }
+      }
+    }
+  }
+}

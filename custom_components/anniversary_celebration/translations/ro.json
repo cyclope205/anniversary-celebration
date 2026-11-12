@@ -1,0 +1,54 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Anniversary Celebration",
+        "description": "Urmărește zilele de naștere ale persoanelor în viață și comemorează persoanele decedate, cu notificări fiabile."
+      }
+    },
+    "abort": {
+      "already_configured": "Deja configurat"
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Anniversary Celebration",
+        "menu_options": {
+          "add_person": "Adaugă o persoană",
+          "edit_person": "Editează o persoană",
+          "remove_person": "Elimină o persoană"
+        }
+      },
+      "add_person": {
+        "title": "Adaugă o persoană",
+        "data": {
+          "first_name": "Prenume",
+          "last_name": "Nume",
+          "birth_date": "Data nașterii",
+          "status": "Stare",
+          "notify_time": "Ora notificării",
+          "notify_target": "Dispozitiv / serviciu de notificat"
+        }
+      },
+      "edit_person": {
+        "title": "Editează o persoană",
+        "data": {
+          "first_name": "Prenume",
+          "last_name": "Nume",
+          "birth_date": "Data nașterii",
+          "status": "Stare",
+          "notify_time": "Ora notificării",
+          "notify_target": "Dispozitiv / serviciu de notificat",
+          "person": "Persoană"
+        }
+      },
+      "remove_person": {
+        "title": "Elimină o persoană",
+        "data": {
+          "person": "Persoană"
+        }
+      }
+    }
+  }
+}
