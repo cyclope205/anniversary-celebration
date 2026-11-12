@@ -224,7 +224,7 @@ async def _async_sync_lovelace_resource(hass: HomeAssistant) -> None:
             return
         if hasattr(resources, "async_items") and not getattr(resources, "loaded", True):
             await resources.async_load()
-        version_tag = "1.0.1"
+        version_tag = "1.0.2"
         url = f"{CARD_URL_PATH}?v={version_tag}"
         existing = [r for r in resources.async_items() if CARD_FILENAME in r.get("url", "")]
         if not existing:
