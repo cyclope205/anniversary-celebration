@@ -142,7 +142,7 @@ class AnniversaryCelebrationCard extends HTMLElement {
     const today = Number(stateObj.state) <= 0;
     const verb = kind === "deceased" ? "aurait" : "aura";
     const icon = kind === "deceased" ? "mdi:candle" : "mdi:cake-variant";
-    const bell = a.notified_today ? '<ha-icon class="ac-bell" icon="mdi:bell-ring" style="--mdc-icon-size:13px;"></ha-icon>' : "";
+    const bell = a.notify_target ? '<ha-icon class="ac-bell" icon="mdi:bell-ring" style="--mdc-icon-size:13px;"></ha-icon>' : "";
     return `
       <div class="ac-row ${kind}${today ? " today" : ""}">
         <ha-icon class="ac-icon" icon="${icon}"></ha-icon>
