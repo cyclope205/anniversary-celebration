@@ -5,7 +5,7 @@ from datetime import date
 
 from homeassistant.components.sensor import SensorEntity
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.core import HomeAssistant
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.dispatcher import async_dispatcher_connect
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.util import dt as dt_util
@@ -66,7 +66,13 @@ class AnniversaryPersonSensor(SensorEntity):
             )
         )
 
+    @callback
     def _handle_update(self) -> None:
+        # Without @callback, Home Assistant doesn't know this dispatcher
+        # signal handler is safe to run directly on the event loop, and
+        # dispatches it to an executor thread instead - which is exactly
+        # what async_write_ha_state must never be called from (see
+        # https://contributors.home-assistant.io/core/internals/thread-safety/).
         self.async_write_ha_state()
 
     @property
