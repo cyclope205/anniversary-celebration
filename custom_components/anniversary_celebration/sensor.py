@@ -15,8 +15,6 @@ from .const import (
     CONF_BIRTH_DATE,
     CONF_FIRST_NAME,
     CONF_LAST_NAME,
-    CONF_NOTIFY_TARGET,
-    CONF_NOTIFY_TIME,
     CONF_PEOPLE,
     CONF_PERSON_ID,
     CONF_STATUS,
@@ -24,7 +22,14 @@ from .const import (
     SIGNAL_PEOPLE_UPDATED,
     STATUS_ALIVE,
 )
-from .util import age_at_next_anniversary, current_age, days_until, parse_birth_date
+from .util import (
+    age_at_next_anniversary,
+    current_age,
+    days_until,
+    normalize_notify_targets,
+    normalize_notify_times,
+    parse_birth_date,
+)
 
 
 async def async_setup_entry(
@@ -79,15 +84,25 @@ class AnniversaryPersonSensor(SensorEntity):
         notified = self.hass.data.get(DOMAIN, {}).get(self._entry.entry_id, {}).get(
             "notified", {}
         )
+        # Per-slot shape is {slot_index: iso_date}; a person is "notified
+        # today" if any of their configured notification-time slots fired
+        # today. A bare string value is the legacy pre-multi-time shape,
+        # handled for safety even though __init__.py migrates it on load.
+        person_notified = notified.get(person_id, {})
+        today_iso = today.isoformat()
+        if isinstance(person_notified, dict):
+            notified_today = today_iso in person_notified.values()
+        else:
+            notified_today = person_notified == today_iso
         attrs = {
             "attribution": ATTRIBUTION,
             "person_id": person_id,
             "first_name": self._person.get(CONF_FIRST_NAME, ""),
             "last_name": self._person.get(CONF_LAST_NAME, "") or "",
             "status": self._person.get(CONF_STATUS, STATUS_ALIVE),
-            "notify_time": self._person.get(CONF_NOTIFY_TIME),
-            "notify_target": self._person.get(CONF_NOTIFY_TARGET),
-            "notified_today": notified.get(person_id) == today.isoformat(),
+            "notify_times": normalize_notify_times(self._person),
+            "notify_targets": normalize_notify_targets(self._person),
+            "notified_today": notified_today,
         }
         if birth is not None:
             attrs["date"] = birth.isoformat()
