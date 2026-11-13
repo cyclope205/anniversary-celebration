@@ -13,7 +13,17 @@ CONF_FIRST_NAME = "first_name"
 CONF_LAST_NAME = "last_name"
 CONF_BIRTH_DATE = "birth_date"
 CONF_STATUS = "status"
+
+# Current (list-based) fields: a person can have 1-2 notification times and
+# any number of notify.* targets.
+CONF_NOTIFY_TIMES = "notify_times"
+CONF_NOTIFY_TARGETS = "notify_targets"
+
+# Legacy (pre-multi) single-value fields, still read for backward
+# compatibility with people created before this was a list - see
+# util.normalize_notify_times / normalize_notify_targets.
 CONF_NOTIFY_TIME = "notify_time"
+CONF_NOTIFY_TIME_2 = "notify_time_2"
 CONF_NOTIFY_TARGET = "notify_target"
 
 STATUS_ALIVE = "alive"
