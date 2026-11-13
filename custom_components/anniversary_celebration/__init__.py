@@ -61,6 +61,36 @@ def _migrate_slot_map(raw: dict) -> dict:
         migrated[person_id] = value if isinstance(value, dict) else {"0": value}
     return migrated
 
+
+def _migrate_mobile_sent_map(raw: dict) -> dict:
+    """Convert mobile_sent_today to its current per-target shape.
+
+    Shape history, oldest to newest:
+    - flat {person_id: iso_date} (pre multi-time, single implicit target)
+    - {person_id: {slot_index: iso_date}} (multi-time, but all-or-nothing
+      per slot: one failing target blocked or duplicated every target)
+    - {person_id: {slot_index: {target: iso_date}}} (current: each target's
+      success is tracked on its own, so one unreachable device is retried
+      on its own without blocking or duplicating the others)
+
+    A slot value that isn't already a dict-of-targets is reset to an empty
+    per-target map rather than guessed at: the worst case is one extra
+    resend to a target that had already succeeded under the old
+    bookkeeping, which is harmless and far safer than assuming which
+    target an old flat date referred to.
+    """
+    migrated: dict = {}
+    for person_id, value in raw.items():
+        if not isinstance(value, dict):
+            migrated[person_id] = {}
+            continue
+        slots: dict = {}
+        for slot_index, slot_value in value.items():
+            slots[slot_index] = slot_value if isinstance(slot_value, dict) else {}
+        migrated[person_id] = slots
+    return migrated
+
+
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up Anniversary Celebration from a config entry."""
     hass.data.setdefault(DOMAIN, {})
@@ -69,15 +99,14 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     loaded: dict = await store.async_load() or {}
 
     # Storage format: {"notified": {person_id: {slot_index: iso_date}},
-    # "mobile_sent_today": {person_id: {slot_index: iso_date}}}. One entry
-    # per configured notification time (slot_index is "0", "1", ...), so
-    # a person with two notification times tracks each independently.
-    # Older versions of this integration saved progressively flatter
-    # shapes - a single flat {person_id: iso_date} per-person value
-    # (single-slot, pre multi-time support), or no "notified"/
-    # "mobile_sent_today" keys at all (oldest, "notified" data only) -
-    # detect and migrate every shape so existing installs don't lose
-    # their notified-today state on upgrade.
+    # "mobile_sent_today": {person_id: {slot_index: {target: iso_date}}}}.
+    # One entry per configured notification time (slot_index is "0", "1",
+    # ...), so a person with two notification times tracks each
+    # independently, and each notify.* target within a slot tracks its own
+    # success independently too. Older versions of this integration saved
+    # progressively flatter shapes - see _migrate_slot_map and
+    # _migrate_mobile_sent_map - so existing installs don't lose their
+    # notified-today state on upgrade.
     if "notified" in loaded or "mobile_sent_today" in loaded:
         notified: dict = loaded.get("notified", {})
         mobile_sent_today: dict = loaded.get("mobile_sent_today", {})
@@ -85,7 +114,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         notified = loaded
         mobile_sent_today = {}
     notified = _migrate_slot_map(notified)
-    mobile_sent_today = _migrate_slot_map(mobile_sent_today)
+    mobile_sent_today = _migrate_mobile_sent_map(mobile_sent_today)
 
     hass.data[DOMAIN][entry.entry_id] = {
         "store": store,
@@ -94,14 +123,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         # immediate startup check overlapping with the first per-minute
         # tick), which could otherwise send the same notification twice.
         "lock": asyncio.Lock(),
-        # person_id -> ISO date of the last day the notify.* device/service
-        # call actually succeeded. Kept separate from "notified" (which only
-        # records full success including the persistent notification) so
-        # that if persistent_notification keeps failing and the per-minute
-        # check keeps retrying, the device notification that already
-        # succeeded is never sent a second time the same day. Persisted in
-        # the same store as "notified" so this survives a restart or a
-        # config entry reload, not just the current HA session.
+        # person_id -> {slot_index: {target: iso_date}}: which notify.*
+        # targets have already succeeded today, for which slot. Kept
+        # separate from "notified" (which is only set once the persistent
+        # notification AND every configured target have succeeded) so that
+        # if the persistent notification keeps failing and the per-minute
+        # check keeps retrying, a target that already succeeded is never
+        # notified a second time while a sibling target is still being
+        # retried. Persisted in the same store as "notified" so this
+        # survives a restart or a config entry reload, not just the
+        # current HA session.
         "mobile_sent_today": mobile_sent_today,
     }
 
@@ -127,16 +158,19 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
     return True
 
+
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     unloaded = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unloaded:
         hass.data[DOMAIN].pop(entry.entry_id, None)
     return unloaded
 
+
 async def _async_update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """People list changed: tell sensors to refresh and reload the entry."""
     async_dispatcher_send(hass, SIGNAL_PEOPLE_UPDATED)
     await hass.config_entries.async_reload(entry.entry_id)
+
 
 async def _async_check_and_notify(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Evaluate every person; notify + persist each due notification-time
@@ -182,18 +216,18 @@ async def _async_check_and_notify(hass: HomeAssistant, entry: ConfigEntry) -> No
 
             person_mobile_sent = mobile_sent_today.get(person_id, {})
             for slot_index in due:
-                persisted, mobile_changed = await _async_send_notification(
+                persisted, mobile_changed, mobile_fully_ok = await _async_send_notification(
                     hass, person, birth, today, slot_index, person_mobile_sent
                 )
-                if persisted:
+                if persisted and mobile_fully_ok:
                     person_notified[str(slot_index)] = today_iso
                     notified[person_id] = person_notified
                     changed = True
                 # else: leave this slot unmarked so the next per-minute
-                # check retries instead of silently skipping the day. The
-                # device/mobile notification itself is not re-sent if it
-                # already succeeded (see mobile_sent_today above) - only the
-                # persistent_notification retry is repeated.
+                # check retries - either persistent_notification is still
+                # failing, or at least one configured target hasn't
+                # succeeded yet (see _async_send_notification). A target
+                # that already succeeded is not re-sent on that retry.
                 if mobile_changed:
                     # mobile_sent_today was just updated for this slot - make
                     # sure that survives a restart even if persisted stays
@@ -210,33 +244,36 @@ async def _async_check_and_notify(hass: HomeAssistant, entry: ConfigEntry) -> No
         # stay accurate minute to minute, not just when a notification fired.
         async_dispatcher_send(hass, SIGNAL_PEOPLE_UPDATED)
 
+
 async def _async_send_notification(
-    hass, person, birth, today, slot_index: int, person_mobile_sent: dict[str, str]
-) -> tuple[bool, bool]:
+    hass, person, birth, today, slot_index: int, person_mobile_sent: dict[str, dict[str, str]]
+) -> tuple[bool, bool, bool]:
     """Send one due notification-time slot for a person.
 
-    Returns (persisted, mobile_changed):
+    Returns (persisted, mobile_changed, mobile_fully_ok):
     - persisted is True only if the Home Assistant persistent notification
       itself was successfully created - the guaranteed fallback channel this
       feature promises ("always created even if no device was configured or
-      it is unreachable"). The caller only marks this slot as notified when
-      this is True, so if even the persistent notification fails, the next
-      per-minute check retries instead of the day being silently skipped.
+      it is unreachable").
     - mobile_changed is True only when at least one notify.* device/service
       call was just attempted for this slot (succeeded or not), so the
       caller knows it needs to persist the updated person_mobile_sent to
-      survive a restart. A slot is only marked fully sent (and thus never
-      retried) when every configured target succeeded this run - so a
-      single unreachable device causes a retry next minute instead of
-      silently dropping that target.
+      survive a restart.
+    - mobile_fully_ok is True once every configured target has succeeded
+      today for this slot (trivially True when no target is configured).
+      The caller only marks a slot as fully done (notified, stops
+      retrying) when persisted AND mobile_fully_ok are both True - so a
+      single unreachable device keeps this slot "due" and gets retried on
+      its own every minute, without the caller ever concluding the slot is
+      finished just because the persistent notification succeeded.
 
-    Each configured target (notify.* service) is tried independently in
-    mobile_sent_today / person_mobile_sent, keyed by slot_index: once a
-    slot has succeeded for every target for this person today, a later
-    retry (triggered only because persistent_notification is still failing)
-    does not call notify.* again, so the person is never notified on their
-    phone twice for the same slot - including across a restart, since
-    person_mobile_sent is persisted by the caller whenever this changes it.
+    Each target's own success is tracked individually in
+    person_mobile_sent[slot_key] (a {target: iso_date} map, not a single
+    all-or-nothing flag for the whole slot): a target already marked as
+    succeeded today is skipped on a retry, so a device that already got
+    its notification is never notified again while a sibling device is
+    still being retried - and, conversely, an unreachable device is never
+    abandoned just because the others succeeded.
     """
     full_name = f"{person.get(CONF_FIRST_NAME, '')} {person.get(CONF_LAST_NAME, '') or ''}".strip()
     age = current_age(birth, today)
@@ -249,37 +286,41 @@ async def _async_send_notification(
 
     person_id = person[CONF_PERSON_ID]
     today_iso = today.isoformat()
-    targets = normalize_notify_targets(person)
+    targets = [t for t in normalize_notify_targets(person) if "." in t]
     slot_key = str(slot_index)
-    already_sent = person_mobile_sent.get(slot_key) == today_iso
+    sent_targets: dict[str, str] = person_mobile_sent.get(slot_key, {})
     mobile_changed = False
-    if targets and not already_sent:
-        all_ok = True
-        for target in targets:
-            if "." not in target:
-                continue
-            domain, service = target.split(".", 1)
-            try:
-                await hass.services.async_call(
-                    domain,
-                    service,
-                    {"title": title, "message": message},
-                    blocking=True,
-                )
-            except Exception as err:  # noqa: BLE001 - never let a bad target break the loop
-                all_ok = False
-                _LOGGER.error(
-                    "Anniversary Celebration: échec d'envoi à %s pour %s : %s",
-                    target,
-                    full_name,
-                    err,
-                )
-        mobile_changed = True
-        if all_ok:
-            person_mobile_sent[slot_key] = today_iso
+
+    for target in targets:
+        if sent_targets.get(target) == today_iso:
+            # Already succeeded today for this specific target - never
+            # re-send to it while a sibling target is still being retried.
+            continue
+        domain, service = target.split(".", 1)
+        try:
+            await hass.services.async_call(
+                domain,
+                service,
+                {"title": title, "message": message},
+                blocking=True,
+            )
+            sent_targets[target] = today_iso
+            mobile_changed = True
+        except Exception as err:  # noqa: BLE001 - never let a bad target break the loop
+            _LOGGER.error(
+                "Anniversary Celebration: échec d'envoi à %s pour %s : %s",
+                target,
+                full_name,
+                err,
+            )
+
+    if mobile_changed:
+        person_mobile_sent[slot_key] = sent_targets
+
+    mobile_fully_ok = all(sent_targets.get(t) == today_iso for t in targets)
 
     # Always also raise a persistent notification in Home Assistant itself,
-    # so the reminder is never silently lost even if the chosen device/
+    # so the reminder is never silently lost even if every chosen device/
     # service is unreachable or none was configured.
     persisted = False
     try:
@@ -298,13 +339,15 @@ async def _async_send_notification(
         _LOGGER.error("Anniversary Celebration: échec persistent_notification : %s", err)
 
     _LOGGER.info(
-        "Anniversary Celebration: notification envoyée pour %s (cible devices=%s, persistante=%s)",
+        "Anniversary Celebration: notification envoyée pour %s (cibles=%s, toutes_ok=%s, persistante=%s)",
         full_name,
         "oui" if targets else "non",
+        "oui" if mobile_fully_ok else "non",
         "oui" if persisted else "non",
     )
 
-    return persisted, mobile_changed
+    return persisted, mobile_changed, mobile_fully_ok
+
 
 async def _async_register_card(hass: HomeAssistant) -> None:
     """Serve the bundled Lovelace card and register it as a dashboard resource."""
@@ -318,6 +361,7 @@ async def _async_register_card(hass: HomeAssistant) -> None:
         hass.data[_CARD_REGISTERED_KEY] = True
 
     await _async_sync_lovelace_resource(hass)
+
 
 async def _async_sync_lovelace_resource(hass: HomeAssistant) -> None:
     """Make sure the card resource is registered (and on the right version).
