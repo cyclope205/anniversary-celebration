@@ -28,10 +28,12 @@
           "birth_date": "Date of birth",
           "status": "Status",
           "notify_time": "Notification time on the anniversary day",
-          "notify_target": "Device / service to notify"
+          "notify_time_2": "Second notification time (optional)",
+          "notify_targets": "Devices / services to notify"
         },
         "data_description": {
-          "birth_date": "Type the date: YYYY-MM-DD or DD/MM/YYYY"
+          "birth_date": "Type the date: YYYY-MM-DD or DD/MM/YYYY",
+          "notify_time_2": "Optional, HH:MM. Leave empty for a single notification time."
         }
       },
       "edit_person": {
@@ -42,11 +44,13 @@
           "birth_date": "Date of birth",
           "status": "Status",
           "notify_time": "Notification time on the anniversary day",
-          "notify_target": "Device / service to notify",
+          "notify_time_2": "Second notification time (optional)",
+          "notify_targets": "Devices / services to notify",
           "person": "Person"
         },
         "data_description": {
-          "birth_date": "Type the date: YYYY-MM-DD or DD/MM/YYYY"
+          "birth_date": "Type the date: YYYY-MM-DD or DD/MM/YYYY",
+          "notify_time_2": "Optional, HH:MM. Leave empty for a single notification time."
         }
       },
       "remove_person": {
@@ -57,7 +61,8 @@
       }
     },
     "error": {
-      "invalid_date": "Unrecognized date. Use YYYY-MM-DD or DD/MM/YYYY."
+      "invalid_date": "Unrecognized date. Use YYYY-MM-DD or DD/MM/YYYY.",
+      "invalid_time": "Unrecognized time. Use HH:MM."
     }
   }
 }
