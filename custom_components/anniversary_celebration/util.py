@@ -3,14 +3,19 @@ from __future__ import annotations
 
 from datetime import date, datetime
 
-from .const import (
-    CONF_NOTIFY_TARGET,
-    CONF_NOTIFY_TARGETS,
-    CONF_NOTIFY_TIME,
-    CONF_NOTIFY_TIME_2,
-    CONF_NOTIFY_TIMES,
-    DEFAULT_NOTIFY_TIME,
-)
+# Deliberately no project-internal imports here (see tests/conftest.py):
+# util.py is loaded directly from its file path in tests, without the
+# custom_components package context, so a relative import (e.g.
+# "from .const import ...") would always fail with ImportError. The field
+# names below are kept as literals, in sync with the real constants of the
+# same name in const.py (CONF_NOTIFY_TARGET, CONF_NOTIFY_TARGETS,
+# CONF_NOTIFY_TIME, CONF_NOTIFY_TIME_2, CONF_NOTIFY_TIMES).
+CONF_NOTIFY_TIME = "notify_time"
+CONF_NOTIFY_TIME_2 = "notify_time_2"
+CONF_NOTIFY_TIMES = "notify_times"
+CONF_NOTIFY_TARGET = "notify_target"
+CONF_NOTIFY_TARGETS = "notify_targets"
+DEFAULT_NOTIFY_TIME = "09:00:00"
 
 
 def parse_birth_date(value: str) -> date:
@@ -75,7 +80,7 @@ def age_at_next_anniversary(birth: date, today: date) -> int:
 
 
 def _parse_hhmm(time_str: str | None) -> tuple[int, int]:
-    """Parse a HH:MM or HH:MM:SS string into (hour, minute), defaulting to 00:00."""
+    """Parse a 'HH:MM' or 'HH:MM:SS' string into (hour, minute), defaulting to 00:00."""
     value = time_str or "00:00:00"
     try:
         hh, mm, *_ = (int(x) for x in value.split(":"))
