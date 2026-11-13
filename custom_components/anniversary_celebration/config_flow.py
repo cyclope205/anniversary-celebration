@@ -15,7 +15,10 @@ from .const import (
     CONF_FIRST_NAME,
     CONF_LAST_NAME,
     CONF_NOTIFY_TARGET,
+    CONF_NOTIFY_TARGETS,
     CONF_NOTIFY_TIME,
+    CONF_NOTIFY_TIME_2,
+    CONF_NOTIFY_TIMES,
     CONF_PEOPLE,
     CONF_PERSON_ID,
     CONF_STATUS,
@@ -24,24 +27,42 @@ from .const import (
     STATUS_ALIVE,
     STATUS_DECEASED,
 )
-from .util import parse_flexible_date
+from .util import normalize_notify_targets, normalize_notify_times, parse_flexible_date
 
 NO_TARGET = "__none__"
 
 
-def _validate_and_normalize_birth_date(user_input: dict[str, Any]) -> dict[str, str]:
-    """Parse the typed birth date in place; return a form errors dict."""
+def _validate_person_input(user_input: dict[str, Any]) -> dict[str, str]:
+    """Validate the typed birth date and the optional second notify time.
+
+    Returns a form errors dict (empty when everything is valid). Mutates
+    user_input in place to normalize the birth date to ISO once parsed,
+    the same way the previous _validate_and_normalize_birth_date did.
+    """
+    errors: dict[str, str] = {}
     try:
         parsed = parse_flexible_date(user_input[CONF_BIRTH_DATE])
     except (ValueError, KeyError):
-        return {CONF_BIRTH_DATE: "invalid_date"}
-    user_input[CONF_BIRTH_DATE] = parsed.isoformat()
-    return {}
+        errors[CONF_BIRTH_DATE] = "invalid_date"
+    else:
+        user_input[CONF_BIRTH_DATE] = parsed.isoformat()
+
+    time_2 = (user_input.get(CONF_NOTIFY_TIME_2) or "").strip()
+    if time_2:
+        parts = time_2.split(":")
+        try:
+            hh, mm = int(parts[0]), int(parts[1])
+            if not (0 <= hh <= 23 and 0 <= mm <= 59):
+                raise ValueError
+        except (ValueError, IndexError):
+            errors[CONF_NOTIFY_TIME_2] = "invalid_time"
+
+    return errors
 
 
 def _notify_targets(hass) -> list[dict[str, str]]:
     """Build the list of selectable notify targets."""
-    options = [{"value": NO_TARGET, "label": "(Aucun appareil / optionnel)"}]
+    options = []
     try:
         services = hass.services.async_services().get("notify", {})
     except Exception:  # pragma: no cover - defensive
@@ -51,8 +72,39 @@ def _notify_targets(hass) -> list[dict[str, str]]:
     return options
 
 
+def _collect_person_fields(user_input: dict[str, Any]) -> dict[str, Any]:
+    """Fold the flat form answer into the list-based notify fields.
+
+    The form shows a single primary time (CONF_NOTIFY_TIME) plus an
+    optional second time (CONF_NOTIFY_TIME_2) as separate fields, and a
+    multi-select for CONF_NOTIFY_TARGETS. This collapses them into the
+    CONF_NOTIFY_TIMES / CONF_NOTIFY_TARGETS list fields and drops the
+    legacy singular key, so every person saved from now on is stored in
+    the current list-based shape (util.normalize_notify_times /
+    normalize_notify_targets still read the legacy shape for people
+    saved before this change, so they keep working unedited).
+    """
+    data = dict(user_input)
+
+    primary = (data.pop(CONF_NOTIFY_TIME, None) or DEFAULT_NOTIFY_TIME).strip()
+    second = (data.pop(CONF_NOTIFY_TIME_2, None) or "").strip()
+    times = [primary] if primary else [DEFAULT_NOTIFY_TIME]
+    if second:
+        times.append(second)
+    data[CONF_NOTIFY_TIMES] = times
+
+    targets = data.pop(CONF_NOTIFY_TARGETS, None) or []
+    data[CONF_NOTIFY_TARGETS] = list(targets)
+
+    data.pop(CONF_NOTIFY_TARGET, None)
+
+    return data
+
+
 def _person_schema(hass, defaults: dict[str, Any] | None = None) -> vol.Schema:
     defaults = defaults or {}
+    default_times = normalize_notify_times(defaults) if defaults else [DEFAULT_NOTIFY_TIME]
+    default_time_2 = default_times[1] if len(default_times) > 1 else ""
     return vol.Schema(
         {
             vol.Required(
@@ -83,15 +135,24 @@ def _person_schema(hass, defaults: dict[str, Any] | None = None) -> vol.Schema:
             ),
             vol.Optional(
                 CONF_NOTIFY_TIME,
-                default=defaults.get(CONF_NOTIFY_TIME, DEFAULT_NOTIFY_TIME),
+                default=default_times[0],
             ): selector.TimeSelector(),
+            # Plain str, not selector.TimeSelector(): HA selectors reject a
+            # None/empty default for a TimeSelector, and this field must stay
+            # optional since most people only need one notification time.
+            # Typed HH:MM is validated in _validate_person_input above.
             vol.Optional(
-                CONF_NOTIFY_TARGET,
-                default=defaults.get(CONF_NOTIFY_TARGET, NO_TARGET) or NO_TARGET,
+                CONF_NOTIFY_TIME_2,
+                default=default_time_2,
+            ): str,
+            vol.Optional(
+                CONF_NOTIFY_TARGETS,
+                default=normalize_notify_targets(defaults) if defaults else [],
             ): selector.SelectSelector(
                 selector.SelectSelectorConfig(
                     options=_notify_targets(hass),
                     mode=selector.SelectSelectorMode.DROPDOWN,
+                    multiple=True,
                 )
             ),
         }
@@ -148,12 +209,12 @@ class AnniversaryCelebrationOptionsFlow(config_entries.OptionsFlow):
     async def async_step_add_person(self, user_input: dict[str, Any] | None = None):
         errors: dict[str, str] = {}
         if user_input is not None:
-            errors = _validate_and_normalize_birth_date(user_input)
+            errors = _validate_person_input(user_input)
             if not errors:
-                target = user_input.get(CONF_NOTIFY_TARGET)
-                if target == NO_TARGET:
-                    user_input[CONF_NOTIFY_TARGET] = None
-                person = {CONF_PERSON_ID: uuid.uuid4().hex, **user_input}
+                person = {
+                    CONF_PERSON_ID: uuid.uuid4().hex,
+                    **_collect_person_fields(user_input),
+                }
                 people = self._people
                 people.append(person)
                 return self._save(people)
@@ -199,11 +260,12 @@ class AnniversaryCelebrationOptionsFlow(config_entries.OptionsFlow):
 
         errors: dict[str, str] = {}
         if user_input is not None and "person" not in user_input:
-            errors = _validate_and_normalize_birth_date(user_input)
+            errors = _validate_person_input(user_input)
             if not errors:
-                updated = {CONF_PERSON_ID: self._selected_id, **user_input}
-                if updated.get(CONF_NOTIFY_TARGET) == NO_TARGET:
-                    updated[CONF_NOTIFY_TARGET] = None
+                updated = {
+                    CONF_PERSON_ID: self._selected_id,
+                    **_collect_person_fields(user_input),
+                }
                 new_people = [
                     updated if p[CONF_PERSON_ID] == self._selected_id else p
                     for p in people
