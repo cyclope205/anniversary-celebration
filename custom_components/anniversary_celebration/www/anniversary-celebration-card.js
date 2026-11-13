@@ -22,10 +22,18 @@ function escapeHtml(value) {
 
 function formatDob(iso) {
   if (!iso) return "";
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return "";
-  const day = String(d.getDate()).padStart(2, "0");
-  return `né(e) le ${day} ${MONTHS_FR[d.getMonth()]} ${d.getFullYear()}`;
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
+  if (!m) return "";
+  const year = Number(m[1]);
+  const month = Number(m[2]) - 1;
+  const day = Number(m[3]);
+  if (month < 0 || month > 11 || day < 1 || day > 31) return "";
+  // Parsed from the plain y-m-d string directly (no Date object), so this
+  // can never shift by a day depending on the browser's local timezone -
+  // new Date("1980-07-04") is midnight UTC, and reading it back with
+  // getDate()/getMonth() in a negative-UTC-offset timezone showed the
+  // previous day.
+  return `né(e) le ${String(day).padStart(2, "0")} ${MONTHS_FR[month]} ${year}`;
 }
 
 function countdownLabel(days) {
