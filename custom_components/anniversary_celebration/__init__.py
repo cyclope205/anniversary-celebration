@@ -15,6 +15,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.event import async_track_time_change
 from homeassistant.helpers.storage import Store
+from homeassistant.loader import async_get_integration
 from homeassistant.util import dt as dt_util
 
 from .const import (
@@ -56,6 +57,13 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         # immediate startup check overlapping with the first per-minute
         # tick), which could otherwise send the same notification twice.
         "lock": asyncio.Lock(),
+        # person_id -> ISO date of the last day the notify.* device/service
+        # call actually succeeded. Kept separate from "notified" (which only
+        # records full success including the persistent notification) so
+        # that if persistent_notification keeps failing and the per-minute
+        # check keeps retrying, the device notification that already
+        # succeeded is never sent a second time the same day.
+        "mobile_sent_today": {},
     }
 
     await _async_register_card(hass)
@@ -117,6 +125,7 @@ async def _async_check_and_notify(hass: HomeAssistant, entry: ConfigEntry) -> No
         today = now.date()
         today_iso = today.isoformat()
         notified: dict[str, str] = data["notified"]
+        mobile_sent_today: dict[str, str] = data["mobile_sent_today"]
         changed = False
 
         for person in people:
@@ -136,12 +145,17 @@ async def _async_check_and_notify(hass: HomeAssistant, entry: ConfigEntry) -> No
             ):
                 continue
 
-            success = await _async_send_notification(hass, person, birth, today)
+            success = await _async_send_notification(
+                hass, person, birth, today, mobile_sent_today
+            )
             if success:
                 notified[person_id] = today_iso
                 changed = True
             # else: leave this person unmarked so the next per-minute
-            # check retries instead of silently skipping the day.
+            # check retries instead of silently skipping the day. The
+            # device/mobile notification itself is not re-sent if it
+            # already succeeded (see mobile_sent_today above) - only the
+            # persistent_notification retry is repeated.
 
         if changed:
             await data["store"].async_save(notified)
@@ -151,7 +165,9 @@ async def _async_check_and_notify(hass: HomeAssistant, entry: ConfigEntry) -> No
         async_dispatcher_send(hass, SIGNAL_PEOPLE_UPDATED)
 
 
-async def _async_send_notification(hass, person, birth, today) -> bool:
+async def _async_send_notification(
+    hass, person, birth, today, mobile_sent_today: dict[str, str]
+) -> bool:
     """Send the notification for a person.
 
     Returns True only if the Home Assistant persistent notification itself
@@ -160,6 +176,12 @@ async def _async_send_notification(hass, person, birth, today) -> bool:
     unreachable"). The caller only marks the person as notified when this
     returns True, so if even the persistent notification fails, the next
     per-minute check retries instead of the day being silently skipped.
+
+    The device/mobile notify.* call is tracked separately in
+    mobile_sent_today: once it has succeeded for this person today, a later
+    retry (triggered only because persistent_notification is still failing)
+    does not call it again, so the person is never notified on their phone
+    twice for the same birthday.
     """
     full_name = f"{person.get(CONF_FIRST_NAME, '')} {person.get(CONF_LAST_NAME, '') or ''}".strip()
     age = current_age(birth, today)
@@ -170,9 +192,11 @@ async def _async_send_notification(hass, person, birth, today) -> bool:
         title = "🕯️ En mémoire"
         message = f"{full_name} aurait eu {age} ans aujourd'hui."
 
+    person_id = person[CONF_PERSON_ID]
+    today_iso = today.isoformat()
     target = person.get(CONF_NOTIFY_TARGET)
-    sent = False
-    if target and "." in target:
+    sent = mobile_sent_today.get(person_id) == today_iso
+    if target and "." in target and not sent:
         domain, service = target.split(".", 1)
         try:
             await hass.services.async_call(
@@ -182,6 +206,7 @@ async def _async_send_notification(hass, person, birth, today) -> bool:
                 blocking=True,
             )
             sent = True
+            mobile_sent_today[person_id] = today_iso
         except Exception as err:  # noqa: BLE001 - never let a bad target break the loop
             _LOGGER.error(
                 "Anniversary Celebration: échec d'envoi à %s pour %s : %s",
@@ -201,7 +226,7 @@ async def _async_send_notification(hass, person, birth, today) -> bool:
             {
                 "title": title,
                 "message": message,
-                "notification_id": f"{DOMAIN}_{person[CONF_PERSON_ID]}_{today.isoformat()}",
+                "notification_id": f"{DOMAIN}_{person_id}_{today_iso}",
             },
             blocking=True,
         )
@@ -254,7 +279,12 @@ async def _async_sync_lovelace_resource(hass: HomeAssistant) -> None:
             return
         if hasattr(resources, "async_items") and not getattr(resources, "loaded", True):
             await resources.async_load()
-        version_tag = "1.0.3"
+        # Read the version from the integration's own manifest.json instead
+        # of a hardcoded string here, so this can never drift out of sync
+        # with manifest.json (as it previously did: this was hardcoded to
+        # "1.0.3" while the manifest still said "1.0.2").
+        integration = await async_get_integration(hass, DOMAIN)
+        version_tag = integration.manifest.get("version", "0")
         url = f"{CARD_URL_PATH}?v={version_tag}"
         existing = [r for r in resources.async_items() if CARD_FILENAME in r.get("url", "")]
         if not existing:
