@@ -86,6 +86,12 @@ Formulaire d'ajout d'une personne (options de l'intégration) :
 
 <img width="600" alt="Formulaire d'ajout d'une personne" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794518104949-7f50ec1c.png" />
 
+Notification le jour J (persistante dans Home Assistant et sur mobile) :
+
+<img width="600" alt="Notification persistante Anniversary Celebration" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794531746780-bec780a5.png" />
+
+<img width="600" alt="Notification mobile Anniversary Celebration" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794531646890-41025284.png" />
+
 ## Installation (HACS)
 
 1. HACS → Intégrations → ⋮ → Dépôts personnalisés → ajouter ce dépôt
