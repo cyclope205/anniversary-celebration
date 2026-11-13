@@ -41,7 +41,6 @@ En remerciement, votre nom apparaîtra (de façon anonymisée) dans la section �
 
 ---
 
-**Un anniversaire oublié, ça ne se rattrape pas.** Qu'il soit dans 3 jours ou dans 8 mois, Anniversary Celebration le sait et vous le rappellera — une seule fois, pile le bon jour, même si Home Assistant redémarre entre-temps. Pas de YAML à écrire, pas de capteur à bricoler : on renseigne un prénom et une date de naissance, et tout le reste — calcul d'âge, compte à rebours, notification, carte du tableau de bord — se construit tout seul. Et parce que certains anniversaires se fêtent autrement, les personnes qui ne sont plus là peuvent elles aussi avoir leur mot doux, chaque année, pour qu'on ne les oublie pas non plus.
 
 Intégration Home Assistant qui suit les anniversaires des personnes vivantes et garde le souvenir des personnes décédées, avec une notification fiable le jour J et une carte Lovelace qui se construit toute seule.
 
