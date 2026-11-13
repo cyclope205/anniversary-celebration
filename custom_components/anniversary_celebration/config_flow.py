@@ -51,8 +51,16 @@ def _validate_person_input(user_input: dict[str, Any]) -> dict[str, str]:
     if time_2:
         parts = time_2.split(":")
         try:
+            # Every part must be purely numeric: "08:30:abc".split(":") is
+            # ["08", "30", "abc"], and only checking parts[0]/parts[1] let
+            # that through silently (the trailing junk was never looked
+            # at). Checking isdigit() on every part, including a 3rd
+            # seconds part when present, closes that gap.
+            if len(parts) not in (2, 3) or not all(p.isdigit() for p in parts):
+                raise ValueError
             hh, mm = int(parts[0]), int(parts[1])
-            if not (0 <= hh <= 23 and 0 <= mm <= 59):
+            ss = int(parts[2]) if len(parts) == 3 else 0
+            if not (0 <= hh <= 23 and 0 <= mm <= 59 and 0 <= ss <= 59):
                 raise ValueError
         except (ValueError, IndexError):
             errors[CONF_NOTIFY_TIME_2] = "invalid_time"
