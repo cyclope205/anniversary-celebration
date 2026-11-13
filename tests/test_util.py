@@ -131,3 +131,39 @@ def test_age_at_next_anniversary_on_the_day_equals_current_age(util):
     birth = date(1960, 11, 12)
     today = date(2026, 11, 12)
     assert util.age_at_next_anniversary(birth, today) == util.current_age(birth, today)
+
+
+def test_normalize_notify_times_removes_duplicate_minutes(util):
+    assert util.normalize_notify_times(
+        {"notify_times": ["08:30:00", "08:30", "18:00"]}
+    ) == ["08:30:00", "18:00"]
+
+
+def test_normalize_notify_times_reads_legacy_fields_and_deduplicates(util):
+    assert util.normalize_notify_times(
+        {"notify_time": "09:00:00", "notify_time_2": "09:00"}
+    ) == ["09:00:00"]
+
+
+def test_due_slots_returns_only_distinct_due_times(util):
+    birth = date(1980, 11, 12)
+    today = date(2026, 11, 12)
+    times = util.normalize_notify_times(
+        {"notify_times": ["08:30:00", "08:30", "18:00"]}
+    )
+    assert util.due_slots(birth, today, 9, 0, times, {}) == [0]
+
+
+def test_due_slots_tracks_each_time_independently(util):
+    birth = date(1980, 11, 12)
+    today = date(2026, 11, 12)
+    times = ["08:30:00", "18:00:00"]
+    assert util.due_slots(birth, today, 19, 0, times, {"0": "2026-11-12"}) == [1]
+
+
+def test_invalid_time_with_trailing_text_falls_back_safely(util):
+    assert util._parse_hhmm("08:30:abc") == (0, 0)
+
+
+def test_invalid_seconds_fall_back_safely(util):
+    assert util._parse_hhmm("08:30:99") == (0, 0)

@@ -122,8 +122,8 @@ ou supprimer une personne. Chaque personne possède :
 | Nom | Non | Nom de famille, optionnel |
 | Date de naissance | Oui | Utilisée pour calculer l'âge et le compte à rebours |
 | Statut | Oui | Vivant(e) ou Décédé(e) — change le message de notification |
-| Heure de notification | Non | Heure à laquelle envoyer la notification le jour J (par défaut 09:00) |
-| Appareil/service à notifier | Non | Service `notify.*` à appeler ; laissé vide, seule la notification persistante Home Assistant est créée |
+| Horaires de notification | Non | Jusqu'à deux horaires le jour J (par défaut 09:00). Deux horaires identiques sont automatiquement refusés/dédupliqués. |
+| Appareils/services à notifier | Non | Un ou plusieurs services `notify.*` ; laissé vide, seule la notification persistante Home Assistant est créée |
 
 ## Carte — configuration
 
@@ -140,11 +140,12 @@ max_items: 0 # 0 ou absent = toutes les personnes ; sinon nombre libre
 Pas de minuteur unique programmé des mois à l'avance (qui se perdrait à un
 redémarrage de Home Assistant, même si l'anniversaire est dans 8 mois).
 L'intégration recalcule l'état de chaque personne **toutes les minutes** ;
-dès que le jour J et l'heure configurée sont atteints, la notification part
-une seule fois, mémorisée dans un stockage persistant (donc jamais répétée
-ni jamais oubliée même après un redémarrage). Une notification persistante
-Home Assistant est en plus toujours créée, même si l'appareil choisi est
-indisponible ou si aucun appareil n'a été configuré.
+dès que le jour J et l'un des horaires configurés est atteint, le créneau est
+traité indépendamment des autres. La réussite de chaque service `notify.*`
+est mémorisée séparément : un appareil en échec est réessayé sans renvoyer
+la notification aux appareils qui l'ont déjà reçue. Une notification
+persistante Home Assistant est également créée. L'état est enregistré dans
+le stockage persistant afin de résister aux redémarrages.
 
 ## Langues disponibles
 

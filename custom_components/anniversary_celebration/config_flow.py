@@ -65,6 +65,17 @@ def _validate_person_input(user_input: dict[str, Any]) -> dict[str, str]:
         except (ValueError, IndexError):
             errors[CONF_NOTIFY_TIME_2] = "invalid_time"
 
+        # A second slot at the same minute would send the same reminder
+        # twice. Compare normalized clock values, so 08:30 and 08:30:00
+        # are treated as duplicates too.
+        if CONF_NOTIFY_TIME_2 not in errors:
+            primary = (user_input.get(CONF_NOTIFY_TIME) or DEFAULT_NOTIFY_TIME).strip()
+            normalized = normalize_notify_times(
+                {CONF_NOTIFY_TIMES: [primary, time_2]}
+            )
+            if len(normalized) < 2:
+                errors[CONF_NOTIFY_TIME_2] = "invalid_time"
+
     return errors
 
 
@@ -99,7 +110,8 @@ def _collect_person_fields(user_input: dict[str, Any]) -> dict[str, Any]:
     times = [primary] if primary else [DEFAULT_NOTIFY_TIME]
     if second:
         times.append(second)
-    data[CONF_NOTIFY_TIMES] = times
+    # Normalize here as a final safeguard for existing/imported data too.
+    data[CONF_NOTIFY_TIMES] = normalize_notify_times({CONF_NOTIFY_TIMES: times})
 
     targets = data.pop(CONF_NOTIFY_TARGETS, None) or []
     data[CONF_NOTIFY_TARGETS] = list(targets)

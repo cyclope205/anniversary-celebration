@@ -122,8 +122,8 @@ or remove a person. Each person has:
 | Last name | No | Last name, optional |
 | Date of birth | Yes | Used to calculate age and the countdown |
 | Status | Yes | Alive or Deceased — changes the notification message |
-| Notification time | No | Time to send the notification on the day (default 09:00) |
-| Device/service to notify | No | `notify.*` service to call; if left empty, only the Home Assistant persistent notification is created |
+| Notification times | No | Up to two times on the day (default 09:00). Duplicate times are rejected/deduplicated. |
+| Devices/services to notify | No | One or more `notify.*` services; if left empty, only the Home Assistant persistent notification is created |
 
 ## Card — configuration
 
@@ -139,12 +139,13 @@ max_items: 0   # 0 or absent = everyone; otherwise any number
 
 There is no single timer scheduled months in advance (which could be lost on a
 Home Assistant restart, even if the birthday is 8 months away).
-The integration recalculates the state of every person **every minute**;
-as soon as the day and configured time are reached, the notification fires
-exactly once, recorded in persistent storage (so it is never repeated
-nor ever missed, even after a restart). A Home Assistant persistent
-notification is also always created, even if the chosen device is
-unavailable or none was configured.
+The integration recalculates each person's state **every minute**.
+When the anniversary day and one of the configured times are reached, each
+time slot is handled independently. Success is tracked separately for every
+`notify.*` service: a failed target is retried without resending to targets
+that already succeeded. A Home Assistant persistent notification is also
+created, and the delivery state is saved to persistent storage so it survives
+Home Assistant restarts.
 
 ## Available languages
 

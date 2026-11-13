@@ -80,13 +80,24 @@ def age_at_next_anniversary(birth: date, today: date) -> int:
 
 
 def _parse_hhmm(time_str: str | None) -> tuple[int, int]:
-    """Parse a 'HH:MM' or 'HH:MM:SS' string into (hour, minute), defaulting to 00:00."""
+    """Parse a valid 'HH:MM' or 'HH:MM:SS' value into (hour, minute).
+
+    Invalid values safely fall back to midnight, preserving the historical
+    behavior for malformed legacy configuration while rejecting trailing
+    junk and out-of-range components.
+    """
     value = time_str or "00:00:00"
+    parts = value.split(":")
+    if len(parts) not in (2, 3) or not all(part.isdigit() for part in parts):
+        return 0, 0
     try:
-        hh, mm, *_ = (int(x) for x in value.split(":"))
-        return hh, mm
+        hh, mm = int(parts[0]), int(parts[1])
+        ss = int(parts[2]) if len(parts) == 3 else 0
     except ValueError:
         return 0, 0
+    if not (0 <= hh <= 23 and 0 <= mm <= 59 and 0 <= ss <= 59):
+        return 0, 0
+    return hh, mm
 
 
 def normalize_notify_times(person: dict) -> list[str]:
@@ -99,18 +110,29 @@ def normalize_notify_times(person: dict) -> list[str]:
     returns at least one time (DEFAULT_NOTIFY_TIME as a last resort).
     """
     times = person.get(CONF_NOTIFY_TIMES)
-    if isinstance(times, list) and times:
-        return [t for t in times if t]
+    if not (isinstance(times, list) and times):
+        times = []
+        first = person.get(CONF_NOTIFY_TIME)
+        if first:
+            times.append(first)
+        second = person.get(CONF_NOTIFY_TIME_2)
+        if second:
+            times.append(second)
 
-    legacy: list[str] = []
-    first = person.get(CONF_NOTIFY_TIME)
-    if first:
-        legacy.append(first)
-    second = person.get(CONF_NOTIFY_TIME_2)
-    if second:
-        legacy.append(second)
+    # Two values such as "08:30" and "08:30:00" represent the same
+    # minute. Keep the first configured occurrence so it can never create
+    # two notifications for the same person at the same time.
+    unique_times: list[str] = []
+    seen_minutes: set[tuple[int, int]] = set()
+    for time_str in times:
+        if not time_str:
+            continue
+        minute = _parse_hhmm(time_str)
+        if minute not in seen_minutes:
+            seen_minutes.add(minute)
+            unique_times.append(time_str)
 
-    return legacy or [DEFAULT_NOTIFY_TIME]
+    return unique_times or [DEFAULT_NOTIFY_TIME]
 
 
 def normalize_notify_targets(person: dict) -> list[str]:
