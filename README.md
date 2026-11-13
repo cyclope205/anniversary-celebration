@@ -43,7 +43,6 @@ En remerciement, votre nom apparaîtra (de façon anonymisée) dans la section �
 
 ---
 
-
 Intégration Home Assistant qui suit les anniversaires des personnes vivantes et garde le souvenir des personnes décédées, avec une notification fiable le jour J et une carte Lovelace qui se construit toute seule.
 
 ## Sommaire
@@ -87,6 +86,10 @@ Formulaire d'ajout d'une personne (options de l'intégration) :
 
 <img width="600" alt="Formulaire d'ajout d'une personne" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794518104949-7f50ec1c.png" />
 
+Choix de l'heure de notification et de l'appareil/service à notifier (plus bas dans le même formulaire) :
+
+<img width="600" alt="Choix de l'heure et du service de notification" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-notify-config-redacted3.png" />
+
 Notification le jour J (persistante dans Home Assistant et sur mobile) :
 
 <img width="600" alt="Notification persistante Anniversary Celebration" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794531746780-bec780a5.png" />
@@ -129,7 +132,7 @@ type: custom:anniversary-celebration-card
 title_alive: "🎂 Anniversaires"
 title_deceased: "🕯️ Souvenirs"
 show_deceased: true
-max_items: 0   # 0 ou absent = toutes les personnes ; sinon nombre libre
+max_items: 0 # 0 ou absent = toutes les personnes ; sinon nombre libre
 ```
 
 ## Fiabilité des notifications
