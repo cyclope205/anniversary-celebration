@@ -117,7 +117,7 @@ ou supprimer une personne. Chaque personne possède :
 | Nom | Non | Nom de famille, optionnel |
 | Date de naissance | Oui | Utilisée pour calculer l'âge et le compte à rebours |
 | Statut | Oui | Vivant(e) ou Décédé(e) — change le message de notification |
-| Heure de notification | Non | Heure à laquelle envoyer la notification le jour J (par défaut 00:00) |
+| Heure de notification | Non | Heure à laquelle envoyer la notification le jour J (par défaut 09:00) |
 | Appareil/service à notifier | Non | Service `notify.*` à appeler ; laissé vide, seule la notification persistante Home Assistant est créée |
 
 ## Carte — configuration
