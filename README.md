@@ -95,6 +95,10 @@ Notification le jour J (persistante dans Home Assistant et sur mobile) :
 
 <img width="600" alt="Notification mobile Anniversary Celebration" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794531646890-41025284.png" />
 
+Éditeur de la carte avec aperçu en direct (dates de naissance masquées sur cette capture) :
+
+<img width="600" alt="Éditeur de la carte avec aperçu en direct" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/anniversary-card-config-masked.png" />
+
 ## Installation (HACS)
 
 1. HACS → Intégrations → ⋮ → Dépôts personnalisés → ajouter ce dépôt

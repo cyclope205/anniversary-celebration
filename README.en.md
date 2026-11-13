@@ -96,6 +96,10 @@ Notification on the day (persistent in Home Assistant and on mobile):
 
 <img width="600" alt="Anniversary Celebration mobile notification" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794531646890-41025284.png" />
 
+Card editor with live preview (birth dates blurred out in this screenshot):
+
+<img width="600" alt="Card editor with live preview" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/anniversary-card-config-masked.png" />
+
 ## Installation (HACS)
 
 1. Open Anniversary Celebration in HACS and install it:
