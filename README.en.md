@@ -86,6 +86,10 @@ Add-a-person form (integration options):
 
 <img width="600" alt="Add a person form" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794518104949-7f50ec1c.png" />
 
+Choosing the notification time and device/service to notify (further down the same form):
+
+<img width="600" alt="Choosing the notification time and service" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-notify-config-redacted3.png" />
+
 Notification on the day (persistent in Home Assistant and on mobile):
 
 <img width="600" alt="Anniversary Celebration persistent notification" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794531746780-bec780a5.png" />
