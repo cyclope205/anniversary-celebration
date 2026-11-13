@@ -33,7 +33,7 @@
 ---
 
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20A%20Coffee-cyclope205-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://bmc-eight-red.vercel.app/api/donate?repo=anniversary-celebration) [![PayPal](https://img.shields.io/badge/PayPal-Donate-00457C?style=for-the-badge&logo=paypal&logoColor=white)](https://bmc-eight-red.vercel.app/api/paypal?repo=anniversary-celebration&amount=5)
-<img src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/custom_components/anniversary_celebration/brand/icon.png" alt="Anniversary Celebration" width="96">
+<img src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/custom_components/anniversary_celebration/brand/icon.png" alt="Anniversary Celebration" width="32">
 
 ### ☕ Offrez-moi un café pour m'aider à rester éveillé et coder vos intégrations préférées !
 
