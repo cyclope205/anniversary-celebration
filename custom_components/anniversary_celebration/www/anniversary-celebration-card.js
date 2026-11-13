@@ -10,6 +10,16 @@ const MONTHS_FR = [
   "juillet", "août", "septembre", "octobre", "novembre", "décembre",
 ];
 
+function escapeHtml(value) {
+  return String(value).replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+  }[c]));
+}
+
 function formatDob(iso) {
   if (!iso) return "";
   const d = new Date(iso);
@@ -103,11 +113,11 @@ class AnniversaryCelebrationCard extends HTMLElement {
           .ac-empty { text-align: center; opacity: 0.6; font-size: 13px; padding: 10px 0; }
         </style>
         <div class="ac-wrap">
-          <div class="ac-section-title">${this._config.title_alive}</div>
+          <div class="ac-section-title">${escapeHtml(this._config.title_alive)}</div>
           <div class="ac-list" id="ac-alive"></div>
           ${this._config.show_deceased ? `
-            <div class="ac-section-title">${this._config.title_deceased}</div>
-            <div class="ac-list" id="ac-deceased"></div>
+          <div class="ac-section-title">${escapeHtml(this._config.title_deceased)}</div>
+          <div class="ac-list" id="ac-deceased"></div>
           ` : ""}
         </div>
       </ha-card>
@@ -136,7 +146,8 @@ class AnniversaryCelebrationCard extends HTMLElement {
 
   _renderRow(stateObj, kind) {
     const a = stateObj.attributes;
-    const name = `${a.first_name || ""} ${a.last_name || ""}`.trim() || stateObj.entity_id;
+    const rawName = `${a.first_name || ""} ${a.last_name || ""}`.trim() || stateObj.entity_id;
+    const name = escapeHtml(rawName);
     const ageNow = a.current_years;
     const ageNext = a.years_at_anniversary;
     const today = Number(stateObj.state) <= 0;
@@ -211,7 +222,7 @@ class AnniversaryCelebrationCardEditor extends HTMLElement {
       </style>
       <div class="ac-editor-row">
         <label>Titre — Anniversaires</label>
-        <input type="text" id="ac-title-alive" value="${this._config.title_alive}">
+        <input type="text" id="ac-title-alive" value="${escapeHtml(this._config.title_alive)}">
       </div>
       <div class="ac-editor-row">
         <label>Afficher Souvenirs (personnes décédées)</label>
@@ -219,7 +230,7 @@ class AnniversaryCelebrationCardEditor extends HTMLElement {
       </div>
       <div class="ac-editor-row">
         <label>Titre — Souvenirs</label>
-        <input type="text" id="ac-title-deceased" value="${this._config.title_deceased}" ${this._config.show_deceased ? "" : "disabled"}>
+        <input type="text" id="ac-title-deceased" value="${escapeHtml(this._config.title_deceased)}" ${this._config.show_deceased ? "" : "disabled"}>
       </div>
       <div class="ac-editor-row">
         <label>Nombre de personnes affichées (0 = toutes)</label>
