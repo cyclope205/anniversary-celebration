@@ -6,6 +6,7 @@ duplicate, and a per-minute recheck so a restart never causes a miss either.
 """
 from __future__ import annotations
 
+import asyncio
 import logging
 from pathlib import Path
 
@@ -51,6 +52,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     hass.data[DOMAIN][entry.entry_id] = {
         "store": store,
         "notified": notified,
+        # Guards _async_check_and_notify against overlapping runs (e.g. the
+        # immediate startup check overlapping with the first per-minute
+        # tick), which could otherwise send the same notification twice.
+        "lock": asyncio.Lock(),
     }
 
     await _async_register_card(hass)
@@ -96,46 +101,66 @@ async def _async_check_and_notify(hass: HomeAssistant, entry: ConfigEntry) -> No
     if data is None:
         return
 
-    people = entry.options.get(CONF_PEOPLE, [])
-    if not people:
+    lock: asyncio.Lock = data["lock"]
+    if lock.locked():
+        # A check is already in flight (startup check overlapping with a
+        # per-minute tick, or a slow notify service call) - skip this run
+        # rather than risk sending the same notification twice.
         return
 
-    now = dt_util.now()
-    today = now.date()
-    today_iso = today.isoformat()
-    notified: dict[str, str] = data["notified"]
-    changed = False
+    async with lock:
+        people = entry.options.get(CONF_PEOPLE, [])
+        if not people:
+            return
 
-    for person in people:
-        try:
-            birth = parse_birth_date(person[CONF_BIRTH_DATE])
-        except (KeyError, ValueError):
-            continue
+        now = dt_util.now()
+        today = now.date()
+        today_iso = today.isoformat()
+        notified: dict[str, str] = data["notified"]
+        changed = False
 
-        person_id = person[CONF_PERSON_ID]
-        if not should_notify(
-            birth,
-            today,
-            now.hour,
-            now.minute,
-            person.get(CONF_NOTIFY_TIME),
-            notified.get(person_id),
-        ):
-            continue
+        for person in people:
+            try:
+                birth = parse_birth_date(person[CONF_BIRTH_DATE])
+            except (KeyError, ValueError):
+                continue
 
-        await _async_send_notification(hass, person, birth, today)
-        notified[person_id] = today_iso
-        changed = True
+            person_id = person[CONF_PERSON_ID]
+            if not should_notify(
+                birth,
+                today,
+                now.hour,
+                now.minute,
+                person.get(CONF_NOTIFY_TIME),
+                notified.get(person_id),
+            ):
+                continue
 
-    if changed:
-        await data["store"].async_save(notified)
+            success = await _async_send_notification(hass, person, birth, today)
+            if success:
+                notified[person_id] = today_iso
+                changed = True
+            # else: leave this person unmarked so the next per-minute
+            # check retries instead of silently skipping the day.
 
-    # Always refresh listeners (sensors) so days-remaining / notified-today
-    # stay accurate minute to minute, not just when a notification fired.
-    async_dispatcher_send(hass, SIGNAL_PEOPLE_UPDATED)
+        if changed:
+            await data["store"].async_save(notified)
+
+        # Always refresh listeners (sensors) so days-remaining / notified-today
+        # stay accurate minute to minute, not just when a notification fired.
+        async_dispatcher_send(hass, SIGNAL_PEOPLE_UPDATED)
 
 
-async def _async_send_notification(hass, person, birth, today) -> None:
+async def _async_send_notification(hass, person, birth, today) -> bool:
+    """Send the notification for a person.
+
+    Returns True only if the Home Assistant persistent notification itself
+    was successfully created - the guaranteed fallback channel this feature
+    promises ("always created even if no device was configured or it is
+    unreachable"). The caller only marks the person as notified when this
+    returns True, so if even the persistent notification fails, the next
+    per-minute check retries instead of the day being silently skipped.
+    """
     full_name = f"{person.get(CONF_FIRST_NAME, '')} {person.get(CONF_LAST_NAME, '') or ''}".strip()
     age = current_age(birth, today)
     if person.get(CONF_STATUS, STATUS_ALIVE) == STATUS_ALIVE:
@@ -168,6 +193,7 @@ async def _async_send_notification(hass, person, birth, today) -> None:
     # Always also raise a persistent notification in Home Assistant itself,
     # so the reminder is never silently lost even if the chosen device/
     # service is unreachable or none was configured.
+    persisted = False
     try:
         await hass.services.async_call(
             "persistent_notification",
@@ -179,14 +205,18 @@ async def _async_send_notification(hass, person, birth, today) -> None:
             },
             blocking=True,
         )
+        persisted = True
     except Exception as err:  # noqa: BLE001
         _LOGGER.error("Anniversary Celebration: échec persistent_notification : %s", err)
 
     _LOGGER.info(
-        "Anniversary Celebration: notification envoyée pour %s (cible device=%s)",
+        "Anniversary Celebration: notification envoyée pour %s (cible device=%s, persistante=%s)",
         full_name,
         "oui" if sent else "non",
+        "oui" if persisted else "non",
     )
+
+    return persisted
 
 
 async def _async_register_card(hass: HomeAssistant) -> None:
@@ -224,7 +254,7 @@ async def _async_sync_lovelace_resource(hass: HomeAssistant) -> None:
             return
         if hasattr(resources, "async_items") and not getattr(resources, "loaded", True):
             await resources.async_load()
-        version_tag = "1.0.2"
+        version_tag = "1.0.3"
         url = f"{CARD_URL_PATH}?v={version_tag}"
         existing = [r for r in resources.async_items() if CARD_FILENAME in r.get("url", "")]
         if not existing:
