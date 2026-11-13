@@ -1,8 +1,6 @@
 # 🎂 Anniversary Celebration
 
-🇬🇧 [English version](README.en.md)
-
-[![HACS: Custom](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
+[![HACS: Default](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/integration)
 [![Release](https://img.shields.io/github/v/release/cyclope205/anniversary-celebration)](https://github.com/cyclope205/anniversary-celebration/releases)
 [![Build](https://github.com/cyclope205/anniversary-celebration/actions/workflows/validate.yml/badge.svg)](https://github.com/cyclope205/anniversary-celebration/actions/workflows/validate.yml)
 [![Tests](https://github.com/cyclope205/anniversary-celebration/actions/workflows/tests.yml/badge.svg)](https://github.com/cyclope205/anniversary-celebration/actions/workflows/tests.yml)
@@ -43,12 +41,14 @@ En remerciement, votre nom apparaîtra (de façon anonymisée) dans la section �
 
 ---
 
+**Un anniversaire oublié, ça ne se rattrape pas.** Qu'il soit dans 3 jours ou dans 8 mois, Anniversary Celebration le sait et vous le rappellera — une seule fois, pile le bon jour, même si Home Assistant redémarre entre-temps. Pas de YAML à écrire, pas de capteur à bricoler : on renseigne un prénom et une date de naissance, et tout le reste — calcul d'âge, compte à rebours, notification, carte du tableau de bord — se construit tout seul. Et parce que certains anniversaires se fêtent autrement, les personnes qui ne sont plus là peuvent elles aussi avoir leur mot doux, chaque année, pour qu'on ne les oublie pas non plus.
+
 Intégration Home Assistant qui suit les anniversaires des personnes vivantes et garde le souvenir des personnes décédées, avec une notification fiable le jour J et une carte Lovelace qui se construit toute seule.
 
 ## Sommaire
 
 - [Fonctionnalités](#fonctionnalités)
-- [Captures d'écran](#captures-décran)
+- [Captures d'écran](#captures-decran)
 - [Installation](#installation-hacs)
 - [Configuration](#configuration)
 - [Carte — configuration](#carte--configuration)
@@ -61,8 +61,9 @@ Intégration Home Assistant qui suit les anniversaires des personnes vivantes et
 
 - Ajout/modification/suppression des personnes via l'interface (Paramètres →
   Appareils et services → Anniversary Celebration → Configurer) : prénom, nom,
-  date de naissance, statut (vivant / décédé), heure de notification
-  (optionnelle), appareil/service à notifier (optionnel).
+  date de naissance, statut (vivant / décédé), jusqu'à deux horaires de
+  notification (optionnels), un ou plusieurs appareils/services à notifier
+  (optionnel).
 - Un capteur par personne (`sensor.<prénom>_<nom>`) : nombre de jours avant le
   prochain anniversaire, âge actuel, âge au prochain anniversaire, date de
   naissance, statut, et si la notification du jour a déjà été envoyée.
@@ -86,9 +87,9 @@ Formulaire d'ajout d'une personne (options de l'intégration) :
 
 <img width="600" alt="Formulaire d'ajout d'une personne" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794518104949-7f50ec1c.png" />
 
-Choix de l'heure de notification et de l'appareil/service à notifier (plus bas dans le même formulaire) :
+Choix des horaires de notification et des appareils/services à notifier (plus bas dans le même formulaire) :
 
-<img width="600" alt="Choix de l'heure et du service de notification" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-notify-config-redacted3.png" />
+<img width="600" alt="Choix des horaires et des services à notifier" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794553602042-1cabbc4d.jpg" />
 
 Notification le jour J (persistante dans Home Assistant et sur mobile) :
 
@@ -98,17 +99,17 @@ Notification le jour J (persistante dans Home Assistant et sur mobile) :
 
 ## Installation (HACS)
 
-1. Ouvrir Anniversary Celebration dans HACS et l'installer :
-2. [![Ouvrir dans HACS](https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/badges/badge-hacs-fr.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=cyclope205&repository=anniversary-celebration&category=integration)
-3. [![Ouvrir dans Marketplace](https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/badges/badge-marketplace-fr.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=cyclope205&repository=anniversary-celebration&category=integration)
-4. ou rechercher **Anniversary Celebration** dans HACS si le dépôt est déjà référencé.
-5. Redémarrer Home Assistant.
-6. Ajouter l'intégration :
-7. [![Ajouter l'intégration](https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/badges/badge-add-integration-fr.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=anniversary_celebration)
-8. ou **Paramètres → Appareils et services → Ajouter une intégration → Anniversary Celebration**.
-9. Configurer pour ajouter les premières personnes.
+1. HACS → Intégrations → ⋮ → Dépôts personnalisés → ajouter ce dépôt
+   (catégorie Intégration), ou rechercher **Anniversary Celebration**
+   si le dépôt est déjà référencé.
+2. Installer « Anniversary Celebration ».
+3. Redémarrer Home Assistant.
+4. Ajouter l'intégration : **Paramètres → Appareils et services →
+   Ajouter une intégration → Anniversary Celebration**.
+5. Configurer pour ajouter les premières personnes.
 
-10. La carte Lovelace est enregistrée automatiquement par l'intégration : aucune ressource à déclarer à la main.
+La carte Lovelace est enregistrée automatiquement par l'intégration : aucune
+ressource à déclarer à la main.
 
 ## Configuration
 
@@ -122,7 +123,7 @@ ou supprimer une personne. Chaque personne possède :
 | Nom | Non | Nom de famille, optionnel |
 | Date de naissance | Oui | Utilisée pour calculer l'âge et le compte à rebours |
 | Statut | Oui | Vivant(e) ou Décédé(e) — change le message de notification |
-| Horaires de notification | Non | Jusqu'à deux horaires le jour J (par défaut 09:00). Deux horaires identiques sont automatiquement refusés/dédupliqués. |
+| Horaires de notification | Non | Jusqu'à deux horaires le jour J (par défaut 09:00). Les horaires en double sont rejetés/dédupliqués |
 | Appareils/services à notifier | Non | Un ou plusieurs services `notify.*` ; laissé vide, seule la notification persistante Home Assistant est créée |
 
 ## Carte — configuration
@@ -132,7 +133,7 @@ type: custom:anniversary-celebration-card
 title_alive: "🎂 Anniversaires"
 title_deceased: "🕯️ Souvenirs"
 show_deceased: true
-max_items: 0 # 0 ou absent = toutes les personnes ; sinon nombre libre
+max_items: 0   # 0 ou absent = toutes les personnes ; sinon nombre libre
 ```
 
 ## Fiabilité des notifications
@@ -140,12 +141,13 @@ max_items: 0 # 0 ou absent = toutes les personnes ; sinon nombre libre
 Pas de minuteur unique programmé des mois à l'avance (qui se perdrait à un
 redémarrage de Home Assistant, même si l'anniversaire est dans 8 mois).
 L'intégration recalcule l'état de chaque personne **toutes les minutes** ;
-dès que le jour J et l'un des horaires configurés est atteint, le créneau est
-traité indépendamment des autres. La réussite de chaque service `notify.*`
-est mémorisée séparément : un appareil en échec est réessayé sans renvoyer
-la notification aux appareils qui l'ont déjà reçue. Une notification
-persistante Home Assistant est également créée. L'état est enregistré dans
-le stockage persistant afin de résister aux redémarrages.
+dès que le jour J et l'un des horaires configurés sont atteints, chaque
+horaire est traité indépendamment. La réussite est suivie séparément pour
+chaque service `notify.*` : une cible en échec est retentée sans jamais
+renvoyer la notification aux cibles déjà réussies. Une notification
+persistante Home Assistant est en plus toujours créée, et l'état d'envoi
+est sauvegardé dans un stockage persistant pour survivre à un redémarrage
+de Home Assistant.
 
 ## Langues disponibles
 

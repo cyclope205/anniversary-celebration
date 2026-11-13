@@ -60,21 +60,21 @@ Home Assistant integration that tracks the birthdays of living people and keeps 
 ## Features
 
 - Add/edit/remove people through the UI (Settings →
-  Devices & services → Anniversary Celebration → Configure): first name, last name,
-  date of birth, status (alive / deceased), notification time
-  (optional), device/service to notify (optional).
+Devices & services → Anniversary Celebration → Configure): first name, last name,
+date of birth, status (alive / deceased), up to two notification times
+(optional), one or more devices/services to notify (optional).
 - One sensor per person (`sensor.<first_name>_<last_name>`): number of days until the
-  next birthday, current age, age at the next birthday, date of
-  birth, status, and whether today's notification has already been sent.
+next birthday, current age, age at the next birthday, date of
+birth, status, and whether today's notification has already been sent.
 - Deceased people can also be notified (a different "in
-  memory" message instead of the living one).
+memory" message instead of the living one).
 - `anniversary-celebration-card` card: builds itself automatically from
-  the configured people (no need to touch the dashboard YAML on every
-  addition), sorted by proximity, with a 🔔 next to the name
-  when a reminder device/service is configured for that person.
-  The number of people displayed is freely configurable
-  (`max_items`), and a visual editor lets you show or hide the
-  Memories section without writing any YAML.
+the configured people (no need to touch the dashboard YAML on every
+addition), sorted by proximity, with a 🔔 next to the name
+when a reminder device/service is configured for that person.
+The number of people displayed is freely configurable
+(`max_items`), and a visual editor lets you show or hide the
+Memories section without writing any YAML.
 
 ## Screenshots
 
@@ -86,9 +86,9 @@ Add-a-person form (integration options):
 
 <img width="600" alt="Add a person form" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794518104949-7f50ec1c.png" />
 
-Choosing the notification time and device/service to notify (further down the same form):
+Choosing the notification times and the devices/services to notify (further down the same form):
 
-<img width="600" alt="Choosing the notification time and service" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-notify-config-redacted3.png" />
+<img width="600" alt="Choosing the notification times and services" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794553602042-1cabbc4d.jpg" />
 
 Notification on the day (persistent in Home Assistant and on mobile):
 
@@ -132,7 +132,7 @@ type: custom:anniversary-celebration-card
 title_alive: "🎂 Birthdays"
 title_deceased: "🕯️ Memories"
 show_deceased: true
-max_items: 0   # 0 or absent = everyone; otherwise any number
+max_items: 0 # 0 or absent = everyone; otherwise any number
 ```
 
 ## Notification reliability
@@ -170,12 +170,12 @@ above).
 ## Good to know
 
 - The check runs every minute: a notification scheduled for
-  a given time may fire up to ~59 seconds after it, never
-  before.
+a given time may fire up to ~59 seconds after it, never
+before.
 - "Deceased" status does not prevent the notification: only the message
-  changes ("in memory" instead of "happy birthday").
+changes ("in memory" instead of "happy birthday").
 - Bugs and feature requests are reported via the repository's
-  **Issues** tab.
+**Issues** tab.
 
 ## License
 
