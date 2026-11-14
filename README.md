@@ -2,7 +2,7 @@
 
 🇬🇧 [English version](README.en.md)
 
-[![HACS: Default](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/integration)
+[![HACS: Custom](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
 [![Release](https://img.shields.io/github/v/release/cyclope205/anniversary-celebration)](https://github.com/cyclope205/anniversary-celebration/releases)
 [![Build](https://github.com/cyclope205/anniversary-celebration/actions/workflows/validate.yml/badge.svg)](https://github.com/cyclope205/anniversary-celebration/actions/workflows/validate.yml)
 [![Tests](https://github.com/cyclope205/anniversary-celebration/actions/workflows/tests.yml/badge.svg)](https://github.com/cyclope205/anniversary-celebration/actions/workflows/tests.yml)
@@ -103,14 +103,18 @@ Notification le jour J (persistante dans Home Assistant et sur mobile) :
 
 ## Installation (HACS)
 
-1. HACS → Intégrations → ⋮ → Dépôts personnalisés → ajouter ce dépôt
-   (catégorie Intégration), ou rechercher **Anniversary Celebration**
-   si le dépôt est déjà référencé.
-2. Installer « Anniversary Celebration ».
-3. Redémarrer Home Assistant.
-4. Ajouter l'intégration : **Paramètres → Appareils et services →
-   Ajouter une intégration → Anniversary Celebration**.
-5. Configurer pour ajouter les premières personnes.
+1. Ouvrir Anniversary Celebration dans HACS et l'installer :
+2. [![Ouvrir dans HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=cyclope205&repository=anniversary-celebration&category=integration)
+3. [![Ouvrir dans Marketplace](https://my.home-assistant.io/badges/marketplace_repository.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=cyclope205&repository=anniversary-celebration&category=integration)
+4. ou rechercher **Anniversary Celebration** dans HACS si le dépôt est
+   déjà référencé (sinon : HACS → Intégrations → ⋮ → Dépôts
+   personnalisés → ajouter ce dépôt, catégorie Intégration).
+5. Redémarrer Home Assistant.
+6. Ajouter l'intégration :
+7. [![Ajouter l'intégration](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=anniversary_celebration)
+8. ou **Paramètres → Appareils et services → Ajouter une intégration →
+   Anniversary Celebration**.
+9. Configurer pour ajouter les premières personnes.
 
 La carte Lovelace est enregistrée automatiquement par l'intégration : aucune
 ressource à déclarer à la main.
