@@ -104,14 +104,14 @@ Notification le jour J (persistante dans Home Assistant et sur mobile) :
 ## Installation (HACS)
 
 1. Ouvrir Anniversary Celebration dans HACS et l'installer :
-2. [![Ouvrir dans HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=cyclope205&repository=anniversary-celebration&category=integration)
-3. [![Ouvrir dans Marketplace](https://my.home-assistant.io/badges/marketplace_repository.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=cyclope205&repository=anniversary-celebration&category=integration)
+2. [![Ouvrir dans HACS](https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/badges/badge-hacs-fr.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=cyclope205&repository=anniversary-celebration&category=integration)
+3. [![Ouvrir dans Marketplace](https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/badges/badge-marketplace-fr.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=cyclope205&repository=anniversary-celebration&category=integration)
 4. ou rechercher **Anniversary Celebration** dans HACS si le dépôt est
    déjà référencé (sinon : HACS → Intégrations → ⋮ → Dépôts
    personnalisés → ajouter ce dépôt, catégorie Intégration).
 5. Redémarrer Home Assistant.
 6. Ajouter l'intégration :
-7. [![Ajouter l'intégration](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=anniversary_celebration)
+7. [![Ajouter l'intégration](https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/badges/badge-add-integration-fr.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=anniversary_celebration)
 8. ou **Paramètres → Appareils et services → Ajouter une intégration →
    Anniversary Celebration**.
 9. Configurer pour ajouter les premières personnes.
