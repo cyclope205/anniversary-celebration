@@ -21,16 +21,26 @@ from homeassistant.util import dt as dt_util
 from .const import (
     CARD_FILENAME,
     CARD_URL_PATH,
+    CONF_ANNOUNCE_BIRTHDAY,
+    CONF_ANNOUNCE_DEATH,
+    CONF_ANNOUNCE_SOUVENIR,
+    CONF_ANNOUNCE_TARGETS,
+    CONF_ANNOUNCE_TIME,
+    CONF_ANNOUNCE_TTS_ENTITY,
     CONF_BIRTH_DATE,
+    CONF_DEATH_DATE,
+    CONF_DEFAULT_NOTIFY_TARGETS,
     CONF_FIRST_NAME,
     CONF_LAST_NAME,
     CONF_PEOPLE,
     CONF_PERSON_ID,
     CONF_STATUS,
     DOMAIN,
+    NOTIFIED_KEY_DEATH_SUFFIX,
     PLATFORMS,
     SIGNAL_PEOPLE_UPDATED,
     STATUS_ALIVE,
+    STATUS_DECEASED,
     STORAGE_KEY_PREFIX,
     STORAGE_VERSION,
 )
@@ -199,6 +209,8 @@ async def _async_check_and_notify(hass: HomeAssistant, entry: ConfigEntry) -> No
         mobile_sent_today: dict = data["mobile_sent_today"]
         changed = False
 
+        default_targets = [t for t in entry.options.get(CONF_DEFAULT_NOTIFY_TARGETS, []) if t]
+
         for person in people:
             try:
                 birth = parse_birth_date(person[CONF_BIRTH_DATE])
@@ -206,18 +218,21 @@ async def _async_check_and_notify(hass: HomeAssistant, entry: ConfigEntry) -> No
                 continue
 
             person_id = person[CONF_PERSON_ID]
+            status = person.get(CONF_STATUS, STATUS_ALIVE)
             notify_times = normalize_notify_times(person)
+
+            # --- Birthday / "souvenir" written notification (same trigger
+            # as before; now also receives the integration-level default
+            # notify targets, unioned in _async_send_notification). ---
             person_notified = notified.get(person_id, {})
             due = due_slots(
                 birth, today, now.hour, now.minute, notify_times, person_notified
             )
-            if not due:
-                continue
-
             person_mobile_sent = mobile_sent_today.get(person_id, {})
             for slot_index in due:
                 persisted, mobile_changed, mobile_fully_ok = await _async_send_notification(
-                    hass, person, birth, today, slot_index, person_mobile_sent
+                    hass, person, birth, today, slot_index, person_mobile_sent,
+                    kind="birthday", default_targets=default_targets,
                 )
                 if persisted and mobile_fully_ok:
                     person_notified[str(slot_index)] = today_iso
@@ -235,6 +250,77 @@ async def _async_check_and_notify(hass: HomeAssistant, entry: ConfigEntry) -> No
                     mobile_sent_today[person_id] = person_mobile_sent
                     changed = True
 
+            # --- Death anniversary: a separate, independent yearly trigger
+            # for a deceased person with a death date configured. Tracked
+            # under a namespaced virtual person id (NOTIFIED_KEY_DEATH_SUFFIX)
+            # within the same notified / mobile_sent_today maps, so it can
+            # never collide with this same person's birthday slot tracking
+            # above - due_slots() is generic date math, it works the same
+            # way on a death date as it does on a birth date. ---
+            death_date = None
+            death_date_raw = person.get(CONF_DEATH_DATE)
+            if status == STATUS_DECEASED and death_date_raw:
+                try:
+                    death_date = parse_birth_date(death_date_raw)
+                except ValueError:
+                    death_date = None
+
+            if death_date is not None:
+                death_key = f"{person_id}{NOTIFIED_KEY_DEATH_SUFFIX}"
+                death_notified = notified.get(death_key, {})
+                due_death = due_slots(
+                    death_date, today, now.hour, now.minute, notify_times, death_notified
+                )
+                death_mobile_sent = mobile_sent_today.get(death_key, {})
+                for slot_index in due_death:
+                    persisted, mobile_changed, mobile_fully_ok = await _async_send_notification(
+                        hass, person, death_date, today, slot_index, death_mobile_sent,
+                        kind="death", default_targets=default_targets,
+                    )
+                    if persisted and mobile_fully_ok:
+                        death_notified[str(slot_index)] = today_iso
+                        notified[death_key] = death_notified
+                        changed = True
+                    if mobile_changed:
+                        mobile_sent_today[death_key] = death_mobile_sent
+                        changed = True
+
+            # --- Spoken announcement: fully independent of the written
+            # notifications above - its own time, its own media_player
+            # targets, its own TTS entity, and three separate opt-in
+            # toggles (one per trigger kind, all default False). Best
+            # effort: a failure here never blocks or retries the written
+            # path, and is itself never retried the next day even on
+            # failure, since a TTS line that says "aujourd'hui" would be
+            # wrong if actually spoken a day late. ---
+            announce_time = (person.get(CONF_ANNOUNCE_TIME) or "").strip()
+            announce_targets = [t for t in (person.get(CONF_ANNOUNCE_TARGETS) or []) if t]
+            if announce_time and announce_targets:
+                announce_jobs = []
+                if status == STATUS_ALIVE and person.get(CONF_ANNOUNCE_BIRTHDAY):
+                    announce_jobs.append((birth, f"{person_id}:announce", "anniversary"))
+                elif status == STATUS_DECEASED and person.get(CONF_ANNOUNCE_SOUVENIR):
+                    announce_jobs.append((birth, f"{person_id}:announce", "anniversary"))
+                if death_date is not None and person.get(CONF_ANNOUNCE_DEATH):
+                    announce_jobs.append((death_date, f"{person_id}:death:announce", "death"))
+
+                for trigger_date, announce_key, announce_kind in announce_jobs:
+                    announce_sent = notified.get(announce_key, {})
+                    due_announce = due_slots(
+                        trigger_date, today, now.hour, now.minute,
+                        [announce_time], announce_sent,
+                    )
+                    if due_announce:
+                        message = _announcement_message(
+                            person, announce_kind, trigger_date, today
+                        )
+                        await _async_send_announcement(hass, person, message)
+                        # Always marked as done today, success or not - see
+                        # the comment above on why this is never retried.
+                        announce_sent["0"] = today_iso
+                        notified[announce_key] = announce_sent
+                        changed = True
+
         if changed:
             await data["store"].async_save(
                 {"notified": notified, "mobile_sent_today": mobile_sent_today}
@@ -245,8 +331,69 @@ async def _async_check_and_notify(hass: HomeAssistant, entry: ConfigEntry) -> No
         async_dispatcher_send(hass, SIGNAL_PEOPLE_UPDATED)
 
 
+def _announcement_message(person, kind: str, trigger_date, today) -> str:
+    """Build the spoken-announcement text.
+
+    Reuses the same age/duration wording as the written notification for
+    the same trigger (see _async_send_notification), so the two channels
+    never say something different about the same event.
+    """
+    full_name = f"{person.get(CONF_FIRST_NAME, '')} {person.get(CONF_LAST_NAME, '') or ''}".strip()
+    years = current_age(trigger_date, today)
+    if kind == "death":
+        return (
+            f"Aujourd'hui est l'anniversaire du décès de {full_name}, "
+            f"décédé(e) depuis {years} ans."
+        )
+    if person.get(CONF_STATUS, STATUS_ALIVE) == STATUS_ALIVE:
+        return f"{full_name} a {years} ans aujourd'hui !"
+    return f"{full_name} aurait eu {years} ans aujourd'hui."
+
+
+async def _async_send_announcement(hass, person, message: str) -> bool:
+    """Speak message on every configured media_player via the configured
+    TTS entity.
+
+    Entirely separate from the written notify.* path: its own targets,
+    its own TTS entity. Best-effort - a failure here is only logged, never
+    raised, and never blocks or retries the written notification.
+    """
+    tts_entity = (person.get(CONF_ANNOUNCE_TTS_ENTITY) or "").strip()
+    media_players = [m for m in (person.get(CONF_ANNOUNCE_TARGETS) or []) if m]
+    if not tts_entity or not media_players:
+        return False
+    ok = True
+    for player in media_players:
+        try:
+            await hass.services.async_call(
+                "tts",
+                "speak",
+                {
+                    "entity_id": tts_entity,
+                    "media_player_entity_id": player,
+                    "message": message,
+                },
+                blocking=True,
+            )
+        except Exception as err:  # noqa: BLE001 - never let a bad target break the loop
+            ok = False
+            _LOGGER.error(
+                "Anniversary Celebration: échec de l'annonce vocale sur %s : %s",
+                player,
+                err,
+            )
+    return ok
+
+
 async def _async_send_notification(
-    hass, person, birth, today, slot_index: int, person_mobile_sent: dict[str, dict[str, str]]
+    hass,
+    person,
+    birth,
+    today,
+    slot_index: int,
+    person_mobile_sent: dict[str, dict[str, str]],
+    kind: str = "birthday",
+    default_targets: list[str] | None = None,
 ) -> tuple[bool, bool, bool]:
     """Send one due notification-time slot for a person.
 
@@ -277,7 +424,13 @@ async def _async_send_notification(
     """
     full_name = f"{person.get(CONF_FIRST_NAME, '')} {person.get(CONF_LAST_NAME, '') or ''}".strip()
     age = current_age(birth, today)
-    if person.get(CONF_STATUS, STATUS_ALIVE) == STATUS_ALIVE:
+    if kind == "death":
+        title = "🕯️ Anniversaire de décès"
+        message = (
+            f"Aujourd'hui est l'anniversaire du décès de {full_name}, "
+            f"décédé(e) depuis {age} ans."
+        )
+    elif person.get(CONF_STATUS, STATUS_ALIVE) == STATUS_ALIVE:
         title = "🎂🎉 Joyeux anniversaire !"
         message = f"{full_name} a {age} ans aujourd'hui !"
     else:
@@ -286,7 +439,16 @@ async def _async_send_notification(
 
     person_id = person[CONF_PERSON_ID]
     today_iso = today.isoformat()
-    targets = [t for t in normalize_notify_targets(person) if "." in t]
+    # Union of this person's own notify_targets and the integration-level
+    # defaults (CONF_DEFAULT_NOTIFY_TARGETS), deduplicated (dict.fromkeys
+    # preserves order while dropping repeats) so a target listed in both
+    # is only ever called once.
+    targets = list(
+        dict.fromkeys(
+            [t for t in normalize_notify_targets(person) if "." in t]
+            + [t for t in (default_targets or []) if "." in t]
+        )
+    )
     slot_key = str(slot_index)
     sent_targets: dict[str, str] = person_mobile_sent.get(slot_key, {})
     mobile_changed = False
@@ -330,7 +492,7 @@ async def _async_send_notification(
             {
                 "title": title,
                 "message": message,
-                "notification_id": f"{DOMAIN}_{person_id}_{slot_key}_{today_iso}",
+                "notification_id": f"{DOMAIN}_{person_id}_{kind}_{slot_key}_{today_iso}",
             },
             blocking=True,
         )
@@ -339,7 +501,8 @@ async def _async_send_notification(
         _LOGGER.error("Anniversary Celebration: échec persistent_notification : %s", err)
 
     _LOGGER.info(
-        "Anniversary Celebration: notification envoyée pour %s (cibles=%s, toutes_ok=%s, persistante=%s)",
+        "Anniversary Celebration: notification [%s] envoyée pour %s (cibles=%s, toutes_ok=%s, persistante=%s)",
+        kind,
         full_name,
         "oui" if targets else "non",
         "oui" if mobile_fully_ok else "non",
