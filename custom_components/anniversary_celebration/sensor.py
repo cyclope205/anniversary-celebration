@@ -12,13 +12,21 @@ from homeassistant.util import dt as dt_util
 
 from .const import (
     ATTRIBUTION,
+    CONF_ANNOUNCE_BIRTHDAY,
+    CONF_ANNOUNCE_DEATH,
+    CONF_ANNOUNCE_SOUVENIR,
+    CONF_ANNOUNCE_TARGETS,
+    CONF_ANNOUNCE_TIME,
+    CONF_ANNOUNCE_TTS_ENTITY,
     CONF_BIRTH_DATE,
+    CONF_DEATH_DATE,
     CONF_FIRST_NAME,
     CONF_LAST_NAME,
     CONF_PEOPLE,
     CONF_PERSON_ID,
     CONF_STATUS,
     DOMAIN,
+    NOTIFIED_KEY_DEATH_SUFFIX,
     SIGNAL_PEOPLE_UPDATED,
     STATUS_ALIVE,
 )
@@ -114,6 +122,37 @@ class AnniversaryPersonSensor(SensorEntity):
             attrs["date"] = birth.isoformat()
             attrs["current_years"] = current_age(birth, today)
             attrs["years_at_anniversary"] = age_at_next_anniversary(birth, today)
+
+        # Death anniversary (Feature A): independent from the birthday
+        # "souvenir" reminder above, and only present at all when a death
+        # date is actually configured.
+        death_date_raw = self._person.get(CONF_DEATH_DATE)
+        if death_date_raw:
+            try:
+                death_date = date.fromisoformat(death_date_raw)
+            except ValueError:
+                death_date = None
+            if death_date is not None:
+                death_key = f"{person_id}{NOTIFIED_KEY_DEATH_SUFFIX}"
+                death_notified = notified.get(death_key, {})
+                if isinstance(death_notified, dict):
+                    notified_death_today = today_iso in death_notified.values()
+                else:
+                    notified_death_today = death_notified == today_iso
+                attrs["death_date"] = death_date.isoformat()
+                attrs["years_since_death"] = current_age(death_date, today)
+                attrs["notified_death_today"] = notified_death_today
+
+        # Spoken announcement config (Feature C): exposed mainly so the
+        # bundled card and any automation/template can see what is
+        # configured, same spirit as notify_times/notify_targets above.
+        attrs["announce_targets"] = list(self._person.get(CONF_ANNOUNCE_TARGETS) or [])
+        attrs["announce_tts_entity"] = self._person.get(CONF_ANNOUNCE_TTS_ENTITY) or ""
+        attrs["announce_time"] = self._person.get(CONF_ANNOUNCE_TIME) or ""
+        attrs["announce_birthday"] = bool(self._person.get(CONF_ANNOUNCE_BIRTHDAY, False))
+        attrs["announce_souvenir"] = bool(self._person.get(CONF_ANNOUNCE_SOUVENIR, False))
+        attrs["announce_death"] = bool(self._person.get(CONF_ANNOUNCE_DEATH, False))
+
         return attrs
 
     def _birth_date(self) -> date | None:
