@@ -11,7 +11,15 @@ from homeassistant.core import callback
 from homeassistant.helpers import selector
 
 from .const import (
+    CONF_ANNOUNCE_BIRTHDAY,
+    CONF_ANNOUNCE_DEATH,
+    CONF_ANNOUNCE_SOUVENIR,
+    CONF_ANNOUNCE_TARGETS,
+    CONF_ANNOUNCE_TIME,
+    CONF_ANNOUNCE_TTS_ENTITY,
     CONF_BIRTH_DATE,
+    CONF_DEATH_DATE,
+    CONF_DEFAULT_NOTIFY_TARGETS,
     CONF_FIRST_NAME,
     CONF_LAST_NAME,
     CONF_NOTIFY_TARGET,
@@ -76,6 +84,36 @@ def _validate_person_input(user_input: dict[str, Any]) -> dict[str, str]:
             if len(normalized) < 2:
                 errors[CONF_NOTIFY_TIME_2] = "invalid_time"
 
+    # Optional: only meaningful when CONF_STATUS is Décédé(e), but always
+    # validated/normalized here regardless of status, same as the other
+    # fields above. Triggers its own independent yearly reminder, separate
+    # from the birthday "souvenir" notification.
+    death_date_raw = (user_input.get(CONF_DEATH_DATE) or "").strip()
+    if death_date_raw:
+        try:
+            parsed_death = parse_flexible_date(death_date_raw)
+        except ValueError:
+            errors[CONF_DEATH_DATE] = "invalid_date"
+        else:
+            user_input[CONF_DEATH_DATE] = parsed_death.isoformat()
+            if CONF_BIRTH_DATE not in errors and parsed_death < parsed:
+                errors[CONF_DEATH_DATE] = "death_before_birth"
+
+    # Same HH:MM[:SS] validation as CONF_NOTIFY_TIME_2 above, for the
+    # optional spoken-announcement time.
+    announce_time_raw = (user_input.get(CONF_ANNOUNCE_TIME) or "").strip()
+    if announce_time_raw:
+        parts = announce_time_raw.split(":")
+        try:
+            if len(parts) not in (2, 3) or not all(p.isdigit() for p in parts):
+                raise ValueError
+            hh, mm = int(parts[0]), int(parts[1])
+            ss = int(parts[2]) if len(parts) == 3 else 0
+            if not (0 <= hh <= 23 and 0 <= mm <= 59 and 0 <= ss <= 59):
+                raise ValueError
+        except (ValueError, IndexError):
+            errors[CONF_ANNOUNCE_TIME] = "invalid_time"
+
     return errors
 
 
@@ -117,6 +155,24 @@ def _collect_person_fields(user_input: dict[str, Any]) -> dict[str, Any]:
     data[CONF_NOTIFY_TARGETS] = list(targets)
 
     data.pop(CONF_NOTIFY_TARGET, None)
+
+    # Death date: stored only when actually provided, never as an empty
+    # string, so util/__init__ code can treat its mere presence as "this
+    # person has a death date configured" without an extra truthiness check.
+    death_date = (data.pop(CONF_DEATH_DATE, None) or "").strip()
+    if death_date:
+        data[CONF_DEATH_DATE] = death_date
+
+    # Spoken announcement fields: always normalized to a concrete value
+    # (never left missing), so a person saved before this feature existed
+    # and one saved after look identical once saved - no legacy fallback
+    # needed, unlike the notify_time / notify_target fields above.
+    data[CONF_ANNOUNCE_TARGETS] = list(data.get(CONF_ANNOUNCE_TARGETS) or [])
+    data[CONF_ANNOUNCE_TTS_ENTITY] = (data.get(CONF_ANNOUNCE_TTS_ENTITY) or "").strip()
+    data[CONF_ANNOUNCE_TIME] = (data.get(CONF_ANNOUNCE_TIME) or "").strip()
+    data[CONF_ANNOUNCE_BIRTHDAY] = bool(data.get(CONF_ANNOUNCE_BIRTHDAY, False))
+    data[CONF_ANNOUNCE_SOUVENIR] = bool(data.get(CONF_ANNOUNCE_SOUVENIR, False))
+    data[CONF_ANNOUNCE_DEATH] = bool(data.get(CONF_ANNOUNCE_DEATH, False))
 
     return data
 
@@ -175,6 +231,48 @@ def _person_schema(hass, defaults: dict[str, Any] | None = None) -> vol.Schema:
                     multiple=True,
                 )
             ),
+            # Only used when CONF_STATUS is Décédé(e); see
+            # _validate_person_input for the "not before birth date" check.
+            # Independent from the birthday "souvenir" reminder: triggers
+            # its own yearly death-anniversary notification.
+            vol.Optional(
+                CONF_DEATH_DATE, default=defaults.get(CONF_DEATH_DATE, "")
+            ): str,
+            # Spoken announcement (TTS), entirely separate from the written
+            # notify_targets above: its own media_player targets, its own
+            # TTS entity, its own time, and its own three opt-in toggles
+            # (all default False, so nobody gets an unexpected spoken
+            # announcement just from configuring notify_targets).
+            vol.Optional(
+                CONF_ANNOUNCE_TARGETS,
+                default=defaults.get(CONF_ANNOUNCE_TARGETS, []),
+            ): selector.EntitySelector(
+                selector.EntitySelectorConfig(domain="media_player", multiple=True)
+            ),
+            vol.Optional(
+                CONF_ANNOUNCE_TTS_ENTITY,
+                default=defaults.get(CONF_ANNOUNCE_TTS_ENTITY, ""),
+            ): selector.EntitySelector(
+                selector.EntitySelectorConfig(domain="tts")
+            ),
+            # Plain str like CONF_NOTIFY_TIME_2 above, for the same reason:
+            # must stay optional. An empty value here simply means the
+            # spoken announcement never fires, regardless of the toggles.
+            vol.Optional(
+                CONF_ANNOUNCE_TIME, default=defaults.get(CONF_ANNOUNCE_TIME, "")
+            ): str,
+            vol.Optional(
+                CONF_ANNOUNCE_BIRTHDAY,
+                default=defaults.get(CONF_ANNOUNCE_BIRTHDAY, False),
+            ): bool,
+            vol.Optional(
+                CONF_ANNOUNCE_SOUVENIR,
+                default=defaults.get(CONF_ANNOUNCE_SOUVENIR, False),
+            ): bool,
+            vol.Optional(
+                CONF_ANNOUNCE_DEATH,
+                default=defaults.get(CONF_ANNOUNCE_DEATH, False),
+            ): bool,
         }
     )
 
@@ -217,14 +315,55 @@ class AnniversaryCelebrationOptionsFlow(config_entries.OptionsFlow):
         return list(self.config_entry.options.get(CONF_PEOPLE, []))
 
     def _save(self, people: list[dict[str, Any]]):
-        return self.async_create_entry(title="", data={CONF_PEOPLE: people})
+        # Preserve any other top-level option (e.g.
+        # CONF_DEFAULT_NOTIFY_TARGETS): async_create_entry's data replaces
+        # config_entry.options wholesale, it does not merge, so overwriting
+        # with {CONF_PEOPLE: people} alone would silently wipe out the
+        # integration-level default targets.
+        options = dict(self.config_entry.options)
+        options[CONF_PEOPLE] = people
+        return self.async_create_entry(title="", data=options)
+
+    def _save_default_targets(self, targets: list[str]):
+        options = dict(self.config_entry.options)
+        options[CONF_DEFAULT_NOTIFY_TARGETS] = targets
+        return self.async_create_entry(title="", data=options)
 
     async def async_step_init(self, user_input: dict[str, Any] | None = None):
         people = self._people
         menu_options = ["add_person"]
         if people:
             menu_options += ["edit_person", "remove_person"]
+        menu_options += ["default_targets"]
         return self.async_show_menu(step_id="init", menu_options=menu_options)
+
+    async def async_step_default_targets(
+        self, user_input: dict[str, Any] | None = None
+    ):
+        """Integration-level notify.* targets added to every notification,
+        on top of each person's own notify_targets (see __init__.py's
+        _async_send_notification, which unions the two lists)."""
+        if user_input is not None:
+            return self._save_default_targets(
+                list(user_input.get(CONF_DEFAULT_NOTIFY_TARGETS, []))
+            )
+        current = self.config_entry.options.get(CONF_DEFAULT_NOTIFY_TARGETS, [])
+        return self.async_show_form(
+            step_id="default_targets",
+            data_schema=vol.Schema(
+                {
+                    vol.Optional(
+                        CONF_DEFAULT_NOTIFY_TARGETS, default=current
+                    ): selector.SelectSelector(
+                        selector.SelectSelectorConfig(
+                            options=_notify_targets(self.hass),
+                            mode=selector.SelectSelectorMode.DROPDOWN,
+                            multiple=True,
+                        )
+                    )
+                }
+            ),
+        )
 
     async def async_step_add_person(self, user_input: dict[str, Any] | None = None):
         errors: dict[str, str] = {}
