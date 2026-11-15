@@ -68,6 +68,16 @@ next birthday, current age, age at the next birthday, date of
 birth, status, and whether today's notification has already been sent.
 - Deceased people can also be notified (a different "in
 memory" message instead of the living one).
+- Independent reminder for the death anniversary (if a death date is set):
+a separate trigger from the birthday one, with its own anti-duplicate
+tracking.
+- Integration-level default notification targets (options menu), added
+automatically on top of each person's own targets — handy for notifying a
+shared device without configuring it on every person.
+- Optional spoken announcement (text-to-speech), entirely independent from
+the written notifications above: its own speakers, its own TTS engine, its
+own time, and three separate opt-in checkboxes (birthday, in memory, death
+anniversary), all off by default.
 - `anniversary-celebration-card` card: builds itself automatically from
 the configured people (no need to touch the dashboard YAML on every
 addition), sorted by proximity, with a 🔔 next to the name
@@ -128,6 +138,25 @@ or remove a person. Each person has:
 | Status | Yes | Alive or Deceased — changes the notification message |
 | Notification times | No | Up to two times on the day (default 09:00). Duplicate times are rejected/deduplicated. |
 | Devices/services to notify | No | One or more `notify.*` services; if left empty, only the Home Assistant persistent notification is created |
+| Death date | No | Only useful if status is Deceased. Triggers a separate yearly reminder from the birthday one. Must be after the date of birth |
+| Speakers / TTS engine / announcement time | No | Spoken announcement configuration (see below) |
+| "Announce..." checkboxes | No | Three independent checkboxes (birthday, in memory, death anniversary), all off by default |
+
+A separate menu in the integration's options, **Default notification
+targets**, lets you choose `notify.*` services that automatically receive
+every notification, on top of the ones configured on each person.
+
+### Spoken announcement
+
+Optional feature, independent from the written notifications: for each
+person, you can configure one or more `media_player.*` entities and a
+text-to-speech engine (`tts.*`), plus a time of its own for the
+announcement (different, if needed, from the written notification times).
+Three checkboxes, all off by default, choose which events are spoken aloud:
+birthday (alive), in memory (deceased), death anniversary. Unlike written
+notifications, a missed spoken announcement is never retried the next day —
+it would say "today" about a day that has already passed, which would be
+wrong.
 
 ## Card — configuration
 
@@ -149,7 +178,10 @@ time slot is handled independently. Success is tracked separately for every
 `notify.*` service: a failed target is retried without resending to targets
 that already succeeded. A Home Assistant persistent notification is also
 created, and the delivery state is saved to persistent storage so it survives
-Home Assistant restarts.
+Home Assistant restarts. The death-anniversary reminder follows the exact
+same guarantees, with its own tracking independent from the birthday one.
+The spoken announcement, however, is best-effort: it is never retried the
+next day on failure (see the Spoken announcement section above).
 
 ## Available languages
 
@@ -161,6 +193,11 @@ Danish, Finnish, Czech, Slovak, Hungarian, Turkish, Greek, Romanian,
 Ukrainian, and Catalan. Home Assistant automatically picks the translation
 matching the language set in your user profile; if there is no
 match, English is used.
+
+*Note: the fields added for the death date, default targets, and spoken
+announcement are currently translated only into French and English; the
+other 20 languages still show the field's technical name until the
+translations are updated.*
 
 ## Tests
 
