@@ -32,6 +32,36 @@ STATUSES = [STATUS_ALIVE, STATUS_DECEASED]
 
 DEFAULT_NOTIFY_TIME = "09:00:00"
 
+# Optional death date for a deceased person. Independent from the birth-date
+# "souvenir" anniversary: this triggers its own separate yearly reminder
+# ("anniversaire de deces"), tracked under its own namespaced key in the
+# same notified / mobile_sent_today storage maps (see NOTIFIED_KEY_DEATH_SUFFIX
+# below) so it never collides with that person's birthday slots.
+CONF_DEATH_DATE = "death_date"
+
+# Suffix appended to a person's id to build a distinct, namespaced "virtual
+# person id" used as a key in the notified / mobile_sent_today storage maps
+# when tracking the death-anniversary trigger, so it can never collide with
+# that same person's real birthday slot tracking (which uses the bare
+# person id). Example: notified["<person_id>:death"] = {...}.
+NOTIFIED_KEY_DEATH_SUFFIX = ":death"
+
+# Integration-level (not per-person) list of notify.* targets that get every
+# notification in addition to each person's own notify_targets. Lives in the
+# config entry's options, next to CONF_PEOPLE, not inside a person dict.
+CONF_DEFAULT_NOTIFY_TARGETS = "default_notify_targets"
+
+# Optional spoken (TTS) announcement, per person. Entirely separate from the
+# written notify_targets above: its own target list (media_player entities),
+# its own TTS entity, its own time, and three independent opt-in toggles
+# (all default False) for which trigger(s) should be spoken out loud.
+CONF_ANNOUNCE_TARGETS = "announce_targets"
+CONF_ANNOUNCE_TTS_ENTITY = "announce_tts_entity"
+CONF_ANNOUNCE_TIME = "announce_time"
+CONF_ANNOUNCE_BIRTHDAY = "announce_birthday"
+CONF_ANNOUNCE_SOUVENIR = "announce_souvenir"
+CONF_ANNOUNCE_DEATH = "announce_death"
+
 STORAGE_VERSION = 1
 STORAGE_KEY_PREFIX = f"{DOMAIN}_notified"
 
