@@ -69,6 +69,17 @@ Intégration Home Assistant qui suit les anniversaires des personnes vivantes et
   naissance, statut, et si la notification du jour a déjà été envoyée.
 - Les personnes décédées peuvent aussi être notifiées (message « en
   mémoire » différent de celui des vivants).
+- Rappel indépendant pour l'anniversaire de décès (si une date de décès est
+  renseignée) : déclencheur séparé de l'anniversaire de naissance, avec son
+  propre suivi anti-doublon.
+- Cibles de notification par défaut, au niveau de l'intégration (menu des
+  options), ajoutées automatiquement à celles de chaque personne — pratique
+  pour notifier un appareil commun sans le configurer sur chaque fiche.
+- Annonce vocale optionnelle (texte-à-parole), entièrement indépendante des
+  notifications écrites ci-dessus : ses propres haut-parleurs, son propre
+  moteur TTS, son propre horaire, et trois cases à cocher séparées
+  (anniversaire, souvenir, anniversaire de décès), toutes désactivées par
+  défaut.
 - Carte `anniversary-celebration-card` : se construit automatiquement à
   partir des personnes configurées (pas besoin de toucher le YAML du
   dashboard à chaque ajout), triée par proximité, avec un 🔔 à côté du nom
@@ -133,6 +144,27 @@ ou supprimer une personne. Chaque personne possède :
 | Statut | Oui | Vivant(e) ou Décédé(e) — change le message de notification |
 | Horaires de notification | Non | Jusqu'à deux horaires le jour J (par défaut 09:00). Les horaires en double sont rejetés/dédupliqués |
 | Appareils/services à notifier | Non | Un ou plusieurs services `notify.*` ; laissé vide, seule la notification persistante Home Assistant est créée |
+| Date de décès | Non | Uniquement utile si le statut est Décédé(e). Déclenche un rappel annuel séparé de l'anniversaire de naissance. Doit être postérieure à la date de naissance |
+| Haut-parleurs / moteur TTS / horaire de l'annonce | Non | Configuration de l'annonce vocale (voir plus bas) |
+| Cases « Annoncer... » | Non | Trois cases indépendantes (anniversaire, souvenir, anniversaire de décès), toutes désactivées par défaut |
+
+Un menu séparé dans les options de l'intégration, **Cibles de notification
+par défaut**, permet de choisir des services `notify.*` qui reçoivent
+automatiquement toutes les notifications, en plus de celles configurées sur
+chaque personne.
+
+### Annonce vocale
+
+Fonctionnalité facultative, indépendante des notifications écrites : pour
+chaque personne, il est possible de configurer un ou plusieurs
+`media_player.*` et un moteur de synthèse vocale (`tts.*`), ainsi qu'un
+horaire propre à l'annonce (différent, si besoin, des horaires de
+notification écrite). Trois cases à cocher, toutes désactivées par défaut,
+choisissent quels évènements sont annoncés à voix haute : anniversaire
+(vivant), souvenir (décédé), anniversaire de décès. Contrairement aux
+notifications écrites, une annonce vocale manquée n'est jamais retentée le
+lendemain — elle dirait « aujourd'hui » à propos d'un jour passé, ce qui
+serait faux.
 
 ## Carte — configuration
 
@@ -155,7 +187,11 @@ chaque service `notify.*` : une cible en échec est retentée sans jamais
 renvoyer la notification aux cibles déjà réussies. Une notification
 persistante Home Assistant est en plus toujours créée, et l'état d'envoi
 est sauvegardé dans un stockage persistant pour survivre à un redémarrage
-de Home Assistant.
+de Home Assistant. Le rappel d'anniversaire de décès suit exactement les
+mêmes garanties, avec son propre suivi indépendant de celui de
+l'anniversaire de naissance. L'annonce vocale, en revanche, est faite au
+mieux (« best effort ») : elle n'est jamais retentée le lendemain en cas
+d'échec (voir la section Annonce vocale ci-dessus).
 
 ## Langues disponibles
 
@@ -167,6 +203,11 @@ danois, finnois, tchèque, slovaque, hongrois, turc, grec, roumain,
 ukrainien et catalan. Home Assistant choisit automatiquement la traduction
 correspondant à la langue configurée dans votre profil utilisateur ; à
 défaut de correspondance, l'anglais est utilisé.
+
+*Note : les champs ajoutés pour la date de décès, les cibles par défaut et
+l'annonce vocale ne sont actuellement traduits qu'en français et en
+anglais ; les 20 autres langues affichent encore le nom technique du champ
+en attendant une mise à jour des traductions.*
 
 ## Tests
 
