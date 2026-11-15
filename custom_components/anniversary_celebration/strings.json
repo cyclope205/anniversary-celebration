@@ -17,7 +17,8 @@
         "menu_options": {
           "add_person": "Add a person",
           "edit_person": "Edit a person",
-          "remove_person": "Remove a person"
+          "remove_person": "Remove a person",
+          "default_targets": "Default notification targets"
         }
       },
       "add_person": {
@@ -29,11 +30,20 @@
           "status": "Status",
           "notify_time": "Notification time on the anniversary day",
           "notify_time_2": "Second notification time (optional)",
-          "notify_targets": "Devices / services to notify"
+          "notify_targets": "Devices / services to notify",
+          "death_date": "Death date (if applicable)",
+          "announce_targets": "Speakers for the spoken announcement",
+          "announce_tts_entity": "Text-to-speech (TTS) engine",
+          "announce_time": "Spoken announcement time (optional)",
+          "announce_birthday": "Announce birthday (alive)",
+          "announce_souvenir": "Announce in memoriam (deceased)",
+          "announce_death": "Announce death anniversary"
         },
         "data_description": {
           "birth_date": "Type the date: YYYY-MM-DD or DD/MM/YYYY",
-          "notify_time_2": "Optional, HH:MM. Leave empty for a single notification time."
+          "notify_time_2": "Optional, HH:MM. Leave empty for a single notification time.",
+          "death_date": "Only useful if status is Deceased. Must be after the birth date.",
+          "announce_time": "Optional. Empty = no spoken announcement, even if a checkbox above is checked."
         }
       },
       "edit_person": {
@@ -46,11 +56,26 @@
           "notify_time": "Notification time on the anniversary day",
           "notify_time_2": "Second notification time (optional)",
           "notify_targets": "Devices / services to notify",
+          "death_date": "Death date (if applicable)",
+          "announce_targets": "Speakers for the spoken announcement",
+          "announce_tts_entity": "Text-to-speech (TTS) engine",
+          "announce_time": "Spoken announcement time (optional)",
+          "announce_birthday": "Announce birthday (alive)",
+          "announce_souvenir": "Announce in memoriam (deceased)",
+          "announce_death": "Announce death anniversary",
           "person": "Person"
         },
         "data_description": {
           "birth_date": "Type the date: YYYY-MM-DD or DD/MM/YYYY",
-          "notify_time_2": "Optional, HH:MM. Leave empty for a single notification time."
+          "notify_time_2": "Optional, HH:MM. Leave empty for a single notification time.",
+          "death_date": "Only useful if status is Deceased. Must be after the birth date.",
+          "announce_time": "Optional. Empty = no spoken announcement, even if a checkbox above is checked."
+        }
+      },
+      "default_targets": {
+        "title": "Default notification targets",
+        "data": {
+          "default_notify_targets": "Devices / services notified for everyone"
         }
       },
       "remove_person": {
@@ -62,7 +87,8 @@
     },
     "error": {
       "invalid_date": "Unrecognized date. Use YYYY-MM-DD or DD/MM/YYYY.",
-      "invalid_time": "Unrecognized time. Use HH:MM."
+      "invalid_time": "Unrecognized time. Use HH:MM.",
+      "death_before_birth": "The death date cannot be before the birth date."
     }
   }
 }
