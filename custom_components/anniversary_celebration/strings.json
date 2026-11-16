@@ -18,7 +18,8 @@
           "add_person": "Add a person",
           "edit_person": "Edit a person",
           "remove_person": "Remove a person",
-          "default_targets": "Default notification targets"
+          "default_targets": "Default notification targets",
+          "default_announce": "Default spoken announcement"
         }
       },
       "add_person": {
@@ -76,6 +77,20 @@
         "title": "Default notification targets",
         "data": {
           "default_notify_targets": "Devices / services notified for everyone"
+        }
+      },
+      "default_announce": {
+        "title": "Default spoken announcement",
+        "data": {
+          "default_announce_targets": "Speakers for everyone's spoken announcement",
+          "default_announce_tts_entity": "Text-to-speech (TTS) engine",
+          "default_announce_time": "Spoken announcement time (optional)",
+          "default_announce_birthday": "Announce birthdays (alive)",
+          "default_announce_souvenir": "Announce in memoriam (deceased)",
+          "default_announce_death": "Announce death anniversaries"
+        },
+        "data_description": {
+          "default_announce_time": "Optional. Empty = no spoken announcement, even if a checkbox above is checked."
         }
       },
       "remove_person": {
