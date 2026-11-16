@@ -100,6 +100,18 @@ Choosing the notification times and the devices/services to notify (further down
 
 <img width="600" alt="Choosing the notification times and services" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794553602042-1cabbc4d.jpg" />
 
+Default notification targets (separate menu in the integration's options):
+
+<img width="600" alt="Default notification targets" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794818143532-9bf36b6a.png" />
+
+Death date (if status is Deceased, further down the same form):
+
+<img width="600" alt="Death date" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794818344014-c09875fc.png" />
+
+Spoken announcement configuration (speakers, TTS engine, time, and checkboxes, further down the same form):
+
+<img width="600" alt="Spoken announcement configuration" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794818351360-1c8bfe46.png" />
+
 Notification on the day (persistent in Home Assistant and on mobile):
 
 <img width="600" alt="Anniversary Celebration persistent notification" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794531746780-bec780a5.png" />
