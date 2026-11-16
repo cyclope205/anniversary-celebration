@@ -17,6 +17,15 @@ CONF_NOTIFY_TARGET = "notify_target"
 CONF_NOTIFY_TARGETS = "notify_targets"
 DEFAULT_NOTIFY_TIME = "09:00:00"
 
+# Same reasoning as above: kept as literals, in sync with the real
+# constants of the same name in const.py (CONF_FIRST_NAME, CONF_LAST_NAME,
+# CONF_STATUS, STATUS_ALIVE), so announcement_message() below stays
+# testable without a Home Assistant install.
+CONF_FIRST_NAME = "first_name"
+CONF_LAST_NAME = "last_name"
+CONF_STATUS = "status"
+STATUS_ALIVE = "alive"
+
 
 def parse_birth_date(value: str) -> date:
     """Parse an ISO (YYYY-MM-DD) birth date string."""
@@ -206,3 +215,35 @@ def due_slots(
             continue
         due.append(index)
     return due
+
+
+def merge_notify_targets(
+    person_targets: list[str], default_targets: list[str] | None
+) -> list[str]:
+    """Union of a person's own notify.* targets and the integration-level
+    defaults (CONF_DEFAULT_NOTIFY_TARGETS), deduplicated while preserving
+    order, so a target listed in both is only ever called once.
+    """
+    merged = list(person_targets) + [t for t in (default_targets or [])]
+    return list(dict.fromkeys(t for t in merged if t))
+
+
+def announcement_message(person: dict, kind: str, trigger_date: date, today: date) -> str:
+    """Build the spoken-announcement text for _async_send_announcement.
+
+    Reuses the same age/duration wording as the written notification for
+    the same trigger (see __init__.py's _async_send_notification), so the
+    two channels never say something different about the same event.
+    kind is "death" for the death-anniversary trigger, anything else
+    (normally "anniversary") for the birthday/"souvenir" trigger.
+    """
+    full_name = f"{person.get(CONF_FIRST_NAME, '')} {person.get(CONF_LAST_NAME, '') or ''}".strip()
+    years = current_age(trigger_date, today)
+    if kind == "death":
+        return (
+            f"Aujourd'hui est l'anniversaire du décès de {full_name}, "
+            f"décédé(e) depuis {years} ans."
+        )
+    if person.get(CONF_STATUS, STATUS_ALIVE) == STATUS_ALIVE:
+        return f"{full_name} a {years} ans aujourd'hui !"
+    return f"{full_name} aurait eu {years} ans aujourd'hui."
