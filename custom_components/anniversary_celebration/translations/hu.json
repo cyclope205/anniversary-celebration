@@ -17,7 +17,8 @@
         "menu_options": {
           "add_person": "Személy hozzáadása",
           "edit_person": "Személy szerkesztése",
-          "remove_person": "Személy eltávolítása"
+          "remove_person": "Személy eltávolítása",
+          "default_targets": "Alapértelmezett értesítési célok"
         }
       },
       "add_person": {
@@ -28,7 +29,21 @@
           "birth_date": "Születési dátum",
           "status": "Állapot",
           "notify_time": "Értesítés időpontja",
-          "notify_target": "Értesítendő eszköz / szolgáltatás"
+          "notify_time_2": "Második értesítési időpont (opcionális)",
+          "notify_targets": "Értesítendő eszközök / szolgáltatások",
+          "death_date": "Halálozás dátuma (ha releváns)",
+          "announce_targets": "Hangszórók a hangbejelentéshez",
+          "announce_tts_entity": "Szövegfelolvasó motor (TTS)",
+          "announce_time": "Hangbejelentés időpontja (opcionális)",
+          "announce_birthday": "Születésnap bejelentése (élő)",
+          "announce_souvenir": "Megemlékezés bejelentése (elhunyt)",
+          "announce_death": "Halálozási évforduló bejelentése"
+        },
+        "data_description": {
+          "birth_date": "Írja be a dátumot: ÉÉÉÉ-HH-NN vagy NN/HH/ÉÉÉÉ",
+          "notify_time_2": "Opcionális, HH:MM. Hagyja üresen, ha csak egy értesítési időpontot szeretne.",
+          "death_date": "Csak akkor hasznos, ha az állapot Elhunyt. A születési dátum után kell lennie.",
+          "announce_time": "Opcionális. Üres = nincs hangbejelentés, még ha a fenti jelölőnégyzet be is van jelölve."
         }
       },
       "edit_person": {
@@ -39,8 +54,28 @@
           "birth_date": "Születési dátum",
           "status": "Állapot",
           "notify_time": "Értesítés időpontja",
-          "notify_target": "Értesítendő eszköz / szolgáltatás",
+          "notify_time_2": "Második értesítési időpont (opcionális)",
+          "notify_targets": "Értesítendő eszközök / szolgáltatások",
+          "death_date": "Halálozás dátuma (ha releváns)",
+          "announce_targets": "Hangszórók a hangbejelentéshez",
+          "announce_tts_entity": "Szövegfelolvasó motor (TTS)",
+          "announce_time": "Hangbejelentés időpontja (opcionális)",
+          "announce_birthday": "Születésnap bejelentése (élő)",
+          "announce_souvenir": "Megemlékezés bejelentése (elhunyt)",
+          "announce_death": "Halálozási évforduló bejelentése",
           "person": "Személy"
+        },
+        "data_description": {
+          "birth_date": "Írja be a dátumot: ÉÉÉÉ-HH-NN vagy NN/HH/ÉÉÉÉ",
+          "notify_time_2": "Opcionális, HH:MM. Hagyja üresen, ha csak egy értesítési időpontot szeretne.",
+          "death_date": "Csak akkor hasznos, ha az állapot Elhunyt. A születési dátum után kell lennie.",
+          "announce_time": "Opcionális. Üres = nincs hangbejelentés, még ha a fenti jelölőnégyzet be is van jelölve."
+        }
+      },
+      "default_targets": {
+        "title": "Alapértelmezett értesítési célok",
+        "data": {
+          "default_notify_targets": "Mindenki számára értesített eszközök / szolgáltatások"
         }
       },
       "remove_person": {
@@ -49,6 +84,11 @@
           "person": "Személy"
         }
       }
+    },
+    "error": {
+      "invalid_date": "Nem felismert dátum. Használja: ÉÉÉÉ-HH-NN vagy NN/HH/ÉÉÉÉ.",
+      "invalid_time": "Nem felismert időpont. Használja: HH:MM.",
+      "death_before_birth": "A halálozás dátuma nem lehet korábbi a születési dátumnál."
     }
   }
 }
