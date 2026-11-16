@@ -18,7 +18,8 @@
           "add_person": "Afegeix una persona",
           "edit_person": "Edita una persona",
           "remove_person": "Elimina una persona",
-          "default_targets": "Objectius de notificació per defecte"
+          "default_targets": "Objectius de notificació per defecte",
+          "default_announce": "Anunci de veu per defecte"
         }
       },
       "add_person": {
@@ -76,6 +77,20 @@
         "title": "Objectius de notificació per defecte",
         "data": {
           "default_notify_targets": "Dispositius / serveis notificats per a tothom"
+        }
+      },
+      "default_announce": {
+        "title": "Anunci de veu per defecte",
+        "data": {
+          "default_announce_targets": "Altaveus per a l'anunci de veu de tothom",
+          "default_announce_tts_entity": "Motor de síntesi de veu (TTS)",
+          "default_announce_time": "Hora de l'anunci de veu (opcional)",
+          "default_announce_birthday": "Anunciar els aniversaris (vius)",
+          "default_announce_souvenir": "Anunciar en memòria (difunts)",
+          "default_announce_death": "Anunciar els aniversaris de defunció"
+        },
+        "data_description": {
+          "default_announce_time": "Opcional. Buit = sense anunci de veu, encara que una casella estigui marcada."
         }
       },
       "remove_person": {
