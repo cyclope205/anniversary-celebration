@@ -18,7 +18,8 @@
           "add_person": "Aggiungi una persona",
           "edit_person": "Modifica una persona",
           "remove_person": "Rimuovi una persona",
-          "default_targets": "Destinatari di notifica predefiniti"
+          "default_targets": "Destinatari di notifica predefiniti",
+          "default_announce": "Annuncio vocale predefinito"
         }
       },
       "add_person": {
@@ -76,6 +77,20 @@
         "title": "Destinatari di notifica predefiniti",
         "data": {
           "default_notify_targets": "Dispositivi / servizi notificati per tutti"
+        }
+      },
+      "default_announce": {
+        "title": "Annuncio vocale predefinito",
+        "data": {
+          "default_announce_targets": "Altoparlanti per l'annuncio vocale per tutti",
+          "default_announce_tts_entity": "Motore di sintesi vocale (TTS)",
+          "default_announce_time": "Orario dell'annuncio vocale (opzionale)",
+          "default_announce_birthday": "Annuncia i compleanni (viventi)",
+          "default_announce_souvenir": "Annuncia i ricordi (deceduti)",
+          "default_announce_death": "Annuncia gli anniversari di decesso"
+        },
+        "data_description": {
+          "default_announce_time": "Opzionale. Vuoto = nessun annuncio vocale, anche se una casella sopra è selezionata."
         }
       },
       "remove_person": {
