@@ -61,6 +61,7 @@ CONF_ANNOUNCE_TIME = "announce_time"
 CONF_ANNOUNCE_BIRTHDAY = "announce_birthday"
 CONF_ANNOUNCE_SOUVENIR = "announce_souvenir"
 CONF_ANNOUNCE_DEATH = "announce_death"
+CONF_ANNOUNCE_VOLUME = "announce_volume"
 
 # Integration-level (not per-person) default spoken announcement. Its own
 # media_player targets, TTS entity, time, and three opt-in toggles (all
@@ -75,6 +76,7 @@ CONF_DEFAULT_ANNOUNCE_TIME = "default_announce_time"
 CONF_DEFAULT_ANNOUNCE_BIRTHDAY = "default_announce_birthday"
 CONF_DEFAULT_ANNOUNCE_SOUVENIR = "default_announce_souvenir"
 CONF_DEFAULT_ANNOUNCE_DEATH = "default_announce_death"
+CONF_DEFAULT_ANNOUNCE_VOLUME = "default_announce_volume"
 
 # Suffixes for the namespaced tracking keys used by the default-announce
 # broadcast above (one per person, per trigger kind), so they can never
