@@ -17,7 +17,8 @@
         "menu_options": {
           "add_person": "Legg til en person",
           "edit_person": "Rediger en person",
-          "remove_person": "Fjern en person"
+          "remove_person": "Fjern en person",
+          "default_targets": "Standard varslingsmål"
         }
       },
       "add_person": {
@@ -28,7 +29,21 @@
           "birth_date": "Fødselsdato",
           "status": "Status",
           "notify_time": "Varslingstidspunkt",
-          "notify_target": "Enhet / tjeneste som skal varsles"
+          "notify_time_2": "Andre varslingstidspunkt (valgfritt)",
+          "notify_targets": "Enheter / tjenester som skal varsles",
+          "death_date": "Dødsdato (hvis aktuelt)",
+          "announce_targets": "Høyttalere for talt varsel",
+          "announce_tts_entity": "Talesyntesemotor (TTS)",
+          "announce_time": "Tidspunkt for talt varsel (valgfritt)",
+          "announce_birthday": "Annonser fødselsdag (i live)",
+          "announce_souvenir": "Annonser til minne (død)",
+          "announce_death": "Annonser dødsdag"
+        },
+        "data_description": {
+          "birth_date": "Skriv inn datoen: ÅÅÅÅ-MM-DD eller DD/MM/ÅÅÅÅ",
+          "notify_time_2": "Valgfritt, HH:MM. La stå tomt for bare ett varslingstidspunkt.",
+          "death_date": "Bare nyttig hvis status er Død. Må være etter fødselsdatoen.",
+          "announce_time": "Valgfritt. Tomt = ingen talt varsling, selv om en avkrysningsboks ovenfor er valgt."
         }
       },
       "edit_person": {
@@ -39,8 +54,28 @@
           "birth_date": "Fødselsdato",
           "status": "Status",
           "notify_time": "Varslingstidspunkt",
-          "notify_target": "Enhet / tjeneste som skal varsles",
+          "notify_time_2": "Andre varslingstidspunkt (valgfritt)",
+          "notify_targets": "Enheter / tjenester som skal varsles",
+          "death_date": "Dødsdato (hvis aktuelt)",
+          "announce_targets": "Høyttalere for talt varsel",
+          "announce_tts_entity": "Talesyntesemotor (TTS)",
+          "announce_time": "Tidspunkt for talt varsel (valgfritt)",
+          "announce_birthday": "Annonser fødselsdag (i live)",
+          "announce_souvenir": "Annonser til minne (død)",
+          "announce_death": "Annonser dødsdag",
           "person": "Person"
+        },
+        "data_description": {
+          "birth_date": "Skriv inn datoen: ÅÅÅÅ-MM-DD eller DD/MM/ÅÅÅÅ",
+          "notify_time_2": "Valgfritt, HH:MM. La stå tomt for bare ett varslingstidspunkt.",
+          "death_date": "Bare nyttig hvis status er Død. Må være etter fødselsdatoen.",
+          "announce_time": "Valgfritt. Tomt = ingen talt varsling, selv om en avkrysningsboks ovenfor er valgt."
+        }
+      },
+      "default_targets": {
+        "title": "Standard varslingsmål",
+        "data": {
+          "default_notify_targets": "Enheter / tjenester som varsles for alle"
         }
       },
       "remove_person": {
@@ -49,6 +84,11 @@
           "person": "Person"
         }
       }
+    },
+    "error": {
+      "invalid_date": "Ukjent dato. Bruk ÅÅÅÅ-MM-DD eller DD/MM/ÅÅÅÅ.",
+      "invalid_time": "Ukjent tidspunkt. Bruk HH:MM.",
+      "death_before_birth": "Dødsdatoen kan ikke være før fødselsdatoen."
     }
   }
 }
