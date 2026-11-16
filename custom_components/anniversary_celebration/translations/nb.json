@@ -18,7 +18,8 @@
           "add_person": "Legg til en person",
           "edit_person": "Rediger en person",
           "remove_person": "Fjern en person",
-          "default_targets": "Standard varslingsmål"
+          "default_targets": "Standard varslingsmål",
+          "default_announce": "Standard talt varsel"
         }
       },
       "add_person": {
@@ -76,6 +77,20 @@
         "title": "Standard varslingsmål",
         "data": {
           "default_notify_targets": "Enheter / tjenester som varsles for alle"
+        }
+      },
+      "default_announce": {
+        "title": "Standard talt varsel",
+        "data": {
+          "default_announce_targets": "Høyttalere for talt varsel for alle",
+          "default_announce_tts_entity": "Talesyntesemotor (TTS)",
+          "default_announce_time": "Tidspunkt for talt varsel (valgfritt)",
+          "default_announce_birthday": "Annonser fødselsdager (i live)",
+          "default_announce_souvenir": "Annonser til minne (døde)",
+          "default_announce_death": "Annonser dødsdager"
+        },
+        "data_description": {
+          "default_announce_time": "Valgfritt. Tomt = ingen talt varsling, selv om en avkrysningsboks ovenfor er valgt."
         }
       },
       "remove_person": {
