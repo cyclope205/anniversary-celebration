@@ -17,7 +17,8 @@
         "menu_options": {
           "add_person": "Kişi ekle",
           "edit_person": "Kişiyi düzenle",
-          "remove_person": "Kişiyi kaldır"
+          "remove_person": "Kişiyi kaldır",
+          "default_targets": "Varsayılan bildirim hedefleri"
         }
       },
       "add_person": {
@@ -28,7 +29,21 @@
           "birth_date": "Doğum tarihi",
           "status": "Durum",
           "notify_time": "Bildirim saati",
-          "notify_target": "Bildirim gönderilecek cihaz / servis"
+          "notify_time_2": "İkinci bildirim saati (isteğe bağlı)",
+          "notify_targets": "Bildirilecek cihazlar / hizmetler",
+          "death_date": "Ölüm tarihi (geçerliyse)",
+          "announce_targets": "Sesli duyuru için hoparlörler",
+          "announce_tts_entity": "Metinden sese motoru (TTS)",
+          "announce_time": "Sesli duyuru saati (isteğe bağlı)",
+          "announce_birthday": "Doğum gününü duyur (hayatta)",
+          "announce_souvenir": "Anma duyurusu yap (vefat etmiş)",
+          "announce_death": "Ölüm yıldönümünü duyur"
+        },
+        "data_description": {
+          "birth_date": "Tarihi girin: YYYY-AA-GG veya GG/AA/YYYY",
+          "notify_time_2": "İsteğe bağlı, HH:MM. Tek bir bildirim saati için boş bırakın.",
+          "death_date": "Yalnızca durum Vefat etmiş ise yararlıdır. Doğum tarihinden sonra olmalıdır.",
+          "announce_time": "İsteğe bağlı. Boş = yukarıdaki kutu işaretli olsa bile sesli duyuru yapılmaz."
         }
       },
       "edit_person": {
@@ -39,8 +54,28 @@
           "birth_date": "Doğum tarihi",
           "status": "Durum",
           "notify_time": "Bildirim saati",
-          "notify_target": "Bildirim gönderilecek cihaz / servis",
+          "notify_time_2": "İkinci bildirim saati (isteğe bağlı)",
+          "notify_targets": "Bildirilecek cihazlar / hizmetler",
+          "death_date": "Ölüm tarihi (geçerliyse)",
+          "announce_targets": "Sesli duyuru için hoparlörler",
+          "announce_tts_entity": "Metinden sese motoru (TTS)",
+          "announce_time": "Sesli duyuru saati (isteğe bağlı)",
+          "announce_birthday": "Doğum gününü duyur (hayatta)",
+          "announce_souvenir": "Anma duyurusu yap (vefat etmiş)",
+          "announce_death": "Ölüm yıldönümünü duyur",
           "person": "Kişi"
+        },
+        "data_description": {
+          "birth_date": "Tarihi girin: YYYY-AA-GG veya GG/AA/YYYY",
+          "notify_time_2": "İsteğe bağlı, HH:MM. Tek bir bildirim saati için boş bırakın.",
+          "death_date": "Yalnızca durum Vefat etmiş ise yararlıdır. Doğum tarihinden sonra olmalıdır.",
+          "announce_time": "İsteğe bağlı. Boş = yukarıdaki kutu işaretli olsa bile sesli duyuru yapılmaz."
+        }
+      },
+      "default_targets": {
+        "title": "Varsayılan bildirim hedefleri",
+        "data": {
+          "default_notify_targets": "Herkes için bildirilen cihazlar / hizmetler"
         }
       },
       "remove_person": {
@@ -49,6 +84,11 @@
           "person": "Kişi"
         }
       }
+    },
+    "error": {
+      "invalid_date": "Tarih tanınmadı. YYYY-AA-GG veya GG/AA/YYYY kullanın.",
+      "invalid_time": "Saat tanınmadı. HH:MM kullanın.",
+      "death_before_birth": "Ölüm tarihi doğum tarihinden önce olamaz."
     }
   }
 }
