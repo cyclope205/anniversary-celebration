@@ -167,3 +167,45 @@ def test_invalid_time_with_trailing_text_falls_back_safely(util):
 
 def test_invalid_seconds_fall_back_safely(util):
     assert util._parse_hhmm("08:30:99") == (0, 0)
+
+
+def test_merge_notify_targets_dedupes_and_preserves_order(util):
+    merged = util.merge_notify_targets(
+        ["notify.mobile_app_a", "notify.mobile_app_b"],
+        ["notify.mobile_app_b", "notify.mobile_app_c"],
+    )
+    assert merged == ["notify.mobile_app_a", "notify.mobile_app_b", "notify.mobile_app_c"]
+
+
+def test_merge_notify_targets_handles_empty_defaults(util):
+    assert util.merge_notify_targets(["notify.mobile_app_a"], None) == ["notify.mobile_app_a"]
+    assert util.merge_notify_targets(["notify.mobile_app_a"], []) == ["notify.mobile_app_a"]
+
+
+def test_merge_notify_targets_handles_empty_person_targets(util):
+    assert util.merge_notify_targets([], ["notify.mobile_app_a"]) == ["notify.mobile_app_a"]
+    assert util.merge_notify_targets([], []) == []
+
+
+def test_announcement_message_birthday_alive(util):
+    person = {"first_name": "Jean", "last_name": "Dupont", "status": "alive"}
+    message = util.announcement_message(person, "anniversary", date(1980, 11, 12), date(2026, 11, 12))
+    assert message == "Jean Dupont a 46 ans aujourd'hui !"
+
+
+def test_announcement_message_souvenir_deceased(util):
+    person = {"first_name": "Jean", "last_name": "Dupont", "status": "deceased"}
+    message = util.announcement_message(person, "anniversary", date(1980, 11, 12), date(2026, 11, 12))
+    assert message == "Jean Dupont aurait eu 46 ans aujourd'hui."
+
+
+def test_announcement_message_death_anniversary(util):
+    person = {"first_name": "Jean", "last_name": "Dupont", "status": "deceased"}
+    message = util.announcement_message(person, "death", date(2020, 11, 12), date(2026, 11, 12))
+    assert message == "Aujourd'hui est l'anniversaire du décès de Jean Dupont, décédé(e) depuis 6 ans."
+
+
+def test_announcement_message_strips_missing_last_name(util):
+    person = {"first_name": "Jean", "status": "alive"}
+    message = util.announcement_message(person, "anniversary", date(1980, 11, 12), date(2026, 11, 12))
+    assert message == "Jean a 46 ans aujourd'hui !"
