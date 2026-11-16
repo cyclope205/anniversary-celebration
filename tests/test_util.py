@@ -158,7 +158,40 @@ def test_due_slots_tracks_each_time_independently(util):
     birth = date(1980, 11, 12)
     today = date(2026, 11, 12)
     times = ["08:30:00", "18:00:00"]
-    assert util.due_slots(birth, today, 19, 0, times, {"0": "2026-11-12"}) == [1]
+    # Keyed by the time value itself, not the list index - see
+    # due_slots()'s docstring (this is what the reordering regression
+    # test below exercises directly).
+    assert util.due_slots(
+        birth, today, 19, 0, times, {"08:30:00": "2026-11-12"}
+    ) == [1]
+
+
+def test_due_slots_survives_reordering_within_the_same_day(util):
+    """Regression test: due_slots() used to key sent_slots_today by list
+    INDEX ("0", "1", ...) rather than by the time value itself. If a
+    person's notify_times was edited (reordered, or an entry removed)
+    between two sends on the same day, that silently misattributed an
+    already-sent slot's history to a different time - either skipping a
+    notification that was actually still due, or resending one that had
+    already gone out. Keying by the time value itself must make the
+    slot's own history immune to the surrounding list being edited.
+    """
+    birth = date(1980, 11, 12)
+    today = date(2026, 11, 12)
+
+    # "08:30:00" already sent today, tracked by its own value.
+    sent_today = {"08:30:00": "2026-11-12"}
+
+    # The person's notify_times is now edited to put "18:00:00" first -
+    # same two times, reordered. "08:30:00" must still be recognized as
+    # already sent (not due again), and "18:00:00" must still be due.
+    reordered_times = ["18:00:00", "08:30:00"]
+    assert util.due_slots(birth, today, 19, 0, reordered_times, sent_today) == [0]
+
+    # A third time is also inserted ahead of both - "08:30:00" must still
+    # be correctly recognized as already sent regardless of its new index.
+    times_with_insertion = ["12:00:00", "18:00:00", "08:30:00"]
+    assert util.due_slots(birth, today, 19, 0, times_with_insertion, sent_today) == [0, 1]
 
 
 def test_invalid_time_with_trailing_text_falls_back_safely(util):
