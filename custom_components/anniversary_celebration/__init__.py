@@ -29,15 +29,19 @@ from .const import (
     CONF_ANNOUNCE_TTS_ENTITY,
     CONF_BIRTH_DATE,
     CONF_DEATH_DATE,
-    CONF_DEFAULT_NOTIFY_TARGETS,
-    CONF_FIRST_NAME,
-    CONF_LAST_NAME,
+    CONF_DEFAULT_ANNOUNCE_BIRTHDAY,
+    CONF_DEFAULT_ANNOUNCE_DEATH,
+    CONF_DEFAULT_ANNOUNCE_SOUVENIR,
+    CONF_DEFAULT_ANNOUNCE_TARGETS,
+    CONF_DEFAULT_ANNOUNCE_TIME,
+    CONF_DEFAULT_ANNOUNCE_TTS_ENTITY,
     CONF_PEOPLE,
     CONF_PERSON_ID,
     CONF_STATUS,
     DOMAIN,
     NOTIFIED_KEY_DEATH_SUFFIX,
-    PLATFORMS,
+    NOTIFIED_KEY_DEFAULT_ANNOUNCE_DEATH_SUFFIX,
+    NOTIFIED_KEY_DEFAULT_ANNOUNCE_SUFFIX,
     SIGNAL_PEOPLE_UPDATED,
     STATUS_ALIVE,
     STATUS_DECEASED,
@@ -226,6 +230,12 @@ async def _async_check_and_notify(hass: HomeAssistant, entry: ConfigEntry) -> No
         changed = False
 
         default_targets = [t for t in entry.options.get(CONF_DEFAULT_NOTIFY_TARGETS, []) if t]
+        default_announce_targets = [t for t in entry.options.get(CONF_DEFAULT_ANNOUNCE_TARGETS, []) if t]
+        default_announce_tts = (entry.options.get(CONF_DEFAULT_ANNOUNCE_TTS_ENTITY) or "").strip()
+        default_announce_time = (entry.options.get(CONF_DEFAULT_ANNOUNCE_TIME) or "").strip()
+        default_announce_birthday = bool(entry.options.get(CONF_DEFAULT_ANNOUNCE_BIRTHDAY, False))
+        default_announce_souvenir = bool(entry.options.get(CONF_DEFAULT_ANNOUNCE_SOUVENIR, False))
+        default_announce_death = bool(entry.options.get(CONF_DEFAULT_ANNOUNCE_DEATH, False))
 
         for person in people:
             try:
@@ -345,6 +355,30 @@ async def _async_check_and_notify(hass: HomeAssistant, entry: ConfigEntry) -> No
                         announce_sent[announce_time] = today_iso
                         notified[announce_key] = announce_sent
                         changed = True
+            if default_announce_time and default_announce_targets and default_announce_tts:
+                default_jobs = []
+                if status == STATUS_ALIVE and default_announce_birthday:
+                    default_jobs.append((birth, f"{person_id}{NOTIFIED_KEY_DEFAULT_ANNOUNCE_SUFFIX}", "anniversary"))
+                elif status == STATUS_DECEASED and default_announce_souvenir:
+                    default_jobs.append((birth, f"{person_id}{NOTIFIED_KEY_DEFAULT_ANNOUNCE_SUFFIX}", "anniversary"))
+                if death_date is not None and default_announce_death:
+                    default_jobs.append((death_date, f"{person_id}{NOTIFIED_KEY_DEFAULT_ANNOUNCE_DEATH_SUFFIX}", "death"))
+                for trigger_date, announce_key, announce_kind in default_jobs:
+                    announce_sent = notified.get(announce_key, {})
+                    due_announce = due_slots(
+                        trigger_date, today, now.hour, now.minute,
+                        [default_announce_time], announce_sent,
+                    )
+                    if due_announce:
+                        message = announcement_message(
+                            person, announce_kind, trigger_date, today
+                        )
+                        await _async_speak(
+                            hass, default_announce_tts, default_announce_targets, message
+                        )
+                        announce_sent[default_announce_time] = today_iso
+                        notified[announce_key] = announce_sent
+                        changed = True
 
         if changed:
             await data["store"].async_save(
@@ -356,18 +390,14 @@ async def _async_check_and_notify(hass: HomeAssistant, entry: ConfigEntry) -> No
         async_dispatcher_send(hass, SIGNAL_PEOPLE_UPDATED)
 
 
-async def _async_send_announcement(hass, person, message: str) -> bool:
-    """Speak message on every configured media_player via the configured
-    TTS entity.
+async def _async_speak(hass, tts_entity: str, media_players: list[str], message: str) -> bool:
+    """Speak message on every given media_player via the given TTS entity.
 
-    Entirely separate from the written notify.* path: its own targets,
-    its own TTS entity. Best-effort - a failure here is only logged, never
-    raised, and never blocks or retries the written notification.
+    Shared by the per-person announcement path below and the
+    integration-level default-announce broadcast - both ultimately just
+    need "say this on these speakers with this engine", so the actual
+    tts.speak loop and its error handling live here once.
     """
-    tts_entity = (person.get(CONF_ANNOUNCE_TTS_ENTITY) or "").strip()
-    media_players = [m for m in (person.get(CONF_ANNOUNCE_TARGETS) or []) if m]
-    if not tts_entity or not media_players:
-        return False
     ok = True
     for player in media_players:
         try:
@@ -390,7 +420,18 @@ async def _async_send_announcement(hass, person, message: str) -> bool:
             )
     return ok
 
-
+async def _async_send_announcement(hass, person, message: str) -> bool:
+    """Speak message on every configured media_player via the configured
+    TTS entity.
+    Entirely separate from the written notify.* path: its own targets,
+    its own TTS entity. Best-effort - a failure here is only logged, never
+    raised, and never blocks or retries the written notification.
+    """
+    tts_entity = (person.get(CONF_ANNOUNCE_TTS_ENTITY) or "").strip()
+    media_players = [m for m in (person.get(CONF_ANNOUNCE_TARGETS) or []) if m]
+    if not tts_entity or not media_players:
+        return False
+    return await _async_speak(hass, tts_entity, media_players, message)
 async def _async_send_notification(
     hass,
     person,
