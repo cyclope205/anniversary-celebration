@@ -20,7 +20,7 @@ from homeassistant.util import dt as dt_util
 
 from .const import (
     CARD_FILENAME,
-    CARD_URL_PATH,
+    CARD_URL_PATH, PLATFORMS,
     CONF_ANNOUNCE_BIRTHDAY,
     CONF_ANNOUNCE_DEATH,
     CONF_ANNOUNCE_SOUVENIR,
