@@ -15,6 +15,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.dispatcher import async_dispatcher_send
 from homeassistant.helpers.event import async_track_time_change
 from homeassistant.helpers.storage import Store
+from homeassistant.helpers import entity_registry as er
 from homeassistant.loader import async_get_integration
 from homeassistant.util import dt as dt_util
 
@@ -23,6 +24,7 @@ from .const import (
     CARD_URL_PATH, PLATFORMS,
     CONF_ANNOUNCE_BIRTHDAY,
     CONF_ANNOUNCE_DEATH,
+    CONF_ANNOUNCE_VOLUME,
     CONF_ANNOUNCE_SOUVENIR,
     CONF_ANNOUNCE_TARGETS,
     CONF_ANNOUNCE_TIME,
@@ -35,6 +37,7 @@ from .const import (
     CONF_DEFAULT_ANNOUNCE_TARGETS,
     CONF_DEFAULT_ANNOUNCE_TIME,
     CONF_DEFAULT_ANNOUNCE_TTS_ENTITY, CONF_DEFAULT_NOTIFY_TARGETS, CONF_FIRST_NAME, CONF_LAST_NAME,
+    CONF_DEFAULT_ANNOUNCE_VOLUME,
     CONF_PEOPLE,
     CONF_PERSON_ID,
     CONF_STATUS,
@@ -236,6 +239,7 @@ async def _async_check_and_notify(hass: HomeAssistant, entry: ConfigEntry) -> No
         default_announce_birthday = bool(entry.options.get(CONF_DEFAULT_ANNOUNCE_BIRTHDAY, False))
         default_announce_souvenir = bool(entry.options.get(CONF_DEFAULT_ANNOUNCE_SOUVENIR, False))
         default_announce_death = bool(entry.options.get(CONF_DEFAULT_ANNOUNCE_DEATH, False))
+        default_announce_volume = entry.options.get(CONF_DEFAULT_ANNOUNCE_VOLUME)
 
         for person in people:
             try:
@@ -355,7 +359,7 @@ async def _async_check_and_notify(hass: HomeAssistant, entry: ConfigEntry) -> No
                         announce_sent[announce_time] = today_iso
                         notified[announce_key] = announce_sent
                         changed = True
-            if default_announce_time and default_announce_targets and default_announce_tts:
+            if default_announce_time and default_announce_targets:
                 default_jobs = []
                 if status == STATUS_ALIVE and default_announce_birthday:
                     default_jobs.append((birth, f"{person_id}{NOTIFIED_KEY_DEFAULT_ANNOUNCE_SUFFIX}", "anniversary"))
@@ -374,7 +378,7 @@ async def _async_check_and_notify(hass: HomeAssistant, entry: ConfigEntry) -> No
                             person, announce_kind, trigger_date, today
                         )
                         await _async_speak(
-                            hass, default_announce_tts, default_announce_targets, message
+                            hass, default_announce_tts, default_announce_targets, message, volume=default_announce_volume
                         )
                         announce_sent[default_announce_time] = today_iso
                         notified[announce_key] = announce_sent
@@ -390,33 +394,120 @@ async def _async_check_and_notify(hass: HomeAssistant, entry: ConfigEntry) -> No
         async_dispatcher_send(hass, SIGNAL_PEOPLE_UPDATED)
 
 
-async def _async_speak(hass, tts_entity: str, media_players: list[str], message: str) -> bool:
-    """Speak message on every given media_player via the given TTS entity.
+def _alexa_notify_slug(hass, entity_id: str) -> str | None:
+    """notify.alexa_media_<slug> service name for this entity, if any.
+
+    Alexa Media Player registers both a media_player entity and a
+    notify.alexa_media_<slug> service for the same device. Routing an
+    announcement through that notify service with data={"type": "tts"}
+    makes the Echo speak in its own native voice, instead of tts.speak -
+    which needs a publicly reachable URL for the generated audio file,
+    something most home installs (no Nabu Casa Cloud) can't offer
+    Amazon's servers, and which fails on-device with "Désolé, je ne
+    peux pas accéder à...". Same fix already applied in Programme TNT
+    FR's reminders.py.
+    """
+    registry = er.async_get(hass)
+    entry = registry.async_get(entity_id)
+    if entry is None or entry.platform != "alexa_media":
+        return None
+    slug = "alexa_media_" + entity_id.split(".", 1)[1]
+    if hass.services.has_service("notify", slug):
+        return slug
+    return None
+
+
+async def _async_restore_volume(hass, player: str, previous_volume: float, message: str) -> None:
+    """Attend approximativement la fin de l'annonce puis restaure le volume."""
+    words = max(1, len(message.split()))
+    delay = min(30.0, max(2.5, words / 2.5 + 1.5))
+    await asyncio.sleep(delay)
+    try:
+        await hass.services.async_call(
+            "media_player",
+            "volume_set",
+            {"volume_level": previous_volume},
+            target={"entity_id": player},
+        )
+    except Exception as err:  # noqa: BLE001
+        _LOGGER.error(
+            "Anniversary Celebration: échec de la restauration du volume pour %s : %s",
+            player,
+            err,
+        )
+
+
+async def _async_speak(
+    hass, tts_entity: str, media_players: list[str], message: str, volume: float | None = None
+) -> bool:
+    """Speak message on every given media_player, preferring the Alexa
+    device's own native voice (via its notify.alexa_media_<slug> service)
+    over tts.speak - see _alexa_notify_slug for why. Falls back to
+    tts.speak for any non-Alexa target, or an Alexa device whose notify
+    service isn't available for some reason.
+
+    volume, when given, is set on the player before speaking and restored
+    afterward (in the background, after an estimated speaking duration),
+    the same mechanism as Programme TNT FR's reminders.
 
     Shared by the per-person announcement path below and the
     integration-level default-announce broadcast - both ultimately just
-    need "say this on these speakers with this engine", so the actual
-    tts.speak loop and its error handling live here once.
+    need "say this on these speakers", so the actual speak loop and its
+    error handling live here once.
     """
     ok = True
     for player in media_players:
+        previous_volume = None
+        if volume is not None:
+            state = hass.states.get(player)
+            if state is not None:
+                previous_volume = state.attributes.get("volume_level")
+            try:
+                await hass.services.async_call(
+                    "media_player",
+                    "volume_set",
+                    {"volume_level": volume},
+                    target={"entity_id": player},
+                )
+            except Exception as err:  # noqa: BLE001
+                _LOGGER.error(
+                    "Anniversary Celebration: échec du réglage du volume pour %s : %s",
+                    player,
+                    err,
+                )
+        alexa_slug = _alexa_notify_slug(hass, player)
         try:
-            await hass.services.async_call(
-                "tts",
-                "speak",
-                {
-                    "entity_id": tts_entity,
-                    "media_player_entity_id": player,
-                    "message": message,
-                },
-                blocking=True,
-            )
+            if alexa_slug:
+                await hass.services.async_call(
+                    "notify",
+                    alexa_slug,
+                    {
+                        "title": "Anniversary Celebration",
+                        "message": message,
+                        "data": {"type": "tts"},
+                    },
+                )
+            else:
+                await hass.services.async_call(
+                    "tts",
+                    "speak",
+                    {
+                        "entity_id": tts_entity,
+                        "media_player_entity_id": player,
+                        "message": message,
+                    },
+                    blocking=True,
+                )
         except Exception as err:  # noqa: BLE001 - never let a bad target break the loop
             ok = False
             _LOGGER.error(
                 "Anniversary Celebration: échec de l'annonce vocale sur %s : %s",
                 player,
                 err,
+            )
+        if previous_volume is not None:
+            hass.async_create_task(
+                _async_restore_volume(hass, player, previous_volume, message)
             )
     return ok
 
@@ -429,9 +520,9 @@ async def _async_send_announcement(hass, person, message: str) -> bool:
     """
     tts_entity = (person.get(CONF_ANNOUNCE_TTS_ENTITY) or "").strip()
     media_players = [m for m in (person.get(CONF_ANNOUNCE_TARGETS) or []) if m]
-    if not tts_entity or not media_players:
+    if not media_players:
         return False
-    return await _async_speak(hass, tts_entity, media_players, message)
+    return await _async_speak(hass, tts_entity, media_players, message, volume=person.get(CONF_ANNOUNCE_VOLUME))
 async def _async_send_notification(
     hass,
     person,
