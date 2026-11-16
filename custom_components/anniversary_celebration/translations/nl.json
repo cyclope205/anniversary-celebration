@@ -18,7 +18,8 @@
           "add_person": "Persoon toevoegen",
           "edit_person": "Persoon bewerken",
           "remove_person": "Persoon verwijderen",
-          "default_targets": "Standaard meldingsdoelen"
+          "default_targets": "Standaard meldingsdoelen",
+          "default_announce": "Standaard gesproken melding"
         }
       },
       "add_person": {
@@ -76,6 +77,20 @@
         "title": "Standaard meldingsdoelen",
         "data": {
           "default_notify_targets": "Apparaten / services die voor iedereen worden gemeld"
+        }
+      },
+      "default_announce": {
+        "title": "Standaard gesproken melding",
+        "data": {
+          "default_announce_targets": "Luidsprekers voor de gesproken melding voor iedereen",
+          "default_announce_tts_entity": "Spraaksynthese-engine (TTS)",
+          "default_announce_time": "Tijdstip van de gesproken melding (optioneel)",
+          "default_announce_birthday": "Verjaardagen aankondigen (levend)",
+          "default_announce_souvenir": "Herdenking aankondigen (overleden)",
+          "default_announce_death": "Overlijdensherdenkingen aankondigen"
+        },
+        "data_description": {
+          "default_announce_time": "Optioneel. Leeg = geen gesproken melding, ook als een vakje hierboven is aangevinkt."
         }
       },
       "remove_person": {
