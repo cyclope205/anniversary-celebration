@@ -17,7 +17,8 @@
         "menu_options": {
           "add_person": "Tilføj en person",
           "edit_person": "Rediger en person",
-          "remove_person": "Fjern en person"
+          "remove_person": "Fjern en person",
+          "default_targets": "Standard notifikationsmål"
         }
       },
       "add_person": {
@@ -28,7 +29,21 @@
           "birth_date": "Fødselsdato",
           "status": "Status",
           "notify_time": "Notifikationstidspunkt",
-          "notify_target": "Enhed / tjeneste der skal underrettes"
+          "notify_time_2": "Andet notifikationstidspunkt (valgfrit)",
+          "notify_targets": "Enheder / tjenester der skal underrettes",
+          "death_date": "Dødsdato (hvis relevant)",
+          "announce_targets": "Højttalere til talt meddelelse",
+          "announce_tts_entity": "Tale-til-tekst motor (TTS)",
+          "announce_time": "Tidspunkt for talt meddelelse (valgfrit)",
+          "announce_birthday": "Annoncer fødselsdag (levende)",
+          "announce_souvenir": "Annoncer til minde (afdød)",
+          "announce_death": "Annoncer dødsdag"
+        },
+        "data_description": {
+          "birth_date": "Indtast datoen: ÅÅÅÅ-MM-DD eller DD/MM/ÅÅÅÅ",
+          "notify_time_2": "Valgfrit, HH:MM. Lad stå tomt for kun ét notifikationstidspunkt.",
+          "death_date": "Kun relevant hvis status er Afdød. Skal være efter fødselsdatoen.",
+          "announce_time": "Valgfrit. Tomt = ingen talt meddelelse, selv hvis en afkrydsningsboks er markeret."
         }
       },
       "edit_person": {
@@ -39,8 +54,28 @@
           "birth_date": "Fødselsdato",
           "status": "Status",
           "notify_time": "Notifikationstidspunkt",
-          "notify_target": "Enhed / tjeneste der skal underrettes",
+          "notify_time_2": "Andet notifikationstidspunkt (valgfrit)",
+          "notify_targets": "Enheder / tjenester der skal underrettes",
+          "death_date": "Dødsdato (hvis relevant)",
+          "announce_targets": "Højttalere til talt meddelelse",
+          "announce_tts_entity": "Tale-til-tekst motor (TTS)",
+          "announce_time": "Tidspunkt for talt meddelelse (valgfrit)",
+          "announce_birthday": "Annoncer fødselsdag (levende)",
+          "announce_souvenir": "Annoncer til minde (afdød)",
+          "announce_death": "Annoncer dødsdag",
           "person": "Person"
+        },
+        "data_description": {
+          "birth_date": "Indtast datoen: ÅÅÅÅ-MM-DD eller DD/MM/ÅÅÅÅ",
+          "notify_time_2": "Valgfrit, HH:MM. Lad stå tomt for kun ét notifikationstidspunkt.",
+          "death_date": "Kun relevant hvis status er Afdød. Skal være efter fødselsdatoen.",
+          "announce_time": "Valgfrit. Tomt = ingen talt meddelelse, selv hvis en afkrydsningsboks er markeret."
+        }
+      },
+      "default_targets": {
+        "title": "Standard notifikationsmål",
+        "data": {
+          "default_notify_targets": "Enheder / tjenester, der underrettes for alle"
         }
       },
       "remove_person": {
@@ -49,6 +84,11 @@
           "person": "Person"
         }
       }
+    },
+    "error": {
+      "invalid_date": "Ukendt dato. Brug ÅÅÅÅ-MM-DD eller DD/MM/ÅÅÅÅ.",
+      "invalid_time": "Ukendt tidspunkt. Brug HH:MM.",
+      "death_before_birth": "Dødsdatoen kan ikke være før fødselsdatoen."
     }
   }
 }
