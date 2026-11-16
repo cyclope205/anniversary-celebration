@@ -196,11 +196,21 @@ def due_slots(
     A slot (one configured notification time) is due when: today is the
     anniversary, the slot's time has been reached, and
     sent_slots_today doesn't already record today's ISO date for that
-    slot index (as a string key, since persisted JSON keys are always
-    strings). Returning indexes rather than a single bool lets the
-    caller send each configured time independently and mark only the
-    slots that actually fired, so a restart that misses one slot doesn't
-    block the others, and a slot already sent today is never repeated.
+    slot. Returning indexes rather than a single bool lets the caller
+    send each configured time independently and mark only the slots that
+    actually fired, so a restart that misses one slot doesn't block the
+    others, and a slot already sent today is never repeated.
+
+    sent_slots_today is keyed by the time VALUE itself (e.g. "08:00:00"),
+    not by its position in notify_times. Earlier versions keyed it by
+    list index ("0", "1", ...), which silently mis-tracked a person's
+    notifications (missed one, or duplicated another) if notify_times was
+    ever reordered, or had an entry added/removed, between two sends on
+    the same day - e.g. editing a person's times mid-afternoon on their
+    own anniversary could make an already-sent 08:00 slot (now at a
+    different index) look unsent, or vice versa. Keying by the time value
+    itself is immune to that: a given time's own history never moves just
+    because another time was added, removed, or reordered around it.
     """
     if days_until(birth, today) != 0:
         return []
@@ -211,7 +221,7 @@ def due_slots(
         hh, mm = _parse_hhmm(time_str)
         if (now_hour, now_minute) < (hh, mm):
             continue
-        if sent_slots_today.get(str(index)) == today_iso:
+        if sent_slots_today.get(time_str) == today_iso:
             continue
         due.append(index)
     return due

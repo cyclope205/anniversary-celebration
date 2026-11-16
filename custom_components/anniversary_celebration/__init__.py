@@ -63,10 +63,23 @@ def _migrate_slot_map(raw: dict) -> dict:
     """Convert a legacy flat {person_id: iso_date} map to the per-slot
     {person_id: {"0": iso_date}} shape used for multi-time support.
 
-    Each configured notification time is tracked independently (slot
-    index "0", "1", ...), so a person with two notification times can
-    have one already sent today and the other still pending. Entries
-    already in the new shape (dict values) pass through unchanged.
+    Each configured notification time is tracked independently, so a
+    person with two notification times can have one already sent today
+    and the other still pending. Entries already in the new shape (dict
+    values) pass through unchanged.
+
+    Note: slot keys moved again after this - see due_slots()'s docstring
+    in util.py - from the notify_times list INDEX ("0", "1", ...) to the
+    time value itself ("08:00:00"), since index-based tracking silently
+    mis-tracked a person's notifications whenever notify_times was
+    reordered or edited. That second migration is deliberately NOT
+    performed here: an index-keyed entry left over from before that
+    change simply never matches any time-value lookup again, so it sits
+    unused (harmless clutter, never read) rather than being remapped -
+    the one-time consequence is a possible extra resend on the first day
+    a slot already sent under the old scheme is re-evaluated, which is
+    exactly the same "worst case: one harmless extra resend" trade-off
+    _migrate_mobile_sent_map below already accepts for the same reason.
     """
     migrated = {}
     for person_id, value in raw.items():
@@ -110,15 +123,16 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     store: Store = Store(hass, STORAGE_VERSION, f"{STORAGE_KEY_PREFIX}_{entry.entry_id}")
     loaded: dict = await store.async_load() or {}
 
-    # Storage format: {"notified": {person_id: {slot_index: iso_date}},
-    # "mobile_sent_today": {person_id: {slot_index: {target: iso_date}}}}.
-    # One entry per configured notification time (slot_index is "0", "1",
-    # ...), so a person with two notification times tracks each
-    # independently, and each notify.* target within a slot tracks its own
-    # success independently too. Older versions of this integration saved
-    # progressively flatter shapes - see _migrate_slot_map and
-    # _migrate_mobile_sent_map - so existing installs don't lose their
-    # notified-today state on upgrade.
+    # Storage format: {"notified": {person_id: {slot_key: iso_date}},
+    # "mobile_sent_today": {person_id: {slot_key: {target: iso_date}}}}.
+    # One entry per configured notification time (slot_key is the time
+    # value itself, e.g. "08:00:00" - see due_slots() in util.py for why
+    # it is no longer the list index), so a person with two notification
+    # times tracks each independently, and each notify.* target within a
+    # slot tracks its own success independently too. Older versions of
+    # this integration saved progressively different shapes - see
+    # _migrate_slot_map and _migrate_mobile_sent_map - so existing
+    # installs don't lose their notified-today state on upgrade.
     if "notified" in loaded or "mobile_sent_today" in loaded:
         notified: dict = loaded.get("notified", {})
         mobile_sent_today: dict = loaded.get("mobile_sent_today", {})
@@ -135,7 +149,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         # immediate startup check overlapping with the first per-minute
         # tick), which could otherwise send the same notification twice.
         "lock": asyncio.Lock(),
-        # person_id -> {slot_index: {target: iso_date}}: which notify.*
+        # person_id -> {slot_key: {target: iso_date}}: which notify.*
         # targets have already succeeded today, for which slot. Kept
         # separate from "notified" (which is only set once the persistent
         # notification AND every configured target have succeeded) so that
@@ -232,12 +246,17 @@ async def _async_check_and_notify(hass: HomeAssistant, entry: ConfigEntry) -> No
             )
             person_mobile_sent = mobile_sent_today.get(person_id, {})
             for slot_index in due:
+                # Tracked by the time VALUE, not the list index - see
+                # due_slots()'s docstring in util.py: an index would
+                # silently mis-track this person if notify_times is ever
+                # reordered or edited between two sends on the same day.
+                slot_key = notify_times[slot_index]
                 persisted, mobile_changed, mobile_fully_ok = await _async_send_notification(
-                    hass, person, birth, today, slot_index, person_mobile_sent,
+                    hass, person, birth, today, slot_key, person_mobile_sent,
                     kind="birthday", default_targets=default_targets,
                 )
                 if persisted and mobile_fully_ok:
-                    person_notified[str(slot_index)] = today_iso
+                    person_notified[slot_key] = today_iso
                     notified[person_id] = person_notified
                     changed = True
                 # else: leave this slot unmarked so the next per-minute
@@ -275,12 +294,13 @@ async def _async_check_and_notify(hass: HomeAssistant, entry: ConfigEntry) -> No
                 )
                 death_mobile_sent = mobile_sent_today.get(death_key, {})
                 for slot_index in due_death:
+                    slot_key = notify_times[slot_index]
                     persisted, mobile_changed, mobile_fully_ok = await _async_send_notification(
-                        hass, person, death_date, today, slot_index, death_mobile_sent,
+                        hass, person, death_date, today, slot_key, death_mobile_sent,
                         kind="death", default_targets=default_targets,
                     )
                     if persisted and mobile_fully_ok:
-                        death_notified[str(slot_index)] = today_iso
+                        death_notified[slot_key] = today_iso
                         notified[death_key] = death_notified
                         changed = True
                     if mobile_changed:
@@ -319,7 +339,10 @@ async def _async_check_and_notify(hass: HomeAssistant, entry: ConfigEntry) -> No
                         await _async_send_announcement(hass, person, message)
                         # Always marked as done today, success or not - see
                         # the comment above on why this is never retried.
-                        announce_sent["0"] = today_iso
+                        # Keyed by the announce time value itself (there is
+                        # only ever one slot here), consistent with the
+                        # birthday/death slots above.
+                        announce_sent[announce_time] = today_iso
                         notified[announce_key] = announce_sent
                         changed = True
 
@@ -373,7 +396,7 @@ async def _async_send_notification(
     person,
     birth,
     today,
-    slot_index: int,
+    slot_key: str,
     person_mobile_sent: dict[str, dict[str, str]],
     kind: str = "birthday",
     default_targets: list[str] | None = None,
@@ -397,13 +420,16 @@ async def _async_send_notification(
       its own every minute, without the caller ever concluding the slot is
       finished just because the persistent notification succeeded.
 
-    Each target's own success is tracked individually in
-    person_mobile_sent[slot_key] (a {target: iso_date} map, not a single
-    all-or-nothing flag for the whole slot): a target already marked as
-    succeeded today is skipped on a retry, so a device that already got
-    its notification is never notified again while a sibling device is
-    still being retried - and, conversely, an unreachable device is never
-    abandoned just because the others succeeded.
+    slot_key identifies this notification time (the time value itself,
+    e.g. "08:00:00" - see due_slots()'s docstring in util.py for why this
+    is no longer the list index). Each target's own success is tracked
+    individually in person_mobile_sent[slot_key] (a {target: iso_date}
+    map, not a single all-or-nothing flag for the whole slot): a target
+    already marked as succeeded today is skipped on a retry, so a device
+    that already got its notification is never notified again while a
+    sibling device is still being retried - and, conversely, an
+    unreachable device is never abandoned just because the others
+    succeeded.
     """
     full_name = f"{person.get(CONF_FIRST_NAME, '')} {person.get(CONF_LAST_NAME, '') or ''}".strip()
     age = current_age(birth, today)
@@ -429,7 +455,6 @@ async def _async_send_notification(
         [t for t in normalize_notify_targets(person) if "." in t],
         [t for t in (default_targets or []) if "." in t],
     )
-    slot_key = str(slot_index)
     sent_targets: dict[str, str] = person_mobile_sent.get(slot_key, {})
     mobile_changed = False
 
