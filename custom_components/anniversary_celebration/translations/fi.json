@@ -17,7 +17,8 @@
         "menu_options": {
           "add_person": "Lisää henkilö",
           "edit_person": "Muokkaa henkilöä",
-          "remove_person": "Poista henkilö"
+          "remove_person": "Poista henkilö",
+          "default_targets": "Oletusilmoituskohteet"
         }
       },
       "add_person": {
@@ -28,7 +29,21 @@
           "birth_date": "Syntymäaika",
           "status": "Tila",
           "notify_time": "Ilmoitusaika",
-          "notify_target": "Ilmoitettava laite / palvelu"
+          "notify_time_2": "Toinen ilmoitusaika (valinnainen)",
+          "notify_targets": "Laitteet / palvelut, joille ilmoitetaan",
+          "death_date": "Kuolinpäivä (jos sovellettavissa)",
+          "announce_targets": "Kaiuttimet puhuttua ilmoitusta varten",
+          "announce_tts_entity": "Puhesynteesimoottori (TTS)",
+          "announce_time": "Puhutun ilmoituksen aika (valinnainen)",
+          "announce_birthday": "Ilmoita syntymäpäivä (elossa)",
+          "announce_souvenir": "Ilmoita muistoksi (kuollut)",
+          "announce_death": "Ilmoita kuolinpäivän vuosipäivä"
+        },
+        "data_description": {
+          "birth_date": "Kirjoita päivämäärä: VVVV-KK-PP tai PP/KK/VVVV",
+          "notify_time_2": "Valinnainen, HH:MM. Jätä tyhjäksi, jos haluat vain yhden ilmoitusajan.",
+          "death_date": "Hyödyllinen vain, jos tila on Kuollut. Oltava syntymäpäivän jälkeen.",
+          "announce_time": "Valinnainen. Tyhjä = ei puhuttua ilmoitusta, vaikka yllä oleva valintaruutu olisi valittuna."
         }
       },
       "edit_person": {
@@ -39,8 +54,28 @@
           "birth_date": "Syntymäaika",
           "status": "Tila",
           "notify_time": "Ilmoitusaika",
-          "notify_target": "Ilmoitettava laite / palvelu",
+          "notify_time_2": "Toinen ilmoitusaika (valinnainen)",
+          "notify_targets": "Laitteet / palvelut, joille ilmoitetaan",
+          "death_date": "Kuolinpäivä (jos sovellettavissa)",
+          "announce_targets": "Kaiuttimet puhuttua ilmoitusta varten",
+          "announce_tts_entity": "Puhesynteesimoottori (TTS)",
+          "announce_time": "Puhutun ilmoituksen aika (valinnainen)",
+          "announce_birthday": "Ilmoita syntymäpäivä (elossa)",
+          "announce_souvenir": "Ilmoita muistoksi (kuollut)",
+          "announce_death": "Ilmoita kuolinpäivän vuosipäivä",
           "person": "Henkilö"
+        },
+        "data_description": {
+          "birth_date": "Kirjoita päivämäärä: VVVV-KK-PP tai PP/KK/VVVV",
+          "notify_time_2": "Valinnainen, HH:MM. Jätä tyhjäksi, jos haluat vain yhden ilmoitusajan.",
+          "death_date": "Hyödyllinen vain, jos tila on Kuollut. Oltava syntymäpäivän jälkeen.",
+          "announce_time": "Valinnainen. Tyhjä = ei puhuttua ilmoitusta, vaikka yllä oleva valintaruutu olisi valittuna."
+        }
+      },
+      "default_targets": {
+        "title": "Oletusilmoituskohteet",
+        "data": {
+          "default_notify_targets": "Laitteet / palvelut, joille ilmoitetaan kaikista"
         }
       },
       "remove_person": {
@@ -49,6 +84,11 @@
           "person": "Henkilö"
         }
       }
+    },
+    "error": {
+      "invalid_date": "Tunnistamaton päivämäärä. Käytä VVVV-KK-PP tai PP/KK/VVVV.",
+      "invalid_time": "Tunnistamaton aika. Käytä HH:MM.",
+      "death_before_birth": "Kuolinpäivä ei voi olla ennen syntymäpäivää."
     }
   }
 }
