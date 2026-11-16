@@ -18,7 +18,8 @@
           "add_person": "Person hinzufügen",
           "edit_person": "Person bearbeiten",
           "remove_person": "Person entfernen",
-          "default_targets": "Standard-Benachrichtigungsziele"
+          "default_targets": "Standard-Benachrichtigungsziele",
+          "default_announce": "Standard-Sprachansage"
         }
       },
       "add_person": {
@@ -76,6 +77,20 @@
         "title": "Standard-Benachrichtigungsziele",
         "data": {
           "default_notify_targets": "Geräte / Dienste, die für alle benachrichtigt werden"
+        }
+      },
+      "default_announce": {
+        "title": "Standard-Sprachansage",
+        "data": {
+          "default_announce_targets": "Lautsprecher für die Sprachansage für alle",
+          "default_announce_tts_entity": "Sprachsynthese-Engine (TTS)",
+          "default_announce_time": "Uhrzeit der Sprachansage (optional)",
+          "default_announce_birthday": "Geburtstage ansagen (lebend)",
+          "default_announce_souvenir": "Gedenken ansagen (verstorben)",
+          "default_announce_death": "Todestage ansagen"
+        },
+        "data_description": {
+          "default_announce_time": "Optional. Leer = keine Sprachansage, auch wenn ein Kästchen oben aktiviert ist."
         }
       },
       "remove_person": {
