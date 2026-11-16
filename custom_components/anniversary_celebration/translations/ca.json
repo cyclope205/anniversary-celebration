@@ -17,7 +17,8 @@
         "menu_options": {
           "add_person": "Afegeix una persona",
           "edit_person": "Edita una persona",
-          "remove_person": "Elimina una persona"
+          "remove_person": "Elimina una persona",
+          "default_targets": "Objectius de notificació per defecte"
         }
       },
       "add_person": {
@@ -28,7 +29,21 @@
           "birth_date": "Data de naixement",
           "status": "Estat",
           "notify_time": "Hora de notificació",
-          "notify_target": "Dispositiu / servei a notificar"
+          "notify_time_2": "Segona hora de notificació (opcional)",
+          "notify_targets": "Dispositius / serveis a notificar",
+          "death_date": "Data de defunció (si escau)",
+          "announce_targets": "Altaveus per a l'anunci de veu",
+          "announce_tts_entity": "Motor de síntesi de veu (TTS)",
+          "announce_time": "Hora de l'anunci de veu (opcional)",
+          "announce_birthday": "Anunciar l'aniversari (viu)",
+          "announce_souvenir": "Anunciar en memòria (difunt)",
+          "announce_death": "Anunciar l'aniversari de defunció"
+        },
+        "data_description": {
+          "birth_date": "Introduïu la data: AAAA-MM-DD o DD/MM/AAAA",
+          "notify_time_2": "Opcional, HH:MM. Deixeu-ho buit per a una sola hora de notificació.",
+          "death_date": "Només útil si l'estat és Difunt(a). Ha de ser posterior a la data de naixement.",
+          "announce_time": "Opcional. Buit = sense anunci de veu, encara que una casella estigui marcada."
         }
       },
       "edit_person": {
@@ -39,8 +54,28 @@
           "birth_date": "Data de naixement",
           "status": "Estat",
           "notify_time": "Hora de notificació",
-          "notify_target": "Dispositiu / servei a notificar",
+          "notify_time_2": "Segona hora de notificació (opcional)",
+          "notify_targets": "Dispositius / serveis a notificar",
+          "death_date": "Data de defunció (si escau)",
+          "announce_targets": "Altaveus per a l'anunci de veu",
+          "announce_tts_entity": "Motor de síntesi de veu (TTS)",
+          "announce_time": "Hora de l'anunci de veu (opcional)",
+          "announce_birthday": "Anunciar l'aniversari (viu)",
+          "announce_souvenir": "Anunciar en memòria (difunt)",
+          "announce_death": "Anunciar l'aniversari de defunció",
           "person": "Persona"
+        },
+        "data_description": {
+          "birth_date": "Introduïu la data: AAAA-MM-DD o DD/MM/AAAA",
+          "notify_time_2": "Opcional, HH:MM. Deixeu-ho buit per a una sola hora de notificació.",
+          "death_date": "Només útil si l'estat és Difunt(a). Ha de ser posterior a la data de naixement.",
+          "announce_time": "Opcional. Buit = sense anunci de veu, encara que una casella estigui marcada."
+        }
+      },
+      "default_targets": {
+        "title": "Objectius de notificació per defecte",
+        "data": {
+          "default_notify_targets": "Dispositius / serveis notificats per a tothom"
         }
       },
       "remove_person": {
@@ -49,6 +84,11 @@
           "person": "Persona"
         }
       }
+    },
+    "error": {
+      "invalid_date": "Data no reconeguda. Utilitzeu AAAA-MM-DD o DD/MM/AAAA.",
+      "invalid_time": "Hora no reconeguda. Utilitzeu HH:MM.",
+      "death_before_birth": "La data de defunció no pot ser anterior a la data de naixement."
     }
   }
 }
