@@ -18,7 +18,8 @@
           "add_person": "Ajouter une personne",
           "edit_person": "Modifier une personne",
           "remove_person": "Supprimer une personne",
-          "default_targets": "Cibles de notification par défaut"
+          "default_targets": "Cibles de notification par défaut",
+          "default_announce": "Annonce vocale par défaut"
         }
       },
       "add_person": {
@@ -76,6 +77,20 @@
         "title": "Cibles de notification par défaut",
         "data": {
           "default_notify_targets": "Appareils / services notifiés pour tout le monde"
+        }
+      },
+      "default_announce": {
+        "title": "Annonce vocale par défaut",
+        "data": {
+          "default_announce_targets": "Haut-parleurs pour l'annonce vocale de tout le monde",
+          "default_announce_tts_entity": "Moteur de synthèse vocale (TTS)",
+          "default_announce_time": "Heure de l'annonce vocale (optionnel)",
+          "default_announce_birthday": "Annoncer les anniversaires (vivants)",
+          "default_announce_souvenir": "Annoncer le souvenir (décédés)",
+          "default_announce_death": "Annoncer les anniversaires de décès"
+        },
+        "data_description": {
+          "default_announce_time": "Optionnel. Vide = aucune annonce vocale, même si une case ci-dessus est cochée."
         }
       },
       "remove_person": {
