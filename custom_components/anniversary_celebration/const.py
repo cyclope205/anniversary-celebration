@@ -62,6 +62,27 @@ CONF_ANNOUNCE_BIRTHDAY = "announce_birthday"
 CONF_ANNOUNCE_SOUVENIR = "announce_souvenir"
 CONF_ANNOUNCE_DEATH = "announce_death"
 
+# Integration-level (not per-person) default spoken announcement. Its own
+# media_player targets, TTS entity, time, and three opt-in toggles (all
+# default False) - entirely independent from the per-person announce_*
+# fields above, not merged into them: two different TTS engines/times
+# cannot be combined into a single speak call, so this fires as a second,
+# parallel broadcast instead, with its own anti-duplicate tracking (see
+# NOTIFIED_KEY_DEFAULT_ANNOUNCE_SUFFIX / _DEATH_SUFFIX below).
+CONF_DEFAULT_ANNOUNCE_TARGETS = "default_announce_targets"
+CONF_DEFAULT_ANNOUNCE_TTS_ENTITY = "default_announce_tts_entity"
+CONF_DEFAULT_ANNOUNCE_TIME = "default_announce_time"
+CONF_DEFAULT_ANNOUNCE_BIRTHDAY = "default_announce_birthday"
+CONF_DEFAULT_ANNOUNCE_SOUVENIR = "default_announce_souvenir"
+CONF_DEFAULT_ANNOUNCE_DEATH = "default_announce_death"
+
+# Suffixes for the namespaced tracking keys used by the default-announce
+# broadcast above (one per person, per trigger kind), so they can never
+# collide with that same person's own per-person announce tracking
+# (":announce" / ":death:announce") or with the written notify tracking.
+NOTIFIED_KEY_DEFAULT_ANNOUNCE_SUFFIX = ":default_announce"
+NOTIFIED_KEY_DEFAULT_ANNOUNCE_DEATH_SUFFIX = ":death:default_announce"
+
 STORAGE_VERSION = 1
 STORAGE_KEY_PREFIX = f"{DOMAIN}_notified"
 
