@@ -464,3 +464,102 @@ class AnniversaryCelebrationOptionsFlow(config_entries.OptionsFlow):
             ),
                 errors=errors,
         )
+    async def async_step_add_person(self, user_input: dict[str, Any] | None = None):
+        errors: dict[str, str] = {}
+        if user_input is not None:
+            errors = _validate_person_input(user_input)
+            if not errors:
+                person = {
+                    CONF_PERSON_ID: uuid.uuid4().hex,
+                    **_collect_person_fields(user_input),
+                }
+                people = self._people
+                people.append(person)
+                return self._save(people)
+        return self.async_show_form(
+            step_id="add_person",
+            data_schema=_person_schema(self.hass, user_input),
+            errors=errors,
+        )
+
+    async def async_step_edit_person(self, user_input: dict[str, Any] | None = None):
+        people = self._people
+        if user_input is not None and self._selected_id is None:
+            self._selected_id = user_input["person"]
+            return await self.async_step_edit_person()
+
+        if self._selected_id is None:
+            return self.async_show_form(
+                step_id="edit_person",
+                data_schema=vol.Schema(
+                    {
+                        vol.Required("person"): selector.SelectSelector(
+                            selector.SelectSelectorConfig(
+                                options=[
+                                    {
+                                        "value": p[CONF_PERSON_ID],
+                                        "label": f"{p[CONF_FIRST_NAME]} {p.get(CONF_LAST_NAME, '')}".strip(),
+                                    }
+                                    for p in people
+                                ],
+                                mode=selector.SelectSelectorMode.DROPDOWN,
+                            )
+                        )
+                    }
+                ),
+            )
+
+        current = next(
+            (p for p in people if p[CONF_PERSON_ID] == self._selected_id), None
+        )
+        if current is None:
+            self._selected_id = None
+            return await self.async_step_init()
+
+        errors: dict[str, str] = {}
+        if user_input is not None and "person" not in user_input:
+            errors = _validate_person_input(user_input)
+            if not errors:
+                updated = {
+                    CONF_PERSON_ID: self._selected_id,
+                    **_collect_person_fields(user_input),
+                }
+                new_people = [
+                    updated if p[CONF_PERSON_ID] == self._selected_id else p
+                    for p in people
+                ]
+                return self._save(new_people)
+            current = user_input
+
+        return self.async_show_form(
+            step_id="edit_person",
+            data_schema=_person_schema(self.hass, current),
+            errors=errors,
+        )
+
+    async def async_step_remove_person(self, user_input: dict[str, Any] | None = None):
+        people = self._people
+        if user_input is not None:
+            new_people = [
+                p for p in people if p[CONF_PERSON_ID] != user_input["person"]
+            ]
+            return self._save(new_people)
+        return self.async_show_form(
+            step_id="remove_person",
+            data_schema=vol.Schema(
+                {
+                    vol.Required("person"): selector.SelectSelector(
+                        selector.SelectSelectorConfig(
+                            options=[
+                                {
+                                    "value": p[CONF_PERSON_ID],
+                                    "label": f"{p[CONF_FIRST_NAME]} {p.get(CONF_LAST_NAME, '')}".strip(),
+                                }
+                                for p in people
+                            ],
+                            mode=selector.SelectSelectorMode.DROPDOWN,
+                        )
+                    )
+                }
+            ),
+        )
