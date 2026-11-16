@@ -18,7 +18,8 @@
           "add_person": "Lisää henkilö",
           "edit_person": "Muokkaa henkilöä",
           "remove_person": "Poista henkilö",
-          "default_targets": "Oletusilmoituskohteet"
+          "default_targets": "Oletusilmoituskohteet",
+          "default_announce": "Oletuspuheilmoitus"
         }
       },
       "add_person": {
@@ -76,6 +77,20 @@
         "title": "Oletusilmoituskohteet",
         "data": {
           "default_notify_targets": "Laitteet / palvelut, joille ilmoitetaan kaikista"
+        }
+      },
+      "default_announce": {
+        "title": "Oletuspuheilmoitus",
+        "data": {
+          "default_announce_targets": "Kaiuttimet puhuttua ilmoitusta varten kaikille",
+          "default_announce_tts_entity": "Puhesynteesimoottori (TTS)",
+          "default_announce_time": "Puhutun ilmoituksen aika (valinnainen)",
+          "default_announce_birthday": "Ilmoita syntymäpäivät (elossa)",
+          "default_announce_souvenir": "Ilmoita muistoksi (kuolleet)",
+          "default_announce_death": "Ilmoita kuolinpäivien vuosipäivät"
+        },
+        "data_description": {
+          "default_announce_time": "Valinnainen. Tyhjä = ei puhuttua ilmoitusta, vaikka yllä oleva valintaruutu olisi valittuna."
         }
       },
       "remove_person": {
