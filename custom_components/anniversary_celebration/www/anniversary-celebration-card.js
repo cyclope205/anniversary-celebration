@@ -20,7 +20,7 @@ function escapeHtml(value) {
   }[c]));
 }
 
-function formatDob(iso) {
+function formatDeathDate(iso) { if (!iso) return ""; const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso); if (!m) return ""; const year = Number(m[1]); const month = Number(m[2]) - 1; const day = Number(m[3]); if (month < 0 || month > 11 || day < 1 || day > 31) return ""; return `décédé(e) le ${String(day).padStart(2, "0")} ${MONTHS_FR[month]} ${year}`; } function formatDob(iso) {
   if (!iso) return "";
   const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
   if (!m) return "";
@@ -167,7 +167,7 @@ class AnniversaryCelebrationCard extends HTMLElement {
         <ha-icon class="ac-icon" icon="${icon}"></ha-icon>
         <div class="ac-name">${name}${ageNow !== undefined ? ` · ${ageNow} ans` : ""}${bell}</div>
         <div class="ac-label">${verb} ${ageNext} ans au prochain anniversaire</div>
-        <div class="ac-dob">${formatDob(a.date)}</div>
+        <div class="ac-dob">${formatDob(a.date)}${kind === "deceased" && a.death_date ? ` · ${formatDeathDate(a.death_date)}` : ""}</div>
         <div class="ac-badge">${countdownLabel(stateObj.state)}</div>
       </div>
     `;
