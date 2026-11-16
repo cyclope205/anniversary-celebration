@@ -17,7 +17,8 @@
         "menu_options": {
           "add_person": "Person hinzufügen",
           "edit_person": "Person bearbeiten",
-          "remove_person": "Person entfernen"
+          "remove_person": "Person entfernen",
+          "default_targets": "Standard-Benachrichtigungsziele"
         }
       },
       "add_person": {
@@ -28,7 +29,21 @@
           "birth_date": "Geburtsdatum",
           "status": "Status",
           "notify_time": "Benachrichtigungszeit",
-          "notify_target": "Zu benachrichtigendes Gerät / Dienst"
+          "notify_time_2": "Zweite Benachrichtigungszeit (optional)",
+          "notify_targets": "Geräte / Dienste zum Benachrichtigen",
+          "death_date": "Todesdatum (falls zutreffend)",
+          "announce_targets": "Lautsprecher für die Sprachansage",
+          "announce_tts_entity": "Sprachsynthese-Engine (TTS)",
+          "announce_time": "Uhrzeit der Sprachansage (optional)",
+          "announce_birthday": "Geburtstag ansagen (lebend)",
+          "announce_souvenir": "Gedenken ansagen (verstorben)",
+          "announce_death": "Todestag ansagen"
+        },
+        "data_description": {
+          "birth_date": "Geben Sie das Datum ein: JJJJ-MM-TT oder TT/MM/JJJJ",
+          "notify_time_2": "Optional, HH:MM. Leer lassen für nur eine Benachrichtigungszeit.",
+          "death_date": "Nur relevant, wenn der Status Verstorben ist. Muss nach dem Geburtsdatum liegen.",
+          "announce_time": "Optional. Leer = keine Sprachansage, auch wenn ein Kästchen oben aktiviert ist."
         }
       },
       "edit_person": {
@@ -39,8 +54,28 @@
           "birth_date": "Geburtsdatum",
           "status": "Status",
           "notify_time": "Benachrichtigungszeit",
-          "notify_target": "Zu benachrichtigendes Gerät / Dienst",
+          "notify_time_2": "Zweite Benachrichtigungszeit (optional)",
+          "notify_targets": "Geräte / Dienste zum Benachrichtigen",
+          "death_date": "Todesdatum (falls zutreffend)",
+          "announce_targets": "Lautsprecher für die Sprachansage",
+          "announce_tts_entity": "Sprachsynthese-Engine (TTS)",
+          "announce_time": "Uhrzeit der Sprachansage (optional)",
+          "announce_birthday": "Geburtstag ansagen (lebend)",
+          "announce_souvenir": "Gedenken ansagen (verstorben)",
+          "announce_death": "Todestag ansagen",
           "person": "Person"
+        },
+        "data_description": {
+          "birth_date": "Geben Sie das Datum ein: JJJJ-MM-TT oder TT/MM/JJJJ",
+          "notify_time_2": "Optional, HH:MM. Leer lassen für nur eine Benachrichtigungszeit.",
+          "death_date": "Nur relevant, wenn der Status Verstorben ist. Muss nach dem Geburtsdatum liegen.",
+          "announce_time": "Optional. Leer = keine Sprachansage, auch wenn ein Kästchen oben aktiviert ist."
+        }
+      },
+      "default_targets": {
+        "title": "Standard-Benachrichtigungsziele",
+        "data": {
+          "default_notify_targets": "Geräte / Dienste, die für alle benachrichtigt werden"
         }
       },
       "remove_person": {
@@ -49,6 +84,11 @@
           "person": "Person"
         }
       }
+    },
+    "error": {
+      "invalid_date": "Datum nicht erkannt. Verwenden Sie JJJJ-MM-TT oder TT/MM/JJJJ.",
+      "invalid_time": "Uhrzeit nicht erkannt. Verwenden Sie HH:MM.",
+      "death_before_birth": "Das Todesdatum darf nicht vor dem Geburtsdatum liegen."
     }
   }
 }
