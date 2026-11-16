@@ -65,6 +65,15 @@ _LOGGER = logging.getLogger(__name__)
 
 _CARD_REGISTERED_KEY = f"{DOMAIN}_card_registered"
 
+# hass.data keys used to coordinate the announce-volume override across
+# concurrent announcements targeting the same media_player - see
+# _async_speak and _async_restore_volume for why this coordination is
+# needed (two or more announcements firing in the same per-minute check,
+# e.g. several test people sharing one announce time, would otherwise
+# each capture the other's already-bumped volume as "original").
+_VOLUME_BASELINE_KEY = f"{DOMAIN}_volume_baseline"
+_VOLUME_PENDING_KEY = f"{DOMAIN}_volume_pending"
+
 
 def _migrate_slot_map(raw: dict) -> dict:
     """Convert a legacy flat {person_id: iso_date} map to the per-slot
@@ -418,10 +427,34 @@ def _alexa_notify_slug(hass, entity_id: str) -> str | None:
 
 
 async def _async_restore_volume(hass, player: str, previous_volume: float, message: str) -> None:
-    """Attend approximativement la fin de l'annonce puis restaure le volume."""
+    """Attend approximativement la fin de l'annonce puis restaure le volume.
+
+    Plusieurs annonces peuvent viser le même haut-parleur au cours du même
+    cycle de vérification (par exemple plusieurs personnes configurées
+    avec la même heure d'annonce) : sans compteur, chacune lirait le
+    volume déjà modifié par la précédente comme "volume d'origine", et la
+    dernière restauration gagnante laisserait le haut-parleur sur une
+    valeur de test au lieu de sa vraie valeur de départ. _VOLUME_PENDING_KEY
+    compte les annonces encore en cours sur ce haut-parleur ; seule celle
+    qui ramène ce compteur à zéro restaure réellement le volume, vers la
+    valeur capturée une seule fois avant la toute première modification
+    (voir _async_speak).
+    """
     words = max(1, len(message.split()))
     delay = min(30.0, max(2.5, words / 2.5 + 1.5))
     await asyncio.sleep(delay)
+
+    pending = hass.data.setdefault(_VOLUME_PENDING_KEY, {})
+    remaining = pending.get(player, 1) - 1
+    if remaining > 0:
+        # Une autre annonce utilise encore ce haut-parleur : c'est sa
+        # propre restauration (la dernière à se terminer) qui remettra
+        # le volume d'origine - pas celle-ci.
+        pending[player] = remaining
+        return
+    pending.pop(player, None)
+    hass.data.setdefault(_VOLUME_BASELINE_KEY, {}).pop(player, None)
+
     try:
         await hass.services.async_call(
             "media_player",
@@ -459,9 +492,23 @@ async def _async_speak(
     for player in media_players:
         previous_volume = None
         if volume is not None:
-            state = hass.states.get(player)
-            if state is not None:
-                previous_volume = state.attributes.get("volume_level")
+            # Capture the true pre-announce volume only once per player
+            # per "batch": if another announcement already bumped this
+            # same player earlier in this same check cycle and hasn't
+            # been restored yet (_VOLUME_BASELINE_KEY already has an
+            # entry), reuse ITS baseline instead of reading the current
+            # (already-bumped) volume_level - otherwise this announcement
+            # would "restore" to the wrong value later. See
+            # _async_restore_volume for the matching half of this.
+            baseline = hass.data.setdefault(_VOLUME_BASELINE_KEY, {})
+            pending = hass.data.setdefault(_VOLUME_PENDING_KEY, {})
+            if player not in baseline:
+                state = hass.states.get(player)
+                if state is not None:
+                    baseline[player] = state.attributes.get("volume_level")
+            previous_volume = baseline.get(player)
+            if previous_volume is not None:
+                pending[player] = pending.get(player, 0) + 1
             try:
                 await hass.services.async_call(
                     "media_player",
