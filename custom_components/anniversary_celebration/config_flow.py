@@ -13,6 +13,7 @@ from homeassistant.helpers import selector
 from .const import (
     CONF_ANNOUNCE_BIRTHDAY,
     CONF_ANNOUNCE_DEATH,
+    CONF_ANNOUNCE_VOLUME,
     CONF_ANNOUNCE_SOUVENIR,
     CONF_ANNOUNCE_TARGETS,
     CONF_ANNOUNCE_TIME,
@@ -25,6 +26,7 @@ from .const import (
     CONF_DEFAULT_ANNOUNCE_TARGETS,
     CONF_DEFAULT_ANNOUNCE_TIME,
     CONF_DEFAULT_ANNOUNCE_TTS_ENTITY,
+    CONF_DEFAULT_ANNOUNCE_VOLUME,
     CONF_DEFAULT_NOTIFY_TARGETS,
     CONF_FIRST_NAME,
     CONF_LAST_NAME,
@@ -282,6 +284,17 @@ def _person_schema(hass, defaults: dict[str, Any] | None = None) -> vol.Schema:
                 CONF_ANNOUNCE_DEATH,
                 default=defaults.get(CONF_ANNOUNCE_DEATH, False),
             ): bool,
+            vol.Optional(
+                CONF_ANNOUNCE_VOLUME,
+                default=defaults.get(CONF_ANNOUNCE_VOLUME),
+            ): vol.Any(
+                None,
+                selector.NumberSelector(
+                    selector.NumberSelectorConfig(
+                        min=0, max=1, step=0.05, mode=selector.NumberSelectorMode.SLIDER
+                    )
+                ),
+            ),
         }
     )
 
@@ -395,6 +408,7 @@ class AnniversaryCelebrationOptionsFlow(config_entries.OptionsFlow):
         options[CONF_DEFAULT_ANNOUNCE_DEATH] = bool(
             values.get(CONF_DEFAULT_ANNOUNCE_DEATH, False)
         )
+        options[CONF_DEFAULT_ANNOUNCE_VOLUME] = values.get(CONF_DEFAULT_ANNOUNCE_VOLUME)
         return self.async_create_entry(title="", data=options)
 
     async def async_step_default_announce(
@@ -460,6 +474,17 @@ class AnniversaryCelebrationOptionsFlow(config_entries.OptionsFlow):
                         CONF_DEFAULT_ANNOUNCE_DEATH,
                         default=current.get(CONF_DEFAULT_ANNOUNCE_DEATH, False),
                     ): bool,
+                    vol.Optional(
+                        CONF_DEFAULT_ANNOUNCE_VOLUME,
+                        default=current.get(CONF_DEFAULT_ANNOUNCE_VOLUME),
+                    ): vol.Any(
+                        None,
+                        selector.NumberSelector(
+                            selector.NumberSelectorConfig(
+                                min=0, max=1, step=0.05, mode=selector.NumberSelectorMode.SLIDER
+                            )
+                        ),
+                    ),
                 }
             ),
                 errors=errors,
