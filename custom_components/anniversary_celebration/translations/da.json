@@ -18,7 +18,8 @@
           "add_person": "Tilføj en person",
           "edit_person": "Rediger en person",
           "remove_person": "Fjern en person",
-          "default_targets": "Standard notifikationsmål"
+          "default_targets": "Standard notifikationsmål",
+          "default_announce": "Standard talt meddelelse"
         }
       },
       "add_person": {
@@ -76,6 +77,20 @@
         "title": "Standard notifikationsmål",
         "data": {
           "default_notify_targets": "Enheder / tjenester, der underrettes for alle"
+        }
+      },
+      "default_announce": {
+        "title": "Standard talt meddelelse",
+        "data": {
+          "default_announce_targets": "Højttalere til talt meddelelse for alle",
+          "default_announce_tts_entity": "Tale-til-tekst motor (TTS)",
+          "default_announce_time": "Tidspunkt for talt meddelelse (valgfrit)",
+          "default_announce_birthday": "Annoncer fødselsdage (levende)",
+          "default_announce_souvenir": "Annoncer til minde (afdøde)",
+          "default_announce_death": "Annoncer dødsdage"
+        },
+        "data_description": {
+          "default_announce_time": "Valgfrit. Tomt = ingen talt meddelelse, selv hvis en afkrydsningsboks er markeret."
         }
       },
       "remove_person": {
