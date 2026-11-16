@@ -258,8 +258,11 @@ def _person_schema(hass, defaults: dict[str, Any] | None = None) -> vol.Schema:
             vol.Optional(
                 CONF_ANNOUNCE_TTS_ENTITY,
                 default=defaults.get(CONF_ANNOUNCE_TTS_ENTITY, ""),
-            ): selector.EntitySelector(
-                selector.EntitySelectorConfig(domain="tts")
+            ): vol.Any(
+                "",
+                selector.EntitySelector(
+                    selector.EntitySelectorConfig(domain="tts")
+                ),
             ),
             # Plain str like CONF_NOTIFY_TIME_2 above, for the same reason:
             # must stay optional. An empty value here simply means the
@@ -435,8 +438,11 @@ class AnniversaryCelebrationOptionsFlow(config_entries.OptionsFlow):
                     vol.Optional(
                         CONF_DEFAULT_ANNOUNCE_TTS_ENTITY,
                         default=current.get(CONF_DEFAULT_ANNOUNCE_TTS_ENTITY, ""),
-                    ): selector.EntitySelector(
-                        selector.EntitySelectorConfig(domain="tts")
+                    ): vol.Any(
+                "",
+                selector.EntitySelector(
+                    selector.EntitySelectorConfig(domain="tts")
+                ),
                     ),
                     vol.Optional(
                         CONF_DEFAULT_ANNOUNCE_TIME,
