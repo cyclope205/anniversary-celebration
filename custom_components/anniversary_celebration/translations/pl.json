@@ -18,7 +18,8 @@
           "add_person": "Dodaj osobę",
           "edit_person": "Edytuj osobę",
           "remove_person": "Usuń osobę",
-          "default_targets": "Domyślne cele powiadomień"
+          "default_targets": "Domyślne cele powiadomień",
+          "default_announce": "Domyślne ogłoszenie głosowe"
         }
       },
       "add_person": {
@@ -76,6 +77,20 @@
         "title": "Domyślne cele powiadomień",
         "data": {
           "default_notify_targets": "Urządzenia / usługi powiadamiane dla wszystkich"
+        }
+      },
+      "default_announce": {
+        "title": "Domyślne ogłoszenie głosowe",
+        "data": {
+          "default_announce_targets": "Głośniki do ogłoszenia głosowego dla wszystkich",
+          "default_announce_tts_entity": "Mechanizm syntezy mowy (TTS)",
+          "default_announce_time": "Godzina ogłoszenia głosowego (opcjonalnie)",
+          "default_announce_birthday": "Ogłaszaj urodziny (żyjący)",
+          "default_announce_souvenir": "Ogłaszaj wspomnienia (zmarli)",
+          "default_announce_death": "Ogłaszaj rocznice śmierci"
+        },
+        "data_description": {
+          "default_announce_time": "Opcjonalne. Puste = brak ogłoszenia głosowego, nawet jeśli powyższe pole jest zaznaczone."
         }
       },
       "remove_person": {
