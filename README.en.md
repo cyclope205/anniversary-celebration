@@ -206,11 +206,6 @@ Ukrainian, and Catalan. Home Assistant automatically picks the translation
 matching the language set in your user profile; if there is no
 match, English is used.
 
-*Note: the fields added for the death date, default targets, and spoken
-announcement are currently translated only into French and English; the
-other 20 languages still show the field's technical name until the
-translations are updated.*
-
 ## Tests
 
 The repository includes an automated test suite (`tests/`, based on
