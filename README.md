@@ -216,11 +216,6 @@ ukrainien et catalan. Home Assistant choisit automatiquement la traduction
 correspondant à la langue configurée dans votre profil utilisateur ; à
 défaut de correspondance, l'anglais est utilisé.
 
-*Note : les champs ajoutés pour la date de décès, les cibles par défaut et
-l'annonce vocale ne sont actuellement traduits qu'en français et en
-anglais ; les 20 autres langues affichent encore le nom technique du champ
-en attendant une mise à jour des traductions.*
-
 ## Tests
 
 Le dépôt inclut une suite de tests automatisés (`tests/`, basée sur
