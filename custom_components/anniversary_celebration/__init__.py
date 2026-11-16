@@ -45,8 +45,10 @@ from .const import (
     STORAGE_VERSION,
 )
 from .util import (
+    announcement_message,
     current_age,
     due_slots,
+    merge_notify_targets,
     normalize_notify_targets,
     normalize_notify_times,
     parse_birth_date,
@@ -311,7 +313,7 @@ async def _async_check_and_notify(hass: HomeAssistant, entry: ConfigEntry) -> No
                         [announce_time], announce_sent,
                     )
                     if due_announce:
-                        message = _announcement_message(
+                        message = announcement_message(
                             person, announce_kind, trigger_date, today
                         )
                         await _async_send_announcement(hass, person, message)
@@ -329,25 +331,6 @@ async def _async_check_and_notify(hass: HomeAssistant, entry: ConfigEntry) -> No
         # Always refresh listeners (sensors) so days-remaining / notified-today
         # stay accurate minute to minute, not just when a notification fired.
         async_dispatcher_send(hass, SIGNAL_PEOPLE_UPDATED)
-
-
-def _announcement_message(person, kind: str, trigger_date, today) -> str:
-    """Build the spoken-announcement text.
-
-    Reuses the same age/duration wording as the written notification for
-    the same trigger (see _async_send_notification), so the two channels
-    never say something different about the same event.
-    """
-    full_name = f"{person.get(CONF_FIRST_NAME, '')} {person.get(CONF_LAST_NAME, '') or ''}".strip()
-    years = current_age(trigger_date, today)
-    if kind == "death":
-        return (
-            f"Aujourd'hui est l'anniversaire du décès de {full_name}, "
-            f"décédé(e) depuis {years} ans."
-        )
-    if person.get(CONF_STATUS, STATUS_ALIVE) == STATUS_ALIVE:
-        return f"{full_name} a {years} ans aujourd'hui !"
-    return f"{full_name} aurait eu {years} ans aujourd'hui."
 
 
 async def _async_send_announcement(hass, person, message: str) -> bool:
@@ -440,14 +423,11 @@ async def _async_send_notification(
     person_id = person[CONF_PERSON_ID]
     today_iso = today.isoformat()
     # Union of this person's own notify_targets and the integration-level
-    # defaults (CONF_DEFAULT_NOTIFY_TARGETS), deduplicated (dict.fromkeys
-    # preserves order while dropping repeats) so a target listed in both
-    # is only ever called once.
-    targets = list(
-        dict.fromkeys(
-            [t for t in normalize_notify_targets(person) if "." in t]
-            + [t for t in (default_targets or []) if "." in t]
-        )
+    # defaults (CONF_DEFAULT_NOTIFY_TARGETS); see util.merge_notify_targets
+    # (tested in tests/test_util.py) for the dedup logic.
+    targets = merge_notify_targets(
+        [t for t in normalize_notify_targets(person) if "." in t],
+        [t for t in (default_targets or []) if "." in t],
     )
     slot_key = str(slot_index)
     sent_targets: dict[str, str] = person_mobile_sent.get(slot_key, {})
