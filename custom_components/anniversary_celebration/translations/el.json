@@ -18,7 +18,8 @@
           "add_person": "Προσθήκη ατόμου",
           "edit_person": "Επεξεργασία ατόμου",
           "remove_person": "Αφαίρεση ατόμου",
-          "default_targets": "Προεπιλεγμένοι στόχοι ειδοποίησης"
+          "default_targets": "Προεπιλεγμένοι στόχοι ειδοποίησης",
+          "default_announce": "Προεπιλεγμένη προφορική ανακοίνωση"
         }
       },
       "add_person": {
@@ -76,6 +77,20 @@
         "title": "Προεπιλεγμένοι στόχοι ειδοποίησης",
         "data": {
           "default_notify_targets": "Συσκευές / υπηρεσίες που ειδοποιούνται για όλους"
+        }
+      },
+      "default_announce": {
+        "title": "Προεπιλεγμένη προφορική ανακοίνωση",
+        "data": {
+          "default_announce_targets": "Ηχεία για την προφορική ανακοίνωση για όλους",
+          "default_announce_tts_entity": "Μηχανή σύνθεσης ομιλίας (TTS)",
+          "default_announce_time": "Ώρα προφορικής ανακοίνωσης (προαιρετικό)",
+          "default_announce_birthday": "Ανακοίνωση γενεθλίων (ζωντανοί)",
+          "default_announce_souvenir": "Ανακοίνωση μνήμης (αποθανόντες)",
+          "default_announce_death": "Ανακοίνωση επετείων θανάτου"
+        },
+        "data_description": {
+          "default_announce_time": "Προαιρετικό. Κενό = καμία προφορική ανακοίνωση, ακόμα κι αν ένα πλαίσιο παραπάνω είναι επιλεγμένο."
         }
       },
       "remove_person": {
