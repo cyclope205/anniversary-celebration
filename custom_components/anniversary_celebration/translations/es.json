@@ -18,7 +18,8 @@
           "add_person": "Añadir una persona",
           "edit_person": "Editar una persona",
           "remove_person": "Eliminar una persona",
-          "default_targets": "Objetivos de notificación predeterminados"
+          "default_targets": "Objetivos de notificación predeterminados",
+          "default_announce": "Anuncio de voz predeterminado"
         }
       },
       "add_person": {
@@ -46,36 +47,50 @@
           "announce_time": "Opcional. Vacío = sin anuncio de voz, aunque una casilla esté marcada."
         }
       },
-      "edit_person": {
-        "title": "Editar una persona",
-        "data": {
-          "first_name": "Nombre",
-          "last_name": "Apellido",
-          "birth_date": "Fecha de nacimiento",
-          "status": "Estado",
-          "notify_time": "Hora de notificación",
-          "notify_time_2": "Segunda hora de notificación (opcional)",
-          "notify_targets": "Dispositivos / servicios a notificar",
-          "death_date": "Fecha de fallecimiento (si corresponde)",
-          "announce_targets": "Altavoces para el anuncio de voz",
-          "announce_tts_entity": "Motor de síntesis de voz (TTS)",
-          "announce_time": "Hora del anuncio de voz (opcional)",
-          "announce_birthday": "Anunciar cumpleaños (vivo/a)",
-          "announce_souvenir": "Anunciar en memoria (fallecido/a)",
-          "announce_death": "Anunciar aniversario de fallecimiento",
-          "person": "Persona"
-        },
-        "data_description": {
-          "birth_date": "Escriba la fecha: AAAA-MM-DD o DD/MM/AAAA",
-          "notify_time_2": "Opcional, HH:MM. Déjelo vacío para una sola hora de notificación.",
-          "death_date": "Solo útil si el estado es Fallecido/a. Debe ser posterior a la fecha de nacimiento.",
-          "announce_time": "Opcional. Vacío = sin anuncio de voz, aunque una casilla esté marcada."
-        }
-      },
+          "edit_person": {
+            "title": "Editar una persona",
+            "data": {
+              "first_name": "Nombre",
+              "last_name": "Apellido",
+              "birth_date": "Fecha de nacimiento",
+              "status": "Estado",
+              "notify_time": "Hora de notificación",
+              "notify_time_2": "Segunda hora de notificación (opcional)",
+              "notify_targets": "Dispositivos / servicios a notificar",
+              "death_date": "Fecha de fallecimiento (si corresponde)",
+              "announce_targets": "Altavoces para el anuncio de voz",
+              "announce_tts_entity": "Motor de síntesis de voz (TTS)",
+              "announce_time": "Hora del anuncio de voz (opcional)",
+              "announce_birthday": "Anunciar cumpleaños (vivo/a)",
+              "announce_souvenir": "Anunciar en memoria (fallecido/a)",
+              "announce_death": "Anunciar aniversario de fallecimiento",
+              "person": "Persona"
+            },
+            "data_description": {
+              "birth_date": "Escriba la fecha: AAAA-MM-DD o DD/MM/AAAA",
+              "notify_time_2": "Opcional, HH:MM. Déjelo vacío para una sola hora de notificación.",
+              "death_date": "Solo útil si el estado es Fallecido/a. Debe ser posterior a la fecha de nacimiento.",
+              "announce_time": "Opcional. Vacío = sin anuncio de voz, aunque una casilla esté marcada."
+            }
+          },
       "default_targets": {
         "title": "Objetivos de notificación predeterminados",
         "data": {
           "default_notify_targets": "Dispositivos / servicios notificados para todos"
+        }
+      },
+      "default_announce": {
+        "title": "Anuncio de voz predeterminado",
+        "data": {
+          "default_announce_targets": "Altavoces para el anuncio de voz de todos",
+          "default_announce_tts_entity": "Motor de síntesis de voz (TTS)",
+          "default_announce_time": "Hora del anuncio de voz (opcional)",
+          "default_announce_birthday": "Anunciar cumpleaños (vivos)",
+          "default_announce_souvenir": "Anunciar en memoria (fallecidos)",
+          "default_announce_death": "Anunciar aniversarios de fallecimiento"
+        },
+        "data_description": {
+          "default_announce_time": "Opcional. Vacío = sin anuncio de voz, aunque una casilla esté marcada."
         }
       },
       "remove_person": {
