@@ -19,6 +19,12 @@ from .const import (
     CONF_ANNOUNCE_TTS_ENTITY,
     CONF_BIRTH_DATE,
     CONF_DEATH_DATE,
+    CONF_DEFAULT_ANNOUNCE_BIRTHDAY,
+    CONF_DEFAULT_ANNOUNCE_DEATH,
+    CONF_DEFAULT_ANNOUNCE_SOUVENIR,
+    CONF_DEFAULT_ANNOUNCE_TARGETS,
+    CONF_DEFAULT_ANNOUNCE_TIME,
+    CONF_DEFAULT_ANNOUNCE_TTS_ENTITY,
     CONF_DEFAULT_NOTIFY_TARGETS,
     CONF_FIRST_NAME,
     CONF_LAST_NAME,
@@ -335,6 +341,7 @@ class AnniversaryCelebrationOptionsFlow(config_entries.OptionsFlow):
         if people:
             menu_options += ["edit_person", "remove_person"]
         menu_options += ["default_targets"]
+        menu_options += ["default_announce"]
         return self.async_show_menu(step_id="init", menu_options=menu_options)
 
     async def async_step_default_targets(
@@ -365,102 +372,89 @@ class AnniversaryCelebrationOptionsFlow(config_entries.OptionsFlow):
             ),
         )
 
-    async def async_step_add_person(self, user_input: dict[str, Any] | None = None):
+    def _save_default_announce(self, values: dict[str, Any]):
+        options = dict(self.config_entry.options)
+        options[CONF_DEFAULT_ANNOUNCE_TARGETS] = list(
+            values.get(CONF_DEFAULT_ANNOUNCE_TARGETS) or []
+        )
+        options[CONF_DEFAULT_ANNOUNCE_TTS_ENTITY] = (
+            values.get(CONF_DEFAULT_ANNOUNCE_TTS_ENTITY) or ""
+        ).strip()
+        options[CONF_DEFAULT_ANNOUNCE_TIME] = (
+            values.get(CONF_DEFAULT_ANNOUNCE_TIME) or ""
+        ).strip()
+        options[CONF_DEFAULT_ANNOUNCE_BIRTHDAY] = bool(
+            values.get(CONF_DEFAULT_ANNOUNCE_BIRTHDAY, False)
+        )
+        options[CONF_DEFAULT_ANNOUNCE_SOUVENIR] = bool(
+            values.get(CONF_DEFAULT_ANNOUNCE_SOUVENIR, False)
+        )
+        options[CONF_DEFAULT_ANNOUNCE_DEATH] = bool(
+            values.get(CONF_DEFAULT_ANNOUNCE_DEATH, False)
+        )
+        return self.async_create_entry(title="", data=options)
+
+    async def async_step_default_announce(
+        self, user_input: dict[str, Any] | None = None
+    ):
+        """Integration-level default spoken announcement: its own
+        media_player targets, TTS entity, time and three opt-in toggles,
+        fired as an independent broadcast in __init__.py's
+        _async_check_and_notify - see const.py's CONF_DEFAULT_ANNOUNCE_*
+        comment for why this is never merged into each person's own
+        announce_* settings."""
         errors: dict[str, str] = {}
         if user_input is not None:
-            errors = _validate_person_input(user_input)
+            time_raw = (user_input.get(CONF_DEFAULT_ANNOUNCE_TIME) or "").strip()
+            if time_raw:
+                parts = time_raw.split(":")
+                try:
+                    if len(parts) not in (2, 3) or not all(p.isdigit() for p in parts):
+                        raise ValueError
+                    hh, mm = int(parts[0]), int(parts[1])
+                    ss = int(parts[2]) if len(parts) == 3 else 0
+                    if not (0 <= hh <= 23 and 0 <= mm <= 59 and 0 <= ss <= 59):
+                        raise ValueError
+                except (ValueError, IndexError):
+                    errors[CONF_DEFAULT_ANNOUNCE_TIME] = "invalid_time"
             if not errors:
-                person = {
-                    CONF_PERSON_ID: uuid.uuid4().hex,
-                    **_collect_person_fields(user_input),
-                }
-                people = self._people
-                people.append(person)
-                return self._save(people)
+                return self._save_default_announce(user_input)
+        current = self.config_entry.options
         return self.async_show_form(
-            step_id="add_person",
-            data_schema=_person_schema(self.hass, user_input),
-            errors=errors,
-        )
-
-    async def async_step_edit_person(self, user_input: dict[str, Any] | None = None):
-        people = self._people
-        if user_input is not None and self._selected_id is None:
-            self._selected_id = user_input["person"]
-            return await self.async_step_edit_person()
-
-        if self._selected_id is None:
-            return self.async_show_form(
-                step_id="edit_person",
-                data_schema=vol.Schema(
-                    {
-                        vol.Required("person"): selector.SelectSelector(
-                            selector.SelectSelectorConfig(
-                                options=[
-                                    {
-                                        "value": p[CONF_PERSON_ID],
-                                        "label": f"{p[CONF_FIRST_NAME]} {p.get(CONF_LAST_NAME, '')}".strip(),
-                                    }
-                                    for p in people
-                                ],
-                                mode=selector.SelectSelectorMode.DROPDOWN,
-                            )
-                        )
-                    }
-                ),
-            )
-
-        current = next(
-            (p for p in people if p[CONF_PERSON_ID] == self._selected_id), None
-        )
-        if current is None:
-            self._selected_id = None
-            return await self.async_step_init()
-
-        errors: dict[str, str] = {}
-        if user_input is not None and "person" not in user_input:
-            errors = _validate_person_input(user_input)
-            if not errors:
-                updated = {
-                    CONF_PERSON_ID: self._selected_id,
-                    **_collect_person_fields(user_input),
-                }
-                new_people = [
-                    updated if p[CONF_PERSON_ID] == self._selected_id else p
-                    for p in people
-                ]
-                return self._save(new_people)
-            current = user_input
-
-        return self.async_show_form(
-            step_id="edit_person",
-            data_schema=_person_schema(self.hass, current),
-            errors=errors,
-        )
-
-    async def async_step_remove_person(self, user_input: dict[str, Any] | None = None):
-        people = self._people
-        if user_input is not None:
-            new_people = [
-                p for p in people if p[CONF_PERSON_ID] != user_input["person"]
-            ]
-            return self._save(new_people)
-        return self.async_show_form(
-            step_id="remove_person",
+            step_id="default_announce",
             data_schema=vol.Schema(
                 {
-                    vol.Required("person"): selector.SelectSelector(
-                        selector.SelectSelectorConfig(
-                            options=[
-                                {
-                                    "value": p[CONF_PERSON_ID],
-                                    "label": f"{p[CONF_FIRST_NAME]} {p.get(CONF_LAST_NAME, '')}".strip(),
-                                }
-                                for p in people
-                            ],
-                            mode=selector.SelectSelectorMode.DROPDOWN,
+                    vol.Optional(
+                        CONF_DEFAULT_ANNOUNCE_TARGETS,
+                        default=current.get(CONF_DEFAULT_ANNOUNCE_TARGETS, []),
+                    ): selector.EntitySelector(
+                        selector.EntitySelectorConfig(
+                            domain="media_player", multiple=True
                         )
-                    )
+                    ),
+                    vol.Optional(
+                        CONF_DEFAULT_ANNOUNCE_TTS_ENTITY,
+                        default=current.get(CONF_DEFAULT_ANNOUNCE_TTS_ENTITY, ""),
+                    ): selector.EntitySelector(
+                        selector.EntitySelectorConfig(domain="tts")
+                    ),
+                    vol.Optional(
+                        CONF_DEFAULT_ANNOUNCE_TIME,
+                        default=current.get(CONF_DEFAULT_ANNOUNCE_TIME, ""),
+                    ): str,
+                    vol.Optional(
+                        CONF_DEFAULT_ANNOUNCE_BIRTHDAY,
+                        default=current.get(CONF_DEFAULT_ANNOUNCE_BIRTHDAY, False),
+                    ): bool,
+                    vol.Optional(
+                        CONF_DEFAULT_ANNOUNCE_SOUVENIR,
+                        default=current.get(CONF_DEFAULT_ANNOUNCE_SOUVENIR, False),
+                    ): bool,
+                    vol.Optional(
+                        CONF_DEFAULT_ANNOUNCE_DEATH,
+                        default=current.get(CONF_DEFAULT_ANNOUNCE_DEATH, False),
+                    ): bool,
                 }
             ),
+                errors=errors,
         )
