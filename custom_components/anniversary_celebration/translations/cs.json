@@ -18,7 +18,8 @@
           "add_person": "Přidat osobu",
           "edit_person": "Upravit osobu",
           "remove_person": "Odebrat osobu",
-          "default_targets": "Výchozí cíle oznámení"
+          "default_targets": "Výchozí cíle oznámení",
+          "default_announce": "Výchozí hlasové oznámení"
         }
       },
       "add_person": {
@@ -76,6 +77,20 @@
         "title": "Výchozí cíle oznámení",
         "data": {
           "default_notify_targets": "Zařízení / služby oznámené pro všechny"
+        }
+      },
+      "default_announce": {
+        "title": "Výchozí hlasové oznámení",
+        "data": {
+          "default_announce_targets": "Reproduktory pro hlasové oznámení pro všechny",
+          "default_announce_tts_entity": "Hlasový syntezátor (TTS)",
+          "default_announce_time": "Čas hlasového oznámení (nepovinné)",
+          "default_announce_birthday": "Oznámit narozeniny (žijící)",
+          "default_announce_souvenir": "Oznámit vzpomínku (zesnulí)",
+          "default_announce_death": "Oznámit výročí úmrtí"
+        },
+        "data_description": {
+          "default_announce_time": "Nepovinné. Prázdné = žádné hlasové oznámení, i když je zaškrtnuto pole výše."
         }
       },
       "remove_person": {
