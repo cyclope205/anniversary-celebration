@@ -102,6 +102,18 @@ Choix des horaires de notification et des appareils/services à notifier (plus b
 
 <img width="600" alt="Choix des horaires et des services à notifier" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794553602042-1cabbc4d.jpg" />
 
+Cibles de notification par défaut (menu séparé des options de l'intégration) :
+
+<img width="600" alt="Cibles de notification par défaut" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794818143532-9bf36b6a.png" />
+
+Date de décès (si le statut est Décédé(e), plus bas dans le même formulaire) :
+
+<img width="600" alt="Date de décès" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794818344014-c09875fc.png" />
+
+Configuration de l'annonce vocale (haut-parleurs, moteur TTS, horaire et cases à cocher, plus bas dans le même formulaire) :
+
+<img width="600" alt="Configuration de l'annonce vocale" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794818351360-1c8bfe46.png" />
+
 Notification le jour J (persistante dans Home Assistant et sur mobile) :
 
 <img width="600" alt="Notification persistante Anniversary Celebration" src="https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/screenshots/screenshot-1794531746780-bec780a5.png" />
