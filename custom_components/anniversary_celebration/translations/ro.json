@@ -17,7 +17,8 @@
         "menu_options": {
           "add_person": "Adaugă o persoană",
           "edit_person": "Editează o persoană",
-          "remove_person": "Elimină o persoană"
+          "remove_person": "Elimină o persoană",
+          "default_targets": "Ținte de notificare implicite"
         }
       },
       "add_person": {
@@ -28,7 +29,21 @@
           "birth_date": "Data nașterii",
           "status": "Stare",
           "notify_time": "Ora notificării",
-          "notify_target": "Dispozitiv / serviciu de notificat"
+          "notify_time_2": "A doua oră de notificare (opțional)",
+          "notify_targets": "Dispozitive / servicii de notificat",
+          "death_date": "Data decesului (dacă este cazul)",
+          "announce_targets": "Difuzoare pentru anunțul vocal",
+          "announce_tts_entity": "Motor de sinteză vocală (TTS)",
+          "announce_time": "Ora anunțului vocal (opțional)",
+          "announce_birthday": "Anunță ziua de naștere (în viață)",
+          "announce_souvenir": "Anunță în memorie (decedat)",
+          "announce_death": "Anunță aniversarea decesului"
+        },
+        "data_description": {
+          "birth_date": "Introduceți data: AAAA-LL-ZZ sau ZZ/LL/AAAA",
+          "notify_time_2": "Opțional, HH:MM. Lăsați gol pentru o singură oră de notificare.",
+          "death_date": "Util doar dacă starea este Decedat(ă). Trebuie să fie după data nașterii.",
+          "announce_time": "Opțional. Gol = niciun anunț vocal, chiar dacă o casetă de mai sus este bifată."
         }
       },
       "edit_person": {
@@ -39,8 +54,28 @@
           "birth_date": "Data nașterii",
           "status": "Stare",
           "notify_time": "Ora notificării",
-          "notify_target": "Dispozitiv / serviciu de notificat",
+          "notify_time_2": "A doua oră de notificare (opțional)",
+          "notify_targets": "Dispozitive / servicii de notificat",
+          "death_date": "Data decesului (dacă este cazul)",
+          "announce_targets": "Difuzoare pentru anunțul vocal",
+          "announce_tts_entity": "Motor de sinteză vocală (TTS)",
+          "announce_time": "Ora anunțului vocal (opțional)",
+          "announce_birthday": "Anunță ziua de naștere (în viață)",
+          "announce_souvenir": "Anunță în memorie (decedat)",
+          "announce_death": "Anunță aniversarea decesului",
           "person": "Persoană"
+        },
+        "data_description": {
+          "birth_date": "Introduceți data: AAAA-LL-ZZ sau ZZ/LL/AAAA",
+          "notify_time_2": "Opțional, HH:MM. Lăsați gol pentru o singură oră de notificare.",
+          "death_date": "Util doar dacă starea este Decedat(ă). Trebuie să fie după data nașterii.",
+          "announce_time": "Opțional. Gol = niciun anunț vocal, chiar dacă o casetă de mai sus este bifată."
+        }
+      },
+      "default_targets": {
+        "title": "Ținte de notificare implicite",
+        "data": {
+          "default_notify_targets": "Dispozitive / servicii notificate pentru toată lumea"
         }
       },
       "remove_person": {
@@ -49,6 +84,11 @@
           "person": "Persoană"
         }
       }
+    },
+    "error": {
+      "invalid_date": "Dată nerecunoscută. Utilizați AAAA-LL-ZZ sau ZZ/LL/AAAA.",
+      "invalid_time": "Oră nerecunoscută. Utilizați HH:MM.",
+      "death_before_birth": "Data decesului nu poate fi anterioară datei nașterii."
     }
   }
 }
