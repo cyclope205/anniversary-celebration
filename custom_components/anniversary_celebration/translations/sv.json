@@ -17,7 +17,8 @@
         "menu_options": {
           "add_person": "Lägg till en person",
           "edit_person": "Redigera en person",
-          "remove_person": "Ta bort en person"
+          "remove_person": "Ta bort en person",
+          "default_targets": "Standardmål för aviseringar"
         }
       },
       "add_person": {
@@ -28,7 +29,21 @@
           "birth_date": "Födelsedatum",
           "status": "Status",
           "notify_time": "Aviseringstid",
-          "notify_target": "Enhet / tjänst att avisera"
+          "notify_time_2": "Andra aviseringstid (valfritt)",
+          "notify_targets": "Enheter / tjänster att meddela",
+          "death_date": "Dödsdatum (om tillämpligt)",
+          "announce_targets": "Högtalare för det talade meddelandet",
+          "announce_tts_entity": "Talsyntesmotor (TTS)",
+          "announce_time": "Tid för det talade meddelandet (valfritt)",
+          "announce_birthday": "Meddela födelsedag (levande)",
+          "announce_souvenir": "Meddela till minne (avliden)",
+          "announce_death": "Meddela dödsdag"
+        },
+        "data_description": {
+          "birth_date": "Ange datumet: ÅÅÅÅ-MM-DD eller DD/MM/ÅÅÅÅ",
+          "notify_time_2": "Valfritt, HH:MM. Lämna tomt för endast en aviseringstid.",
+          "death_date": "Endast användbart om status är Avliden. Måste vara efter födelsedatumet.",
+          "announce_time": "Valfritt. Tomt = inget talat meddelande, även om en kryssruta ovan är markerad."
         }
       },
       "edit_person": {
@@ -39,8 +54,28 @@
           "birth_date": "Födelsedatum",
           "status": "Status",
           "notify_time": "Aviseringstid",
-          "notify_target": "Enhet / tjänst att avisera",
+          "notify_time_2": "Andra aviseringstid (valfritt)",
+          "notify_targets": "Enheter / tjänster att meddela",
+          "death_date": "Dödsdatum (om tillämpligt)",
+          "announce_targets": "Högtalare för det talade meddelandet",
+          "announce_tts_entity": "Talsyntesmotor (TTS)",
+          "announce_time": "Tid för det talade meddelandet (valfritt)",
+          "announce_birthday": "Meddela födelsedag (levande)",
+          "announce_souvenir": "Meddela till minne (avliden)",
+          "announce_death": "Meddela dödsdag",
           "person": "Person"
+        },
+        "data_description": {
+          "birth_date": "Ange datumet: ÅÅÅÅ-MM-DD eller DD/MM/ÅÅÅÅ",
+          "notify_time_2": "Valfritt, HH:MM. Lämna tomt för endast en aviseringstid.",
+          "death_date": "Endast användbart om status är Avliden. Måste vara efter födelsedatumet.",
+          "announce_time": "Valfritt. Tomt = inget talat meddelande, även om en kryssruta ovan är markerad."
+        }
+      },
+      "default_targets": {
+        "title": "Standardmål för aviseringar",
+        "data": {
+          "default_notify_targets": "Enheter / tjänster som meddelas för alla"
         }
       },
       "remove_person": {
@@ -49,6 +84,11 @@
           "person": "Person"
         }
       }
+    },
+    "error": {
+      "invalid_date": "Okänt datum. Använd ÅÅÅÅ-MM-DD eller DD/MM/ÅÅÅÅ.",
+      "invalid_time": "Okänd tid. Använd HH:MM.",
+      "death_before_birth": "Dödsdatumet kan inte vara före födelsedatumet."
     }
   }
 }
