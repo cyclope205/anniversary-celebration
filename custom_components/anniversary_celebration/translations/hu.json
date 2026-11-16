@@ -18,7 +18,8 @@
           "add_person": "Személy hozzáadása",
           "edit_person": "Személy szerkesztése",
           "remove_person": "Személy eltávolítása",
-          "default_targets": "Alapértelmezett értesítési célok"
+          "default_targets": "Alapértelmezett értesítési célok",
+          "default_announce": "Alapértelmezett hangbejelentés"
         }
       },
       "add_person": {
@@ -76,6 +77,20 @@
         "title": "Alapértelmezett értesítési célok",
         "data": {
           "default_notify_targets": "Mindenki számára értesített eszközök / szolgáltatások"
+        }
+      },
+      "default_announce": {
+        "title": "Alapértelmezett hangbejelentés",
+        "data": {
+          "default_announce_targets": "Hangszórók a hangbejelentéshez mindenki számára",
+          "default_announce_tts_entity": "Szövegfelolvasó motor (TTS)",
+          "default_announce_time": "Hangbejelentés időpontja (opcionális)",
+          "default_announce_birthday": "Születésnapok bejelentése (élők)",
+          "default_announce_souvenir": "Megemlékezés bejelentése (elhunytak)",
+          "default_announce_death": "Halálozási évfordulók bejelentése"
+        },
+        "data_description": {
+          "default_announce_time": "Opcionális. Üres = nincs hangbejelentés, még ha a fenti jelölőnégyzet be is van jelölve."
         }
       },
       "remove_person": {
