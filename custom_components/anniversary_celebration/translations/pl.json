@@ -17,7 +17,8 @@
         "menu_options": {
           "add_person": "Dodaj osobę",
           "edit_person": "Edytuj osobę",
-          "remove_person": "Usuń osobę"
+          "remove_person": "Usuń osobę",
+          "default_targets": "Domyślne cele powiadomień"
         }
       },
       "add_person": {
@@ -28,7 +29,21 @@
           "birth_date": "Data urodzenia",
           "status": "Status",
           "notify_time": "Godzina powiadomienia",
-          "notify_target": "Urządzenie / usługa do powiadomienia"
+          "notify_time_2": "Druga godzina powiadomienia (opcjonalnie)",
+          "notify_targets": "Urządzenia / usługi do powiadomienia",
+          "death_date": "Data śmierci (jeśli dotyczy)",
+          "announce_targets": "Głośniki do ogłoszenia głosowego",
+          "announce_tts_entity": "Mechanizm syntezy mowy (TTS)",
+          "announce_time": "Godzina ogłoszenia głosowego (opcjonalnie)",
+          "announce_birthday": "Ogłaszaj urodziny (żyjący/a)",
+          "announce_souvenir": "Ogłaszaj wspomnienie (zmarły/a)",
+          "announce_death": "Ogłaszaj rocznicę śmierci"
+        },
+        "data_description": {
+          "birth_date": "Wpisz datę: RRRR-MM-DD lub DD/MM/RRRR",
+          "notify_time_2": "Opcjonalnie, HH:MM. Pozostaw puste dla jednej godziny powiadomienia.",
+          "death_date": "Przydatne tylko, gdy status to Zmarły/a. Musi być późniejsza niż data urodzenia.",
+          "announce_time": "Opcjonalne. Puste = brak ogłoszenia głosowego, nawet jeśli powyższe pole jest zaznaczone."
         }
       },
       "edit_person": {
@@ -39,8 +54,28 @@
           "birth_date": "Data urodzenia",
           "status": "Status",
           "notify_time": "Godzina powiadomienia",
-          "notify_target": "Urządzenie / usługa do powiadomienia",
+          "notify_time_2": "Druga godzina powiadomienia (opcjonalnie)",
+          "notify_targets": "Urządzenia / usługi do powiadomienia",
+          "death_date": "Data śmierci (jeśli dotyczy)",
+          "announce_targets": "Głośniki do ogłoszenia głosowego",
+          "announce_tts_entity": "Mechanizm syntezy mowy (TTS)",
+          "announce_time": "Godzina ogłoszenia głosowego (opcjonalnie)",
+          "announce_birthday": "Ogłaszaj urodziny (żyjący/a)",
+          "announce_souvenir": "Ogłaszaj wspomnienie (zmarły/a)",
+          "announce_death": "Ogłaszaj rocznicę śmierci",
           "person": "Osoba"
+        },
+        "data_description": {
+          "birth_date": "Wpisz datę: RRRR-MM-DD lub DD/MM/RRRR",
+          "notify_time_2": "Opcjonalnie, HH:MM. Pozostaw puste dla jednej godziny powiadomienia.",
+          "death_date": "Przydatne tylko, gdy status to Zmarły/a. Musi być późniejsza niż data urodzenia.",
+          "announce_time": "Opcjonalne. Puste = brak ogłoszenia głosowego, nawet jeśli powyższe pole jest zaznaczone."
+        }
+      },
+      "default_targets": {
+        "title": "Domyślne cele powiadomień",
+        "data": {
+          "default_notify_targets": "Urządzenia / usługi powiadamiane dla wszystkich"
         }
       },
       "remove_person": {
@@ -49,6 +84,11 @@
           "person": "Osoba"
         }
       }
+    },
+    "error": {
+      "invalid_date": "Nierozpoznana data. Użyj RRRR-MM-DD lub DD/MM/RRRR.",
+      "invalid_time": "Nierozpoznana godzina. Użyj HH:MM.",
+      "death_before_birth": "Data śmierci nie może być wcześniejsza niż data urodzenia."
     }
   }
 }
