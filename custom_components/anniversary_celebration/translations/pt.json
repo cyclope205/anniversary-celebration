@@ -17,7 +17,8 @@
         "menu_options": {
           "add_person": "Adicionar uma pessoa",
           "edit_person": "Editar uma pessoa",
-          "remove_person": "Remover uma pessoa"
+          "remove_person": "Remover uma pessoa",
+          "default_targets": "Destinos de notificação predefinidos"
         }
       },
       "add_person": {
@@ -28,7 +29,21 @@
           "birth_date": "Data de nascimento",
           "status": "Estado",
           "notify_time": "Hora de notificação",
-          "notify_target": "Dispositivo / serviço a notificar"
+          "notify_time_2": "Segunda hora de notificação (opcional)",
+          "notify_targets": "Dispositivos / serviços a notificar",
+          "death_date": "Data de falecimento (se aplicável)",
+          "announce_targets": "Altifalantes para o anúncio de voz",
+          "announce_tts_entity": "Motor de síntese de voz (TTS)",
+          "announce_time": "Hora do anúncio de voz (opcional)",
+          "announce_birthday": "Anunciar aniversário (vivo/a)",
+          "announce_souvenir": "Anunciar em memória (falecido/a)",
+          "announce_death": "Anunciar aniversário de falecimento"
+        },
+        "data_description": {
+          "birth_date": "Introduza a data: AAAA-MM-DD ou DD/MM/AAAA",
+          "notify_time_2": "Opcional, HH:MM. Deixe vazio para apenas uma hora de notificação.",
+          "death_date": "Só útil se o estado for Falecido(a). Deve ser posterior à data de nascimento.",
+          "announce_time": "Opcional. Vazio = nenhum anúncio de voz, mesmo que uma caixa acima esteja marcada."
         }
       },
       "edit_person": {
@@ -39,8 +54,28 @@
           "birth_date": "Data de nascimento",
           "status": "Estado",
           "notify_time": "Hora de notificação",
-          "notify_target": "Dispositivo / serviço a notificar",
+          "notify_time_2": "Segunda hora de notificação (opcional)",
+          "notify_targets": "Dispositivos / serviços a notificar",
+          "death_date": "Data de falecimento (se aplicável)",
+          "announce_targets": "Altifalantes para o anúncio de voz",
+          "announce_tts_entity": "Motor de síntese de voz (TTS)",
+          "announce_time": "Hora do anúncio de voz (opcional)",
+          "announce_birthday": "Anunciar aniversário (vivo/a)",
+          "announce_souvenir": "Anunciar em memória (falecido/a)",
+          "announce_death": "Anunciar aniversário de falecimento",
           "person": "Pessoa"
+        },
+        "data_description": {
+          "birth_date": "Introduza a data: AAAA-MM-DD ou DD/MM/AAAA",
+          "notify_time_2": "Opcional, HH:MM. Deixe vazio para apenas uma hora de notificação.",
+          "death_date": "Só útil se o estado for Falecido(a). Deve ser posterior à data de nascimento.",
+          "announce_time": "Opcional. Vazio = nenhum anúncio de voz, mesmo que uma caixa acima esteja marcada."
+        }
+      },
+      "default_targets": {
+        "title": "Destinos de notificação predefinidos",
+        "data": {
+          "default_notify_targets": "Dispositivos / serviços notificados para todos"
         }
       },
       "remove_person": {
@@ -49,6 +84,11 @@
           "person": "Pessoa"
         }
       }
+    },
+    "error": {
+      "invalid_date": "Data não reconhecida. Use AAAA-MM-DD ou DD/MM/AAAA.",
+      "invalid_time": "Hora não reconhecida. Use HH:MM.",
+      "death_before_birth": "A data de falecimento não pode ser anterior à data de nascimento."
     }
   }
 }
