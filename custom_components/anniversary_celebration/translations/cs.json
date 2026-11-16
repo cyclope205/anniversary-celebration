@@ -17,7 +17,8 @@
         "menu_options": {
           "add_person": "Přidat osobu",
           "edit_person": "Upravit osobu",
-          "remove_person": "Odebrat osobu"
+          "remove_person": "Odebrat osobu",
+          "default_targets": "Výchozí cíle oznámení"
         }
       },
       "add_person": {
@@ -28,7 +29,21 @@
           "birth_date": "Datum narození",
           "status": "Stav",
           "notify_time": "Čas oznámení",
-          "notify_target": "Zařízení / služba pro oznámení"
+          "notify_time_2": "Druhý čas oznámení (nepovinné)",
+          "notify_targets": "Zařízení / služby k oznámení",
+          "death_date": "Datum úmrtí (pokud je relevantní)",
+          "announce_targets": "Reproduktory pro hlasové oznámení",
+          "announce_tts_entity": "Hlasový syntezátor (TTS)",
+          "announce_time": "Čas hlasového oznámení (nepovinné)",
+          "announce_birthday": "Oznámit narozeniny (žijící)",
+          "announce_souvenir": "Oznámit vzpomínku (zesnulý)",
+          "announce_death": "Oznámit výročí úmrtí"
+        },
+        "data_description": {
+          "birth_date": "Zadejte datum: RRRR-MM-DD nebo DD/MM/RRRR",
+          "notify_time_2": "Nepovinné, HH:MM. Nechte prázdné pro jeden čas oznámení.",
+          "death_date": "Užitečné pouze pokud je stav Zesnulý(á). Musí být po datu narození.",
+          "announce_time": "Nepovinné. Prázdné = žádné hlasové oznámení, i když je zaškrtnuto pole výše."
         }
       },
       "edit_person": {
@@ -39,8 +54,28 @@
           "birth_date": "Datum narození",
           "status": "Stav",
           "notify_time": "Čas oznámení",
-          "notify_target": "Zařízení / služba pro oznámení",
+          "notify_time_2": "Druhý čas oznámení (nepovinné)",
+          "notify_targets": "Zařízení / služby k oznámení",
+          "death_date": "Datum úmrtí (pokud je relevantní)",
+          "announce_targets": "Reproduktory pro hlasové oznámení",
+          "announce_tts_entity": "Hlasový syntezátor (TTS)",
+          "announce_time": "Čas hlasového oznámení (nepovinné)",
+          "announce_birthday": "Oznámit narozeniny (žijící)",
+          "announce_souvenir": "Oznámit vzpomínku (zesnulý)",
+          "announce_death": "Oznámit výročí úmrtí",
           "person": "Osoba"
+        },
+        "data_description": {
+          "birth_date": "Zadejte datum: RRRR-MM-DD nebo DD/MM/RRRR",
+          "notify_time_2": "Nepovinné, HH:MM. Nechte prázdné pro jeden čas oznámení.",
+          "death_date": "Užitečné pouze pokud je stav Zesnulý(á). Musí být po datu narození.",
+          "announce_time": "Nepovinné. Prázdné = žádné hlasové oznámení, i když je zaškrtnuto pole výše."
+        }
+      },
+      "default_targets": {
+        "title": "Výchozí cíle oznámení",
+        "data": {
+          "default_notify_targets": "Zařízení / služby oznámené pro všechny"
         }
       },
       "remove_person": {
@@ -49,6 +84,11 @@
           "person": "Osoba"
         }
       }
+    },
+    "error": {
+      "invalid_date": "Nerozpoznané datum. Použijte RRRR-MM-DD nebo DD/MM/RRRR.",
+      "invalid_time": "Nerozpoznaný čas. Použijte HH:MM.",
+      "death_before_birth": "Datum úmrtí nemůže být dřívější než datum narození."
     }
   }
 }
