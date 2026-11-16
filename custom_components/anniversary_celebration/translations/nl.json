@@ -17,7 +17,8 @@
         "menu_options": {
           "add_person": "Persoon toevoegen",
           "edit_person": "Persoon bewerken",
-          "remove_person": "Persoon verwijderen"
+          "remove_person": "Persoon verwijderen",
+          "default_targets": "Standaard meldingsdoelen"
         }
       },
       "add_person": {
@@ -28,7 +29,21 @@
           "birth_date": "Geboortedatum",
           "status": "Status",
           "notify_time": "Meldingstijd",
-          "notify_target": "Apparaat / service om te melden"
+          "notify_time_2": "Tweede meldingstijd (optioneel)",
+          "notify_targets": "Apparaten / services om te melden",
+          "death_date": "Overlijdensdatum (indien van toepassing)",
+          "announce_targets": "Luidsprekers voor de gesproken melding",
+          "announce_tts_entity": "Spraaksynthese-engine (TTS)",
+          "announce_time": "Tijdstip van de gesproken melding (optioneel)",
+          "announce_birthday": "Verjaardag aankondigen (levend)",
+          "announce_souvenir": "Herdenking aankondigen (overleden)",
+          "announce_death": "Overlijdensherdenking aankondigen"
+        },
+        "data_description": {
+          "birth_date": "Typ de datum: JJJJ-MM-DD of DD/MM/JJJJ",
+          "notify_time_2": "Optioneel, HH:MM. Laat leeg voor maar één meldingstijd.",
+          "death_date": "Alleen nuttig als status Overleden is. Moet na de geboortedatum liggen.",
+          "announce_time": "Optioneel. Leeg = geen gesproken melding, ook als een vakje hierboven is aangevinkt."
         }
       },
       "edit_person": {
@@ -39,8 +54,28 @@
           "birth_date": "Geboortedatum",
           "status": "Status",
           "notify_time": "Meldingstijd",
-          "notify_target": "Apparaat / service om te melden",
+          "notify_time_2": "Tweede meldingstijd (optioneel)",
+          "notify_targets": "Apparaten / services om te melden",
+          "death_date": "Overlijdensdatum (indien van toepassing)",
+          "announce_targets": "Luidsprekers voor de gesproken melding",
+          "announce_tts_entity": "Spraaksynthese-engine (TTS)",
+          "announce_time": "Tijdstip van de gesproken melding (optioneel)",
+          "announce_birthday": "Verjaardag aankondigen (levend)",
+          "announce_souvenir": "Herdenking aankondigen (overleden)",
+          "announce_death": "Overlijdensherdenking aankondigen",
           "person": "Persoon"
+        },
+        "data_description": {
+          "birth_date": "Typ de datum: JJJJ-MM-DD of DD/MM/JJJJ",
+          "notify_time_2": "Optioneel, HH:MM. Laat leeg voor maar één meldingstijd.",
+          "death_date": "Alleen nuttig als status Overleden is. Moet na de geboortedatum liggen.",
+          "announce_time": "Optioneel. Leeg = geen gesproken melding, ook als een vakje hierboven is aangevinkt."
+        }
+      },
+      "default_targets": {
+        "title": "Standaard meldingsdoelen",
+        "data": {
+          "default_notify_targets": "Apparaten / services die voor iedereen worden gemeld"
         }
       },
       "remove_person": {
@@ -49,6 +84,11 @@
           "person": "Persoon"
         }
       }
+    },
+    "error": {
+      "invalid_date": "Datum niet herkend. Gebruik JJJJ-MM-DD of DD/MM/JJJJ.",
+      "invalid_time": "Tijd niet herkend. Gebruik HH:MM.",
+      "death_before_birth": "De overlijdensdatum kan niet vóór de geboortedatum liggen."
     }
   }
 }
