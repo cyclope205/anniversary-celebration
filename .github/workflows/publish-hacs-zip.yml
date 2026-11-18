@@ -1,0 +1,82 @@
+name: Publish HACS ZIP
+
+on:
+  # One-time backfill: add the HACS ZIP to every existing stable release.
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/publish-hacs-zip.yml"
+  # Future releases automatically receive their ZIP asset.
+  release:
+    types: [published]
+  # Allows a maintainer to rerun the backfill manually if needed.
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-hacs-zip-${{ github.event.release.tag_name || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    name: Build and attach integration ZIP
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build and upload release ZIPs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_NAME: ${{ github.event_name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if [[ "$EVENT_NAME" == "release" ]]; then
+            tags=("$RELEASE_TAG")
+          else
+            mapfile -t tags < <(
+              gh api --paginate "repos/${GITHUB_REPOSITORY}/releases?per_page=100" \
+                --jq '.[] | select(.draft == false and .prerelease == false) | .tag_name'
+            )
+          fi
+
+          if [[ "${#tags[@]}" -eq 0 ]]; then
+            echo "No published stable releases found."
+            exit 0
+          fi
+
+          for tag in "${tags[@]}"; do
+            echo "::group::Building ZIP for $tag"
+            git checkout --quiet --detach "$tag"
+
+            integration_dir="custom_components/anniversary_celebration"
+            if [[ ! -f "$integration_dir/manifest.json" ]]; then
+              echo "::error::Integration manifest not found in $tag"
+              exit 1
+            fi
+
+            domain="$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["domain"])' "$integration_dir/manifest.json")"
+            if [[ "$domain" != "anniversary_celebration" ]]; then
+              echo "::error::Unexpected integration domain '$domain' in $tag"
+              exit 1
+            fi
+
+            zip_path="$RUNNER_TEMP/anniversary_celebration.zip"
+            rm -f "$zip_path"
+            (cd "$integration_dir" && zip -qr "$zip_path" .)
+
+            unzip -Z1 "$zip_path" | grep -Fxq './manifest.json'
+            unzip -Z1 "$zip_path" | grep -Fxq './__init__.py'
+            unzip -Z1 "$zip_path" | grep -Fxq './www/anniversary-celebration-card.js'
+
+            gh release upload "$tag" "$zip_path" --clobber
+            echo "Attached anniversary_celebration.zip to $tag"
+            echo "::endgroup::"
+          done
