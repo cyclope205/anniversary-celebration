@@ -1,16 +1,21 @@
 name: Publish HACS ZIP
 
 on:
-  # One-time backfill: add the HACS ZIP to every existing stable release.
+  # A manifest version bump creates the matching release and its ZIP asset.
   push:
     branches: [main]
     paths:
-      - ".github/workflows/publish-hacs-zip.yml"
-  # Future releases automatically receive their ZIP asset.
+      - "custom_components/anniversary_celebration/manifest.json"
+  # Releases created manually on GitHub receive their ZIP automatically.
   release:
     types: [published]
-  # Allows a maintainer to rerun the backfill manually if needed.
+  # Allows a maintainer to rebuild the ZIP for a specific release.
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "Release tag to rebuild (for example v1.2.8)"
+        required: true
+        type: string
 
 permissions:
   contents: write
@@ -29,54 +34,74 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Build and upload release ZIPs
+      - name: Build and upload release ZIP
         env:
           GH_TOKEN: ${{ github.token }}
           EVENT_NAME: ${{ github.event_name }}
           RELEASE_TAG: ${{ github.event.release.tag_name }}
+          INPUT_TAG: ${{ inputs.tag }}
         shell: bash
         run: |
           set -euo pipefail
 
-          if [[ "$EVENT_NAME" == "release" ]]; then
-            tags=("$RELEASE_TAG")
+          if [[ "$EVENT_NAME" == "push" ]]; then
+            version="$(python -c 'import json; print(json.load(open("custom_components/anniversary_celebration/manifest.json"))["version"])')"
+            tag="v$version"
+
+            if ! gh release view "$tag" >/dev/null 2>&1; then
+              gh release create "$tag"                 --target "$GITHUB_SHA"                 --title "$tag - Distribution HACS/Marketplace par ZIP"                 --notes "Évolution technique : Anniversary Celebration est désormais distribuée par une archive ZIP dédiée via HACS/Marketplace. Cela permet de comptabiliser les téléchargements de l'archive. Aucun changement fonctionnel par rapport à la version précédente."
+            fi
+          elif [[ "$EVENT_NAME" == "release" ]]; then
+            tag="$RELEASE_TAG"
           else
-            mapfile -t tags < <(
+            tag="$INPUT_TAG"
+          fi
+
+          if [[ -z "$tag" ]]; then
+            echo "::error::No release tag was provided"
+            exit 1
+          fi
+
+          git fetch --force origin "refs/tags/$tag:refs/tags/$tag"
+          git checkout --quiet --detach "$tag"
+
+          integration_dir="custom_components/anniversary_celebration"
+          if [[ ! -f "$integration_dir/manifest.json" ]]; then
+            echo "::error::Integration manifest not found in $tag"
+            exit 1
+          fi
+
+          version="$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["version"])' "$integration_dir/manifest.json")"
+          domain="$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["domain"])' "$integration_dir/manifest.json")"
+          if [[ "$domain" != "anniversary_celebration" || "$tag" != "v$version" ]]; then
+            echo "::error::Manifest identity/version does not match release tag $tag"
+            exit 1
+          fi
+
+          zip_path="$RUNNER_TEMP/anniversary_celebration.zip"
+          rm -f "$zip_path"
+          (cd "$integration_dir" && zip -qr "$zip_path" .)
+
+          # Verify the ZIP has the exact root layout expected by HACS/Marketplace.
+          unzip -Z1 "$zip_path" | grep -Fxq 'manifest.json'
+          unzip -Z1 "$zip_path" | grep -Fxq '__init__.py'
+          unzip -Z1 "$zip_path" | grep -Fxq 'www/anniversary-celebration-card.js'
+
+          gh release upload "$tag" "$zip_path" --clobber
+          echo "Attached anniversary_celebration.zip to $tag"
+
+          # The initial ZIP backfill was only a test. Remove those assets from
+          # older tags: their tagged hacs.json files do not enable zip_release.
+          if [[ "$EVENT_NAME" == "push" ]]; then
+            mapfile -t old_tags < <(
               gh api --paginate "repos/${GITHUB_REPOSITORY}/releases?per_page=100" \
                 --jq '.[] | select(.draft == false and .prerelease == false) | .tag_name'
             )
+            for old_tag in "${old_tags[@]}"; do
+              [[ "$old_tag" == "$tag" ]] && continue
+              if gh release view "$old_tag" --json assets --jq '.assets[].name' | grep -Fxq 'anniversary_celebration.zip'; then
+                gh release delete-asset "$old_tag" anniversary_celebration.zip --yes
+                echo "Removed unused ZIP asset from $old_tag"
+              fi
+            done
           fi
-
-          if [[ "${#tags[@]}" -eq 0 ]]; then
-            echo "No published stable releases found."
-            exit 0
-          fi
-
-          for tag in "${tags[@]}"; do
-            echo "::group::Building ZIP for $tag"
-            git checkout --quiet --detach "$tag"
-
-            integration_dir="custom_components/anniversary_celebration"
-            if [[ ! -f "$integration_dir/manifest.json" ]]; then
-              echo "::error::Integration manifest not found in $tag"
-              exit 1
-            fi
-
-            domain="$(python -c 'import json,sys; print(json.load(open(sys.argv[1]))["domain"])' "$integration_dir/manifest.json")"
-            if [[ "$domain" != "anniversary_celebration" ]]; then
-              echo "::error::Unexpected integration domain '$domain' in $tag"
-              exit 1
-            fi
-
-            zip_path="$RUNNER_TEMP/anniversary_celebration.zip"
-            rm -f "$zip_path"
-            (cd "$integration_dir" && zip -qr "$zip_path" .)
-
-            unzip -Z1 "$zip_path" | grep -Fxq 'manifest.json'
-            unzip -Z1 "$zip_path" | grep -Fxq '__init__.py'
-            unzip -Z1 "$zip_path" | grep -Fxq 'www/anniversary-celebration-card.js'
-
-            gh release upload "$tag" "$zip_path" --clobber
-            echo "Attached anniversary_celebration.zip to $tag"
-            echo "::endgroup::"
-          done

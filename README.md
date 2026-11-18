@@ -8,8 +8,10 @@
 [![Tests](https://github.com/cyclope205/anniversary-celebration/actions/workflows/tests.yml/badge.svg)](https://github.com/cyclope205/anniversary-celebration/actions/workflows/tests.yml)
 [![Issues](https://img.shields.io/github/issues/cyclope205/anniversary-celebration)](https://github.com/cyclope205/anniversary-celebration/issues)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/cyclope205/anniversary-celebration/blob/main/LICENSE)
-[![Downloads](https://img.shields.io/github/downloads/cyclope205/anniversary-celebration/total)](https://github.com/cyclope205/anniversary-celebration/releases)
-[![Downloads latest](https://img.shields.io/github/downloads/cyclope205/anniversary-celebration/latest/total)](https://github.com/cyclope205/anniversary-celebration/releases/latest)
+[![Téléchargements HACS (toutes versions)](https://img.shields.io/github/downloads/cyclope205/anniversary-celebration/total?label=T%C3%A9l%C3%A9chargements%20HACS)](https://github.com/cyclope205/anniversary-celebration/releases)
+[![Téléchargements HACS (dernière version)](https://img.shields.io/github/downloads/cyclope205/anniversary-celebration/latest/anniversary_celebration.zip?label=HACS%20(derni%C3%A8re%20version))](https://github.com/cyclope205/anniversary-celebration/releases/latest)
+
+> Ces compteurs mesurent les téléchargements des ZIP utilisés par HACS/Marketplace. Ils incluent les mises à jour, les réinstallations et les téléchargements manuels : ils ne représentent donc pas le nombre exact d'installations actives. Le suivi commence avec la v1.2.8.
 [![Stars](https://img.shields.io/github/stars/cyclope205/anniversary-celebration)](https://github.com/cyclope205/anniversary-celebration/stargazers)
 [![Forks](https://img.shields.io/github/forks/cyclope205/anniversary-celebration)](https://github.com/cyclope205/anniversary-celebration/network/members)
 
