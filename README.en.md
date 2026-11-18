@@ -9,9 +9,7 @@
 [![Issues](https://img.shields.io/github/issues/cyclope205/anniversary-celebration)](https://github.com/cyclope205/anniversary-celebration/issues)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/cyclope205/anniversary-celebration/blob/main/LICENSE)
 [![Downloads](https://img.shields.io/github/downloads/cyclope205/anniversary-celebration/total)](https://github.com/cyclope205/anniversary-celebration/releases)
-[![Downloads latest](https://img.shields.io/github/downloads/cyclope205/anniversary-celebration/latest/anniversary_celebration.zip)](https://github.com/cyclope205/anniversary-celebration/releases/latest)
-
-> These counters measure downloads of the ZIP files used by HACS/Marketplace. They include updates, reinstalls, and manual downloads, so they are not an exact count of active installations. Tracking starts with v1.2.8.
+[![Downloads latest](https://img.shields.io/github/downloads/cyclope205/anniversary-celebration/latest/total)](https://github.com/cyclope205/anniversary-celebration/releases/latest)
 [![Stars](https://img.shields.io/github/stars/cyclope205/anniversary-celebration)](https://github.com/cyclope205/anniversary-celebration/stargazers)
 [![Forks](https://img.shields.io/github/forks/cyclope205/anniversary-celebration)](https://github.com/cyclope205/anniversary-celebration/network/members)
 
