@@ -72,9 +72,9 @@ jobs:
             rm -f "$zip_path"
             (cd "$integration_dir" && zip -qr "$zip_path" .)
 
-            unzip -Z1 "$zip_path" | grep -Fxq './manifest.json'
-            unzip -Z1 "$zip_path" | grep -Fxq './__init__.py'
-            unzip -Z1 "$zip_path" | grep -Fxq './www/anniversary-celebration-card.js'
+            unzip -Z1 "$zip_path" | grep -Fxq 'manifest.json'
+            unzip -Z1 "$zip_path" | grep -Fxq '__init__.py'
+            unzip -Z1 "$zip_path" | grep -Fxq 'www/anniversary-celebration-card.js'
 
             gh release upload "$tag" "$zip_path" --clobber
             echo "Attached anniversary_celebration.zip to $tag"
