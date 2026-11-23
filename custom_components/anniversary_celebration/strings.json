@@ -38,13 +38,15 @@
           "announce_time": "Spoken announcement time (optional)",
           "announce_birthday": "Announce birthday (alive)",
           "announce_souvenir": "Announce in memoriam (deceased)",
-          "announce_death": "Announce death anniversary"
+          "announce_death": "Announce death anniversary",
+          "announce_volume": "Spoken announcement volume (optional)"
         },
         "data_description": {
           "birth_date": "Type the date: YYYY-MM-DD or DD/MM/YYYY",
           "notify_time_2": "Optional, HH:MM. Leave empty for a single notification time.",
           "death_date": "Only useful if status is Deceased. Must be after the birth date.",
-          "announce_time": "Optional. Empty = no spoken announcement, even if a checkbox above is checked."
+          "announce_time": "Optional. Empty = no spoken announcement, even if a checkbox above is checked.",
+          "announce_volume": "Optional, 0 to 1. Leave empty to use the speaker's current volume."
         }
       },
       "edit_person": {
@@ -64,13 +66,15 @@
           "announce_birthday": "Announce birthday (alive)",
           "announce_souvenir": "Announce in memoriam (deceased)",
           "announce_death": "Announce death anniversary",
+          "announce_volume": "Spoken announcement volume (optional)",
           "person": "Person"
         },
         "data_description": {
           "birth_date": "Type the date: YYYY-MM-DD or DD/MM/YYYY",
           "notify_time_2": "Optional, HH:MM. Leave empty for a single notification time.",
           "death_date": "Only useful if status is Deceased. Must be after the birth date.",
-          "announce_time": "Optional. Empty = no spoken announcement, even if a checkbox above is checked."
+          "announce_time": "Optional. Empty = no spoken announcement, even if a checkbox above is checked.",
+          "announce_volume": "Optional, 0 to 1. Leave empty to use the speaker's current volume."
         }
       },
       "default_targets": {
@@ -87,10 +91,12 @@
           "default_announce_time": "Spoken announcement time (optional)",
           "default_announce_birthday": "Announce birthdays (alive)",
           "default_announce_souvenir": "Announce in memoriam (deceased)",
-          "default_announce_death": "Announce death anniversaries"
+          "default_announce_death": "Announce death anniversaries",
+          "default_announce_volume": "Spoken announcement volume for everyone (optional)"
         },
         "data_description": {
-          "default_announce_time": "Optional. Empty = no spoken announcement, even if a checkbox above is checked."
+          "default_announce_time": "Optional. Empty = no spoken announcement, even if a checkbox above is checked.",
+          "default_announce_volume": "Optional, 0 to 1. Leave empty to use the speaker's current volume."
         }
       },
       "remove_person": {
