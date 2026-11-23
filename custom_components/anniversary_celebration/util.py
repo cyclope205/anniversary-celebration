@@ -88,6 +88,28 @@ def age_at_next_anniversary(birth: date, today: date) -> int:
     return nxt.year - birth.year
 
 
+def current_age_months(birth: date, today: date) -> int:
+    """Full months elapsed since birth.
+
+    Used to display/announce the age of a person under 1 year old in
+    months rather than "0 ans", which reads as wrong/confusing for a
+    newborn or young pet (reported by a user on the forum).
+    """
+    months = (today.year - birth.year) * 12 + (today.month - birth.month)
+    if today.day < birth.day:
+        months -= 1
+    return max(months, 0)
+
+
+def _year_unit(n: int) -> str:
+    """French singular/plural for the word following an age in years.
+
+    "1 an" (singular) vs "2 ans", "3 ans"... (plural) — French grammar,
+    not just "add an s".
+    """
+    return "an" if n == 1 else "ans"
+
+
 def _parse_hhmm(time_str: str | None) -> tuple[int, int]:
     """Parse a valid 'HH:MM' or 'HH:MM:SS' value into (hour, minute).
 
@@ -252,8 +274,8 @@ def announcement_message(person: dict, kind: str, trigger_date: date, today: dat
     if kind == "death":
         return (
             f"Aujourd'hui est l'anniversaire du décès de {full_name}, "
-            f"décédé(e) depuis {years} ans."
+            f"décédé(e) depuis {years} {_year_unit(years)}."
         )
     if person.get(CONF_STATUS, STATUS_ALIVE) == STATUS_ALIVE:
-        return f"{full_name} a {years} ans aujourd'hui !"
-    return f"{full_name} aurait eu {years} ans aujourd'hui."
+        return f"{full_name} a {years} {_year_unit(years)} aujourd'hui !"
+    return f"{full_name} aurait eu {years} {_year_unit(years)} aujourd'hui."

@@ -52,6 +52,7 @@ from .const import (
     STORAGE_VERSION,
 )
 from .util import (
+    _year_unit,
     announcement_message,
     current_age,
     due_slots,
@@ -616,14 +617,14 @@ async def _async_send_notification(
         title = "🕯️ Anniversaire de décès"
         message = (
             f"Aujourd'hui est l'anniversaire du décès de {full_name}, "
-            f"décédé(e) depuis {age} ans."
+            f"décédé(e) depuis {age} {_year_unit(age)}."
         )
     elif person.get(CONF_STATUS, STATUS_ALIVE) == STATUS_ALIVE:
         title = "🎂🎉 Joyeux anniversaire !"
-        message = f"{full_name} a {age} ans aujourd'hui !"
+        message = f"{full_name} a {age} {_year_unit(age)} aujourd'hui !"
     else:
         title = "🕯️ En mémoire"
-        message = f"{full_name} aurait eu {age} ans aujourd'hui."
+        message = f"{full_name} aurait eu {age} {_year_unit(age)} aujourd'hui."
 
     person_id = person[CONF_PERSON_ID]
     today_iso = today.isoformat()

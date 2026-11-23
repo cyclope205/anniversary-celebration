@@ -33,6 +33,7 @@ from .const import (
 from .util import (
     age_at_next_anniversary,
     current_age,
+    current_age_months,
     days_until,
     normalize_notify_targets,
     normalize_notify_times,
@@ -121,6 +122,7 @@ class AnniversaryPersonSensor(SensorEntity):
         if birth is not None:
             attrs["date"] = birth.isoformat()
             attrs["current_years"] = current_age(birth, today)
+            attrs["current_months"] = current_age_months(birth, today)
             attrs["years_at_anniversary"] = age_at_next_anniversary(birth, today)
 
         # Death anniversary (Feature A): independent from the birthday
