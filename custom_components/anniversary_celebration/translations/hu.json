@@ -38,13 +38,15 @@
           "announce_time": "Hangbejelentés időpontja (opcionális)",
           "announce_birthday": "Születésnap bejelentése (élő)",
           "announce_souvenir": "Megemlékezés bejelentése (elhunyt)",
-          "announce_death": "Halálozási évforduló bejelentése"
+          "announce_death": "Halálozási évforduló bejelentése",
+          "announce_volume": "Hangbejelentés hangereje (opcionális)"
         },
         "data_description": {
           "birth_date": "Írja be a dátumot: ÉÉÉÉ-HH-NN vagy NN/HH/ÉÉÉÉ",
           "notify_time_2": "Opcionális, HH:MM. Hagyja üresen, ha csak egy értesítési időpontot szeretne.",
           "death_date": "Csak akkor hasznos, ha az állapot Elhunyt. A születési dátum után kell lennie.",
-          "announce_time": "Opcionális. Üres = nincs hangbejelentés, még ha a fenti jelölőnégyzet be is van jelölve."
+          "announce_time": "Opcionális. Üres = nincs hangbejelentés, még ha a fenti jelölőnégyzet be is van jelölve.",
+          "announce_volume": "Opcionális, 0–1. Hagyja üresen a hangszóró jelenlegi hangerejének használatához."
         }
       },
       "edit_person": {
@@ -64,13 +66,15 @@
           "announce_birthday": "Születésnap bejelentése (élő)",
           "announce_souvenir": "Megemlékezés bejelentése (elhunyt)",
           "announce_death": "Halálozási évforduló bejelentése",
+          "announce_volume": "Hangbejelentés hangereje (opcionális)",
           "person": "Személy"
         },
         "data_description": {
           "birth_date": "Írja be a dátumot: ÉÉÉÉ-HH-NN vagy NN/HH/ÉÉÉÉ",
           "notify_time_2": "Opcionális, HH:MM. Hagyja üresen, ha csak egy értesítési időpontot szeretne.",
           "death_date": "Csak akkor hasznos, ha az állapot Elhunyt. A születési dátum után kell lennie.",
-          "announce_time": "Opcionális. Üres = nincs hangbejelentés, még ha a fenti jelölőnégyzet be is van jelölve."
+          "announce_time": "Opcionális. Üres = nincs hangbejelentés, még ha a fenti jelölőnégyzet be is van jelölve.",
+          "announce_volume": "Opcionális, 0–1. Hagyja üresen a hangszóró jelenlegi hangerejének használatához."
         }
       },
       "default_targets": {
@@ -87,10 +91,12 @@
           "default_announce_time": "Hangbejelentés időpontja (opcionális)",
           "default_announce_birthday": "Születésnapok bejelentése (élők)",
           "default_announce_souvenir": "Megemlékezés bejelentése (elhunytak)",
-          "default_announce_death": "Halálozási évfordulók bejelentése"
+          "default_announce_death": "Halálozási évfordulók bejelentése",
+          "default_announce_volume": "Hangbejelentés hangereje mindenkinek (opcionális)"
         },
         "data_description": {
-          "default_announce_time": "Opcionális. Üres = nincs hangbejelentés, még ha a fenti jelölőnégyzet be is van jelölve."
+          "default_announce_time": "Opcionális. Üres = nincs hangbejelentés, még ha a fenti jelölőnégyzet be is van jelölve.",
+          "default_announce_volume": "Opcionális, 0–1. Hagyja üresen a hangszóró jelenlegi hangerejének használatához."
         }
       },
       "remove_person": {

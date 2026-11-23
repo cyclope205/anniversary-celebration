@@ -38,13 +38,15 @@
           "announce_time": "Puhutun ilmoituksen aika (valinnainen)",
           "announce_birthday": "Ilmoita syntymäpäivä (elossa)",
           "announce_souvenir": "Ilmoita muistoksi (kuollut)",
-          "announce_death": "Ilmoita kuolinpäivän vuosipäivä"
+          "announce_death": "Ilmoita kuolinpäivän vuosipäivä",
+          "announce_volume": "Puhutun ilmoituksen äänenvoimakkuus (valinnainen)"
         },
         "data_description": {
           "birth_date": "Kirjoita päivämäärä: VVVV-KK-PP tai PP/KK/VVVV",
           "notify_time_2": "Valinnainen, HH:MM. Jätä tyhjäksi, jos haluat vain yhden ilmoitusajan.",
           "death_date": "Hyödyllinen vain, jos tila on Kuollut. Oltava syntymäpäivän jälkeen.",
-          "announce_time": "Valinnainen. Tyhjä = ei puhuttua ilmoitusta, vaikka yllä oleva valintaruutu olisi valittuna."
+          "announce_time": "Valinnainen. Tyhjä = ei puhuttua ilmoitusta, vaikka yllä oleva valintaruutu olisi valittuna.",
+          "announce_volume": "Valinnainen, 0–1. Jätä tyhjäksi käyttääksesi kaiuttimen nykyistä äänenvoimakkuutta."
         }
       },
       "edit_person": {
@@ -64,13 +66,15 @@
           "announce_birthday": "Ilmoita syntymäpäivä (elossa)",
           "announce_souvenir": "Ilmoita muistoksi (kuollut)",
           "announce_death": "Ilmoita kuolinpäivän vuosipäivä",
+          "announce_volume": "Puhutun ilmoituksen äänenvoimakkuus (valinnainen)",
           "person": "Henkilö"
         },
         "data_description": {
           "birth_date": "Kirjoita päivämäärä: VVVV-KK-PP tai PP/KK/VVVV",
           "notify_time_2": "Valinnainen, HH:MM. Jätä tyhjäksi, jos haluat vain yhden ilmoitusajan.",
           "death_date": "Hyödyllinen vain, jos tila on Kuollut. Oltava syntymäpäivän jälkeen.",
-          "announce_time": "Valinnainen. Tyhjä = ei puhuttua ilmoitusta, vaikka yllä oleva valintaruutu olisi valittuna."
+          "announce_time": "Valinnainen. Tyhjä = ei puhuttua ilmoitusta, vaikka yllä oleva valintaruutu olisi valittuna.",
+          "announce_volume": "Valinnainen, 0–1. Jätä tyhjäksi käyttääksesi kaiuttimen nykyistä äänenvoimakkuutta."
         }
       },
       "default_targets": {
@@ -87,10 +91,12 @@
           "default_announce_time": "Puhutun ilmoituksen aika (valinnainen)",
           "default_announce_birthday": "Ilmoita syntymäpäivät (elossa)",
           "default_announce_souvenir": "Ilmoita muistoksi (kuolleet)",
-          "default_announce_death": "Ilmoita kuolinpäivien vuosipäivät"
+          "default_announce_death": "Ilmoita kuolinpäivien vuosipäivät",
+          "default_announce_volume": "Puhutun ilmoituksen äänenvoimakkuus kaikille (valinnainen)"
         },
         "data_description": {
-          "default_announce_time": "Valinnainen. Tyhjä = ei puhuttua ilmoitusta, vaikka yllä oleva valintaruutu olisi valittuna."
+          "default_announce_time": "Valinnainen. Tyhjä = ei puhuttua ilmoitusta, vaikka yllä oleva valintaruutu olisi valittuna.",
+          "default_announce_volume": "Valinnainen, 0–1. Jätä tyhjäksi käyttääksesi kaiuttimen nykyistä äänenvoimakkuutta."
         }
       },
       "remove_person": {

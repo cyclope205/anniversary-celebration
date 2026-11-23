@@ -38,13 +38,15 @@
           "announce_time": "Čas hlasového oznámení (nepovinné)",
           "announce_birthday": "Oznámit narozeniny (žijící)",
           "announce_souvenir": "Oznámit vzpomínku (zesnulý)",
-          "announce_death": "Oznámit výročí úmrtí"
+          "announce_death": "Oznámit výročí úmrtí",
+          "announce_volume": "Hlasitost hlasového oznámení (nepovinné)"
         },
         "data_description": {
           "birth_date": "Zadejte datum: RRRR-MM-DD nebo DD/MM/RRRR",
           "notify_time_2": "Nepovinné, HH:MM. Nechte prázdné pro jeden čas oznámení.",
           "death_date": "Užitečné pouze pokud je stav Zesnulý(á). Musí být po datu narození.",
-          "announce_time": "Nepovinné. Prázdné = žádné hlasové oznámení, i když je zaškrtnuto pole výše."
+          "announce_time": "Nepovinné. Prázdné = žádné hlasové oznámení, i když je zaškrtnuto pole výše.",
+          "announce_volume": "Nepovinné, 0 až 1. Ponechte prázdné pro použití aktuální hlasitosti reproduktoru."
         }
       },
       "edit_person": {
@@ -64,13 +66,15 @@
           "announce_birthday": "Oznámit narozeniny (žijící)",
           "announce_souvenir": "Oznámit vzpomínku (zesnulý)",
           "announce_death": "Oznámit výročí úmrtí",
+          "announce_volume": "Hlasitost hlasového oznámení (nepovinné)",
           "person": "Osoba"
         },
         "data_description": {
           "birth_date": "Zadejte datum: RRRR-MM-DD nebo DD/MM/RRRR",
           "notify_time_2": "Nepovinné, HH:MM. Nechte prázdné pro jeden čas oznámení.",
           "death_date": "Užitečné pouze pokud je stav Zesnulý(á). Musí být po datu narození.",
-          "announce_time": "Nepovinné. Prázdné = žádné hlasové oznámení, i když je zaškrtnuto pole výše."
+          "announce_time": "Nepovinné. Prázdné = žádné hlasové oznámení, i když je zaškrtnuto pole výše.",
+          "announce_volume": "Nepovinné, 0 až 1. Ponechte prázdné pro použití aktuální hlasitosti reproduktoru."
         }
       },
       "default_targets": {
@@ -87,10 +91,12 @@
           "default_announce_time": "Čas hlasového oznámení (nepovinné)",
           "default_announce_birthday": "Oznámit narozeniny (žijící)",
           "default_announce_souvenir": "Oznámit vzpomínku (zesnulí)",
-          "default_announce_death": "Oznámit výročí úmrtí"
+          "default_announce_death": "Oznámit výročí úmrtí",
+          "default_announce_volume": "Hlasitost hlasového oznámení pro všechny (nepovinné)"
         },
         "data_description": {
-          "default_announce_time": "Nepovinné. Prázdné = žádné hlasové oznámení, i když je zaškrtnuto pole výše."
+          "default_announce_time": "Nepovinné. Prázdné = žádné hlasové oznámení, i když je zaškrtnuto pole výše.",
+          "default_announce_volume": "Nepovinné, 0 až 1. Ponechte prázdné pro použití aktuální hlasitosti reproduktoru."
         }
       },
       "remove_person": {

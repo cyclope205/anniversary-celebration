@@ -38,13 +38,15 @@
           "announce_time": "Uhrzeit der Sprachansage (optional)",
           "announce_birthday": "Geburtstag ansagen (lebend)",
           "announce_souvenir": "Gedenken ansagen (verstorben)",
-          "announce_death": "Todestag ansagen"
+          "announce_death": "Todestag ansagen",
+          "announce_volume": "Lautstärke der Sprachansage (optional)"
         },
         "data_description": {
           "birth_date": "Geben Sie das Datum ein: JJJJ-MM-TT oder TT/MM/JJJJ",
           "notify_time_2": "Optional, HH:MM. Leer lassen für nur eine Benachrichtigungszeit.",
           "death_date": "Nur relevant, wenn der Status Verstorben ist. Muss nach dem Geburtsdatum liegen.",
-          "announce_time": "Optional. Leer = keine Sprachansage, auch wenn ein Kästchen oben aktiviert ist."
+          "announce_time": "Optional. Leer = keine Sprachansage, auch wenn ein Kästchen oben aktiviert ist.",
+          "announce_volume": "Optional, 0 bis 1. Leer lassen, um die aktuelle Lautstärke des Lautsprechers zu verwenden."
         }
       },
       "edit_person": {
@@ -64,13 +66,15 @@
           "announce_birthday": "Geburtstag ansagen (lebend)",
           "announce_souvenir": "Gedenken ansagen (verstorben)",
           "announce_death": "Todestag ansagen",
+          "announce_volume": "Lautstärke der Sprachansage (optional)",
           "person": "Person"
         },
         "data_description": {
           "birth_date": "Geben Sie das Datum ein: JJJJ-MM-TT oder TT/MM/JJJJ",
           "notify_time_2": "Optional, HH:MM. Leer lassen für nur eine Benachrichtigungszeit.",
           "death_date": "Nur relevant, wenn der Status Verstorben ist. Muss nach dem Geburtsdatum liegen.",
-          "announce_time": "Optional. Leer = keine Sprachansage, auch wenn ein Kästchen oben aktiviert ist."
+          "announce_time": "Optional. Leer = keine Sprachansage, auch wenn ein Kästchen oben aktiviert ist.",
+          "announce_volume": "Optional, 0 bis 1. Leer lassen, um die aktuelle Lautstärke des Lautsprechers zu verwenden."
         }
       },
       "default_targets": {
@@ -87,10 +91,12 @@
           "default_announce_time": "Uhrzeit der Sprachansage (optional)",
           "default_announce_birthday": "Geburtstage ansagen (lebend)",
           "default_announce_souvenir": "Gedenken ansagen (verstorben)",
-          "default_announce_death": "Todestage ansagen"
+          "default_announce_death": "Todestage ansagen",
+          "default_announce_volume": "Lautstärke der Sprachansage für alle (optional)"
         },
         "data_description": {
-          "default_announce_time": "Optional. Leer = keine Sprachansage, auch wenn ein Kästchen oben aktiviert ist."
+          "default_announce_time": "Optional. Leer = keine Sprachansage, auch wenn ein Kästchen oben aktiviert ist.",
+          "default_announce_volume": "Optional, 0 bis 1. Leer lassen, um die aktuelle Lautstärke des Lautsprechers zu verwenden."
         }
       },
       "remove_person": {

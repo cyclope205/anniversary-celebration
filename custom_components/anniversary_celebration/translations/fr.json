@@ -38,13 +38,15 @@
           "announce_time": "Heure de l'annonce vocale (optionnel)",
           "announce_birthday": "Annoncer l'anniversaire (vivant)",
           "announce_souvenir": "Annoncer le souvenir (décédé)",
-          "announce_death": "Annoncer l'anniversaire de décès"
+          "announce_death": "Annoncer l'anniversaire de décès",
+          "announce_volume": "Volume de l'annonce vocale (optionnel)"
         },
         "data_description": {
           "birth_date": "Saisissez la date : AAAA-MM-JJ ou JJ/MM/AAAA",
           "notify_time_2": "Optionnel, HH:MM. Laissez vide pour un seul horaire de notification.",
           "death_date": "Uniquement utile si le statut est Décédé(e). Doit être postérieure à la date de naissance.",
-          "announce_time": "Optionnel. Vide = aucune annonce vocale, même si une case ci-dessus est cochée."
+          "announce_time": "Optionnel. Vide = aucune annonce vocale, même si une case ci-dessus est cochée.",
+          "announce_volume": "Optionnel, de 0 à 1. Laissez vide pour utiliser le volume actuel du haut-parleur."
         }
       },
       "edit_person": {
@@ -64,13 +66,15 @@
           "announce_birthday": "Annoncer l'anniversaire (vivant)",
           "announce_souvenir": "Annoncer le souvenir (décédé)",
           "announce_death": "Annoncer l'anniversaire de décès",
+          "announce_volume": "Volume de l'annonce vocale (optionnel)",
           "person": "Personne"
         },
         "data_description": {
           "birth_date": "Saisissez la date : AAAA-MM-JJ ou JJ/MM/AAAA",
           "notify_time_2": "Optionnel, HH:MM. Laissez vide pour un seul horaire de notification.",
           "death_date": "Uniquement utile si le statut est Décédé(e). Doit être postérieure à la date de naissance.",
-          "announce_time": "Optionnel. Vide = aucune annonce vocale, même si une case ci-dessus est cochée."
+          "announce_time": "Optionnel. Vide = aucune annonce vocale, même si une case ci-dessus est cochée.",
+          "announce_volume": "Optionnel, de 0 à 1. Laissez vide pour utiliser le volume actuel du haut-parleur."
         }
       },
       "default_targets": {
@@ -87,10 +91,12 @@
           "default_announce_time": "Heure de l'annonce vocale (optionnel)",
           "default_announce_birthday": "Annoncer les anniversaires (vivants)",
           "default_announce_souvenir": "Annoncer le souvenir (décédés)",
-          "default_announce_death": "Annoncer les anniversaires de décès"
+          "default_announce_death": "Annoncer les anniversaires de décès",
+          "default_announce_volume": "Volume de l'annonce vocale pour tout le monde (optionnel)"
         },
         "data_description": {
-          "default_announce_time": "Optionnel. Vide = aucune annonce vocale, même si une case ci-dessus est cochée."
+          "default_announce_time": "Optionnel. Vide = aucune annonce vocale, même si une case ci-dessus est cochée.",
+          "default_announce_volume": "Optionnel, de 0 à 1. Laissez vide pour utiliser le volume actuel du haut-parleur."
         }
       },
       "remove_person": {

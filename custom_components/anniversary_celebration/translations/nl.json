@@ -38,13 +38,15 @@
           "announce_time": "Tijdstip van de gesproken melding (optioneel)",
           "announce_birthday": "Verjaardag aankondigen (levend)",
           "announce_souvenir": "Herdenking aankondigen (overleden)",
-          "announce_death": "Overlijdensherdenking aankondigen"
+          "announce_death": "Overlijdensherdenking aankondigen",
+          "announce_volume": "Volume van de gesproken melding (optioneel)"
         },
         "data_description": {
           "birth_date": "Typ de datum: JJJJ-MM-DD of DD/MM/JJJJ",
           "notify_time_2": "Optioneel, HH:MM. Laat leeg voor maar één meldingstijd.",
           "death_date": "Alleen nuttig als status Overleden is. Moet na de geboortedatum liggen.",
-          "announce_time": "Optioneel. Leeg = geen gesproken melding, ook als een vakje hierboven is aangevinkt."
+          "announce_time": "Optioneel. Leeg = geen gesproken melding, ook als een vakje hierboven is aangevinkt.",
+          "announce_volume": "Optioneel, van 0 tot 1. Laat leeg om het huidige volume van de luidspreker te gebruiken."
         }
       },
       "edit_person": {
@@ -64,13 +66,15 @@
           "announce_birthday": "Verjaardag aankondigen (levend)",
           "announce_souvenir": "Herdenking aankondigen (overleden)",
           "announce_death": "Overlijdensherdenking aankondigen",
+          "announce_volume": "Volume van de gesproken melding (optioneel)",
           "person": "Persoon"
         },
         "data_description": {
           "birth_date": "Typ de datum: JJJJ-MM-DD of DD/MM/JJJJ",
           "notify_time_2": "Optioneel, HH:MM. Laat leeg voor maar één meldingstijd.",
           "death_date": "Alleen nuttig als status Overleden is. Moet na de geboortedatum liggen.",
-          "announce_time": "Optioneel. Leeg = geen gesproken melding, ook als een vakje hierboven is aangevinkt."
+          "announce_time": "Optioneel. Leeg = geen gesproken melding, ook als een vakje hierboven is aangevinkt.",
+          "announce_volume": "Optioneel, van 0 tot 1. Laat leeg om het huidige volume van de luidspreker te gebruiken."
         }
       },
       "default_targets": {
@@ -87,10 +91,12 @@
           "default_announce_time": "Tijdstip van de gesproken melding (optioneel)",
           "default_announce_birthday": "Verjaardagen aankondigen (levend)",
           "default_announce_souvenir": "Herdenking aankondigen (overleden)",
-          "default_announce_death": "Overlijdensherdenkingen aankondigen"
+          "default_announce_death": "Overlijdensherdenkingen aankondigen",
+          "default_announce_volume": "Volume van de gesproken melding voor iedereen (optioneel)"
         },
         "data_description": {
-          "default_announce_time": "Optioneel. Leeg = geen gesproken melding, ook als een vakje hierboven is aangevinkt."
+          "default_announce_time": "Optioneel. Leeg = geen gesproken melding, ook als een vakje hierboven is aangevinkt.",
+          "default_announce_volume": "Optioneel, van 0 tot 1. Laat leeg om het huidige volume van de luidspreker te gebruiken."
         }
       },
       "remove_person": {

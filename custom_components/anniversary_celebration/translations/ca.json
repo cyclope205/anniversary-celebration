@@ -38,13 +38,15 @@
           "announce_time": "Hora de l'anunci de veu (opcional)",
           "announce_birthday": "Anunciar l'aniversari (viu)",
           "announce_souvenir": "Anunciar en memòria (difunt)",
-          "announce_death": "Anunciar l'aniversari de defunció"
+          "announce_death": "Anunciar l'aniversari de defunció",
+          "announce_volume": "Volum de l'anunci de veu (opcional)"
         },
         "data_description": {
           "birth_date": "Introduïu la data: AAAA-MM-DD o DD/MM/AAAA",
           "notify_time_2": "Opcional, HH:MM. Deixeu-ho buit per a una sola hora de notificació.",
           "death_date": "Només útil si l'estat és Difunt(a). Ha de ser posterior a la data de naixement.",
-          "announce_time": "Opcional. Buit = sense anunci de veu, encara que una casella estigui marcada."
+          "announce_time": "Opcional. Buit = sense anunci de veu, encara que una casella estigui marcada.",
+          "announce_volume": "Opcional, de 0 a 1. Deixeu-ho buit per utilitzar el volum actual de l'altaveu."
         }
       },
       "edit_person": {
@@ -64,13 +66,15 @@
           "announce_birthday": "Anunciar l'aniversari (viu)",
           "announce_souvenir": "Anunciar en memòria (difunt)",
           "announce_death": "Anunciar l'aniversari de defunció",
+          "announce_volume": "Volum de l'anunci de veu (opcional)",
           "person": "Persona"
         },
         "data_description": {
           "birth_date": "Introduïu la data: AAAA-MM-DD o DD/MM/AAAA",
           "notify_time_2": "Opcional, HH:MM. Deixeu-ho buit per a una sola hora de notificació.",
           "death_date": "Només útil si l'estat és Difunt(a). Ha de ser posterior a la data de naixement.",
-          "announce_time": "Opcional. Buit = sense anunci de veu, encara que una casella estigui marcada."
+          "announce_time": "Opcional. Buit = sense anunci de veu, encara que una casella estigui marcada.",
+          "announce_volume": "Opcional, de 0 a 1. Deixeu-ho buit per utilitzar el volum actual de l'altaveu."
         }
       },
       "default_targets": {
@@ -87,10 +91,12 @@
           "default_announce_time": "Hora de l'anunci de veu (opcional)",
           "default_announce_birthday": "Anunciar els aniversaris (vius)",
           "default_announce_souvenir": "Anunciar en memòria (difunts)",
-          "default_announce_death": "Anunciar els aniversaris de defunció"
+          "default_announce_death": "Anunciar els aniversaris de defunció",
+          "default_announce_volume": "Volum de l'anunci de veu per a tothom (opcional)"
         },
         "data_description": {
-          "default_announce_time": "Opcional. Buit = sense anunci de veu, encara que una casella estigui marcada."
+          "default_announce_time": "Opcional. Buit = sense anunci de veu, encara que una casella estigui marcada.",
+          "default_announce_volume": "Opcional, de 0 a 1. Deixeu-ho buit per utilitzar el volum actual de l'altaveu."
         }
       },
       "remove_person": {

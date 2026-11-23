@@ -38,13 +38,15 @@
           "announce_time": "Godzina ogłoszenia głosowego (opcjonalnie)",
           "announce_birthday": "Ogłaszaj urodziny (żyjący/a)",
           "announce_souvenir": "Ogłaszaj wspomnienie (zmarły/a)",
-          "announce_death": "Ogłaszaj rocznicę śmierci"
+          "announce_death": "Ogłaszaj rocznicę śmierci",
+          "announce_volume": "Głośność ogłoszenia głosowego (opcjonalnie)"
         },
         "data_description": {
           "birth_date": "Wpisz datę: RRRR-MM-DD lub DD/MM/RRRR",
           "notify_time_2": "Opcjonalnie, HH:MM. Pozostaw puste dla jednej godziny powiadomienia.",
           "death_date": "Przydatne tylko, gdy status to Zmarły/a. Musi być późniejsza niż data urodzenia.",
-          "announce_time": "Opcjonalne. Puste = brak ogłoszenia głosowego, nawet jeśli powyższe pole jest zaznaczone."
+          "announce_time": "Opcjonalne. Puste = brak ogłoszenia głosowego, nawet jeśli powyższe pole jest zaznaczone.",
+          "announce_volume": "Opcjonalne, od 0 do 1. Pozostaw puste, aby użyć bieżącej głośności głośnika."
         }
       },
       "edit_person": {
@@ -64,13 +66,15 @@
           "announce_birthday": "Ogłaszaj urodziny (żyjący/a)",
           "announce_souvenir": "Ogłaszaj wspomnienie (zmarły/a)",
           "announce_death": "Ogłaszaj rocznicę śmierci",
+          "announce_volume": "Głośność ogłoszenia głosowego (opcjonalnie)",
           "person": "Osoba"
         },
         "data_description": {
           "birth_date": "Wpisz datę: RRRR-MM-DD lub DD/MM/RRRR",
           "notify_time_2": "Opcjonalnie, HH:MM. Pozostaw puste dla jednej godziny powiadomienia.",
           "death_date": "Przydatne tylko, gdy status to Zmarły/a. Musi być późniejsza niż data urodzenia.",
-          "announce_time": "Opcjonalne. Puste = brak ogłoszenia głosowego, nawet jeśli powyższe pole jest zaznaczone."
+          "announce_time": "Opcjonalne. Puste = brak ogłoszenia głosowego, nawet jeśli powyższe pole jest zaznaczone.",
+          "announce_volume": "Opcjonalne, od 0 do 1. Pozostaw puste, aby użyć bieżącej głośności głośnika."
         }
       },
       "default_targets": {
@@ -87,10 +91,12 @@
           "default_announce_time": "Godzina ogłoszenia głosowego (opcjonalnie)",
           "default_announce_birthday": "Ogłaszaj urodziny (żyjący)",
           "default_announce_souvenir": "Ogłaszaj wspomnienia (zmarli)",
-          "default_announce_death": "Ogłaszaj rocznice śmierci"
+          "default_announce_death": "Ogłaszaj rocznice śmierci",
+          "default_announce_volume": "Głośność ogłoszenia głosowego dla wszystkich (opcjonalnie)"
         },
         "data_description": {
-          "default_announce_time": "Opcjonalne. Puste = brak ogłoszenia głosowego, nawet jeśli powyższe pole jest zaznaczone."
+          "default_announce_time": "Opcjonalne. Puste = brak ogłoszenia głosowego, nawet jeśli powyższe pole jest zaznaczone.",
+          "default_announce_volume": "Opcjonalne, od 0 do 1. Pozostaw puste, aby użyć bieżącej głośności głośnika."
         }
       },
       "remove_person": {
