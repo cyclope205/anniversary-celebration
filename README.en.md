@@ -65,7 +65,10 @@ date of birth, status (alive / deceased), up to two notification times
 (optional), one or more devices/services to notify (optional).
 - One sensor per person (`sensor.<first_name>_<last_name>`): number of days until the
 next birthday, current age, age at the next birthday, date of
-birth, status, and whether today's notification has already been sent.
+birth, status, and whether today's notification has already been sent. A
+person under 1 year old shows their age in months (e.g. "4 months")
+instead of "0 years", and the singular "1 year" is used correctly
+wherever an age in years is shown or spoken.
 - Deceased people can also be notified (a different "in
 memory" message instead of the living one).
 - Independent reminder for the death anniversary (if a death date is set):
@@ -76,8 +79,9 @@ automatically on top of each person's own targets — handy for notifying a
 shared device without configuring it on every person.
 - Optional spoken announcement (text-to-speech), entirely independent from
 the written notifications above: its own speakers, its own TTS engine, its
-own time, and three separate opt-in checkboxes (birthday, in memory, death
-anniversary), all off by default.
+own time, an optional volume (applied right before the announcement and
+automatically restored afterwards), and three separate opt-in checkboxes
+(birthday, in memory, death anniversary), all off by default.
 - `anniversary-celebration-card` card: builds itself automatically from
 the configured people (no need to touch the dashboard YAML on every
 addition), sorted by proximity, with a 🔔 next to the name
@@ -151,7 +155,7 @@ or remove a person. Each person has:
 | Notification times | No | Up to two times on the day (default 09:00). Duplicate times are rejected/deduplicated. |
 | Devices/services to notify | No | One or more `notify.*` services; if left empty, only the Home Assistant persistent notification is created |
 | Death date | No | Only useful if status is Deceased. Triggers a separate yearly reminder from the birthday one. Must be after the date of birth |
-| Speakers / TTS engine / announcement time | No | Spoken announcement configuration (see below) |
+| Speakers / TTS engine / announcement time / volume | No | Spoken announcement configuration (see below) |
 | "Announce..." checkboxes | No | Three independent checkboxes (birthday, in memory, death anniversary), all off by default |
 
 A separate menu in the integration's options, **Default notification
@@ -163,12 +167,17 @@ every notification, on top of the ones configured on each person.
 Optional feature, independent from the written notifications: for each
 person, you can configure one or more `media_player.*` entities and a
 text-to-speech engine (`tts.*`), plus a time of its own for the
-announcement (different, if needed, from the written notification times).
-Three checkboxes, all off by default, choose which events are spoken aloud:
-birthday (alive), in memory (deceased), death anniversary. Unlike written
-notifications, a missed spoken announcement is never retried the next day —
-it would say "today" about a day that has already passed, which would be
-wrong.
+announcement (different, if needed, from the written notification times)
+and an optional volume (0 to 1), applied right before the announcement and
+automatically restored afterwards — left empty, the speaker keeps its
+current volume. Three checkboxes, all off by default, choose which events
+are spoken aloud: birthday (alive), in memory (deceased), death
+anniversary. Unlike written notifications, a missed spoken announcement is
+never retried the next day — it would say "today" about a day that has
+already passed, which would be wrong. A separate menu in the integration's
+options, **Default spoken announcement**, offers the same configuration
+(speakers, TTS engine, time, volume, checkboxes) at the integration level,
+on top of each person's own.
 
 ## Card — configuration
 

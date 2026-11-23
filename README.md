@@ -66,7 +66,10 @@ Intégration Home Assistant qui suit les anniversaires des personnes vivantes et
   (optionnel).
 - Un capteur par personne (`sensor.<prénom>_<nom>`) : nombre de jours avant le
   prochain anniversaire, âge actuel, âge au prochain anniversaire, date de
-  naissance, statut, et si la notification du jour a déjà été envoyée.
+  naissance, statut, et si la notification du jour a déjà été envoyée. Une
+  personne de moins d'1 an affiche son âge en mois (ex. « 4 mois ») plutôt
+  que « 0 ans », et l'accord singulier « 1 an » est respecté partout où un
+  âge en années est affiché ou annoncé.
 - Les personnes décédées peuvent aussi être notifiées (message « en
   mémoire » différent de celui des vivants).
 - Rappel indépendant pour l'anniversaire de décès (si une date de décès est
@@ -77,9 +80,10 @@ Intégration Home Assistant qui suit les anniversaires des personnes vivantes et
   pour notifier un appareil commun sans le configurer sur chaque fiche.
 - Annonce vocale optionnelle (texte-à-parole), entièrement indépendante des
   notifications écrites ci-dessus : ses propres haut-parleurs, son propre
-  moteur TTS, son propre horaire, et trois cases à cocher séparées
-  (anniversaire, souvenir, anniversaire de décès), toutes désactivées par
-  défaut.
+  moteur TTS, son propre horaire, un volume optionnel (appliqué avant
+  l'annonce puis restauré automatiquement après), et trois cases à cocher
+  séparées (anniversaire, souvenir, anniversaire de décès), toutes
+  désactivées par défaut.
 - Carte `anniversary-celebration-card` : se construit automatiquement à
   partir des personnes configurées (pas besoin de toucher le YAML du
   dashboard à chaque ajout), triée par proximité, avec un 🔔 à côté du nom
@@ -157,7 +161,7 @@ ou supprimer une personne. Chaque personne possède :
 | Horaires de notification | Non | Jusqu'à deux horaires le jour J (par défaut 09:00). Les horaires en double sont rejetés/dédupliqués |
 | Appareils/services à notifier | Non | Un ou plusieurs services `notify.*` ; laissé vide, seule la notification persistante Home Assistant est créée |
 | Date de décès | Non | Uniquement utile si le statut est Décédé(e). Déclenche un rappel annuel séparé de l'anniversaire de naissance. Doit être postérieure à la date de naissance |
-| Haut-parleurs / moteur TTS / horaire de l'annonce | Non | Configuration de l'annonce vocale (voir plus bas) |
+| Haut-parleurs / moteur TTS / horaire / volume de l'annonce | Non | Configuration de l'annonce vocale (voir plus bas) |
 | Cases « Annoncer... » | Non | Trois cases indépendantes (anniversaire, souvenir, anniversaire de décès), toutes désactivées par défaut |
 
 Un menu séparé dans les options de l'intégration, **Cibles de notification
@@ -171,12 +175,17 @@ Fonctionnalité facultative, indépendante des notifications écrites : pour
 chaque personne, il est possible de configurer un ou plusieurs
 `media_player.*` et un moteur de synthèse vocale (`tts.*`), ainsi qu'un
 horaire propre à l'annonce (différent, si besoin, des horaires de
-notification écrite). Trois cases à cocher, toutes désactivées par défaut,
-choisissent quels évènements sont annoncés à voix haute : anniversaire
-(vivant), souvenir (décédé), anniversaire de décès. Contrairement aux
-notifications écrites, une annonce vocale manquée n'est jamais retentée le
-lendemain — elle dirait « aujourd'hui » à propos d'un jour passé, ce qui
-serait faux.
+notification écrite) et un volume optionnel (de 0 à 1) appliqué juste avant
+l'annonce puis restauré automatiquement après — laissé vide, le
+haut-parleur garde son volume actuel. Trois cases à cocher, toutes
+désactivées par défaut, choisissent quels évènements sont annoncés à voix
+haute : anniversaire (vivant), souvenir (décédé), anniversaire de décès.
+Contrairement aux notifications écrites, une annonce vocale manquée n'est
+jamais retentée le lendemain — elle dirait « aujourd'hui » à propos d'un
+jour passé, ce qui serait faux. Un menu séparé des options de
+l'intégration, **Annonce vocale par défaut**, propose la même
+configuration (haut-parleurs, moteur TTS, horaire, volume, cases à cocher)
+au niveau de l'intégration, en plus de celle de chaque personne.
 
 ## Carte — configuration
 
