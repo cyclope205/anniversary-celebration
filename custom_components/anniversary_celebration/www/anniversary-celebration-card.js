@@ -10,6 +10,12 @@ const MONTHS_FR = [
   "juillet", "août", "septembre", "octobre", "novembre", "décembre",
 ];
 
+function yearsUnit(n) {
+  // French singular/plural for the word following an age in years:
+  // "1 an" vs "2 ans", "3 ans"...
+  return n === 1 ? "an" : "ans";
+}
+
 function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, (c) => ({
     "&": "&amp;",
@@ -158,6 +164,14 @@ class AnniversaryCelebrationCard extends HTMLElement {
     const name = escapeHtml(rawName);
     const ageNow = a.current_years;
     const ageNext = a.years_at_anniversary;
+    // Under 1 year old: show age in months ("4 mois") rather than "0 ans",
+    // which reads as wrong for a newborn or young pet.
+    const ageNowLabel =
+      ageNow === 0 && a.current_months !== undefined
+        ? `${a.current_months} mois`
+        : ageNow !== undefined
+        ? `${ageNow} ${yearsUnit(ageNow)}`
+        : undefined;
     const today = Number(stateObj.state) <= 0;
     const verb = kind === "deceased" ? "aurait" : "aura";
     const icon = kind === "deceased" ? "mdi:candle" : "mdi:cake-variant";
@@ -165,8 +179,8 @@ class AnniversaryCelebrationCard extends HTMLElement {
     return `
       <div class="ac-row ${kind}${today ? " today" : ""}">
         <ha-icon class="ac-icon" icon="${icon}"></ha-icon>
-        <div class="ac-name">${name}${ageNow !== undefined ? ` · ${ageNow} ans` : ""}${bell}</div>
-        <div class="ac-label">${verb} ${ageNext} ans au prochain anniversaire</div>
+        <div class="ac-name">${name}${ageNowLabel !== undefined ? ` · ${ageNowLabel}` : ""}${bell}</div>
+        <div class="ac-label">${verb} ${ageNext} ${yearsUnit(ageNext)} au prochain anniversaire</div>
         <div class="ac-dob">${formatDob(a.date)}${kind === "deceased" && a.death_date ? ` · ${formatDeathDate(a.death_date)}` : ""}</div>
         <div class="ac-badge">${countdownLabel(stateObj.state)}</div>
       </div>
