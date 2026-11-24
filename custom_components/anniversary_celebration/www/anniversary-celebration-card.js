@@ -179,8 +179,8 @@ class AnniversaryCelebrationCard extends HTMLElement {
     return `
       <div class="ac-row ${kind}${today ? " today" : ""}">
         <ha-icon class="ac-icon" icon="${icon}"></ha-icon>
-        <div class="ac-name">${name}${ageNowLabel !== undefined ? ` · ${ageNowLabel}` : ""}${bell}</div>
-        <div class="ac-label">${verb} ${ageNext} ${yearsUnit(ageNext)} au prochain anniversaire</div>
+        <div class="ac-name">${name}${ageNowLabel !== undefined ? ` · ${escapeHtml(String(ageNowLabel))}` : ""}${bell}</div>
+        <div class="ac-label">${verb} ${escapeHtml(String(ageNext))} ${yearsUnit(ageNext)} au prochain anniversaire</div>
         <div class="ac-dob">${formatDob(a.date)}${kind === "deceased" && a.death_date ? ` · ${formatDeathDate(a.death_date)}` : ""}</div>
         <div class="ac-badge">${countdownLabel(stateObj.state)}</div>
       </div>
@@ -256,7 +256,7 @@ class AnniversaryCelebrationCardEditor extends HTMLElement {
       </div>
       <div class="ac-editor-row">
         <label>Nombre de personnes affichées (0 = toutes)</label>
-        <input type="number" min="0" id="ac-max-items" value="${this._config.max_items}">
+        <input type="number" min="0" id="ac-max-items" value="${Number(this._config.max_items) || 0}">
       </div>
     `;
 
