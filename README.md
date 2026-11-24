@@ -2,7 +2,7 @@
 
 🇬🇧 [English version](README.en.md)
 
-[![HACS: Custom](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
+[![HACS: Default](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/hacs/integration)
 [![Release](https://img.shields.io/github/v/release/cyclope205/anniversary-celebration)](https://github.com/cyclope205/anniversary-celebration/releases)
 [![Build](https://github.com/cyclope205/anniversary-celebration/actions/workflows/validate.yml/badge.svg)](https://github.com/cyclope205/anniversary-celebration/actions/workflows/validate.yml)
 [![Tests](https://github.com/cyclope205/anniversary-celebration/actions/workflows/tests.yml/badge.svg)](https://github.com/cyclope205/anniversary-celebration/actions/workflows/tests.yml)
@@ -133,9 +133,7 @@ Notification le jour J (persistante dans Home Assistant et sur mobile) :
 1. Ouvrir Anniversary Celebration dans HACS et l'installer :
 2. [![Ouvrir dans HACS](https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/badges/badge-hacs-fr.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=cyclope205&repository=anniversary-celebration&category=integration)
 3. [![Ouvrir dans Marketplace](https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/badges/badge-marketplace-fr.svg)](https://my.home-assistant.io/redirect/marketplace_repository/?owner=cyclope205&repository=anniversary-celebration&category=integration)
-4. ou rechercher **Anniversary Celebration** dans HACS si le dépôt est
-   déjà référencé (sinon : HACS → Intégrations → ⋮ → Dépôts
-   personnalisés → ajouter ce dépôt, catégorie Intégration).
+4. ou rechercher **Anniversary Celebration** dans HACS.
 5. Redémarrer Home Assistant.
 6. Ajouter l'intégration :
 7. [![Ajouter l'intégration](https://raw.githubusercontent.com/cyclope205/anniversary-celebration/main/docs/badges/badge-add-integration-fr.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=anniversary_celebration)
